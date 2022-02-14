@@ -2,8 +2,6 @@
 
 [![](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/Mastercard/promotions-digital-enablement-reference-app/blob/master/LICENSE)
 
-This repository showcases reference implementation of Promotions Digital Enablement from: [Mastercard Developers](https://developer.mastercard.com).
-
 ## Table of Contents
 - [Overview](#overview)
   * [Compatibility](#compatibility)
