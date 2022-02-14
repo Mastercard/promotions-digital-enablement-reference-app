@@ -1,0 +1,13 @@
+**/target
+.DS_Store
+
+### IntelliJ IDEA ###
+.idea/**/*
+*.iml
+*.ipr
+*.ips
+*.iws
+
+### Keys ###
+*.p12
+*.pem
