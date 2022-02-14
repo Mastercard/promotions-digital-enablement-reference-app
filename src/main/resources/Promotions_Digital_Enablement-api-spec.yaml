@@ -7,9 +7,6 @@ info:
     name: API Support
     url: 'https://developer.mastercard.com/support'
     email: apisupport@mastercard.com
-  license:
-    name: Mastercard Developer Support
-    url: 'https://developer.mastercard.com/support'
   version: 1.1.0
 servers:
   - url: https://api.mastercard.com/loyalty/rewards

@@ -1,4 +1,4 @@
-# Promotions Digital Enablement Reference Implementation
+# Reference Implementation for Mastercard Promotions Digital Enablement
 
 [![](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/Mastercard/promotions-digital-enablement-reference-app/blob/master/LICENSE)
 
