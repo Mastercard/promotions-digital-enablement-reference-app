@@ -1,5 +1,8 @@
-package com.mastercard.developer.exception;
+package com.mastercard.developer.exception.handler;
 
+import com.mastercard.developer.exception.EntityNotFoundException;
+import com.mastercard.developer.exception.ErrorCodes;
+import com.mastercard.developer.exception.InvalidRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.openapitools.client.model.ErrorItem;
 import org.openapitools.client.model.Errors;
@@ -26,6 +29,7 @@ import java.util.stream.Collectors;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @Slf4j
 public class APIExceptionHandler extends ResponseEntityExceptionHandler {
+
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
                                                                   HttpHeaders headers, HttpStatus status, WebRequest request) {
