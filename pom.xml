@@ -13,7 +13,7 @@
     <artifactId>promotions-digital-enablement-reference-app</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <name>promotions-digital-enablement-reference-app</name>
-    <description>Reference Application for Promotions Digital Enablement API</description>
+    <description>Reference Application For Promotions Digital Enablement API</description>
 
     <properties>
         <sonar.organization>mastercard</sonar.organization>
