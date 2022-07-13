@@ -28,12 +28,12 @@ public class PromotionDetailController {
     }
 
     /**
- *      * Build call for getPromotionDetails
- *           *
- *                * @param promotionId      Promotion Identifier (required)
- *                     * @return Call to execute
- *                          * @throws InvalidRequest If fail to validate input values and serialize the request body object
- *                               */
+    * Build call for getPromotionDetails
+    *
+    * @param promotionId      Promotion Identifier (required)
+    * @return Call to execute
+    * @throws InvalidRequest If fail to validate input values and serialize the request body object
+    */
     @GetMapping(value = "/promotions/{id}/details")
     public PromotionDetail getPromotionDetails(@PathVariable(value = "id") String promotionId)  {
         try {
