@@ -76,22 +76,22 @@ public class OptInControllerTest {
         Promotion activePromotionValueBean = getEligiblePromotionValueBean();
         Promotions pagedResponseActivePromotionValueBean = new Promotions();
         pagedResponseActivePromotionValueBean.setItems(Arrays.asList(activePromotionValueBean));
-        Mockito.when(optInService.getActivePromotions(REWARDS_COMPANY_ID, null, null, null, 0, 25)).thenReturn(pagedResponseActivePromotionValueBean);
+        Mockito.when(optInService.getActivePromotions(REWARDS_COMPANY_ID, null, null, null, null, 0, 25)).thenReturn(pagedResponseActivePromotionValueBean);
         MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
         httpServletRequest.setRequestURI(PROMOTIONS);
 
-        Promotions response = controller.getPromotions(REWARDS_COMPANY_ID, null, null, null, 0, 25);
+        Promotions response = controller.getPromotions(REWARDS_COMPANY_ID, null, null, null, null, 0, 25);
         Assert.assertNotNull(response);
         Assert.assertNotNull(response.getItems().get(0));
     }
 
     @Test(expected = InvalidRequest.class)
     public void testGetPromotionsByCompanyIdFailure() throws Exception {
-        doThrow(ApiException.class).when(optInService).getActivePromotions(REWARDS_COMPANY_ID, null, null, null, 0, 25);
+        doThrow(ApiException.class).when(optInService).getActivePromotions(REWARDS_COMPANY_ID, null, null, null, null, 0, 25);
         MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
         httpServletRequest.setRequestURI(PROMOTIONS);
 
-        controller.getPromotions(REWARDS_COMPANY_ID, null, null, null, 0, 25);
+        controller.getPromotions(REWARDS_COMPANY_ID, null, null, null, null, 0, 25);
     }
 
     @Test
@@ -99,22 +99,22 @@ public class OptInControllerTest {
         Promotion activePromotionValueBean = getEligiblePromotionValueBean();
         Promotions pagedResponseActivePromotionValueBean = new Promotions();
         pagedResponseActivePromotionValueBean.setItems(Arrays.asList(activePromotionValueBean));
-        Mockito.when(optInService.getActivePromotions(null, PROGRAM_REF_ID, null, null, 0, 25)).thenReturn(pagedResponseActivePromotionValueBean);
+        Mockito.when(optInService.getActivePromotions(null, PROGRAM_REF_ID, null, null, null, 0, 25)).thenReturn(pagedResponseActivePromotionValueBean);
         MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
         httpServletRequest.setRequestURI(PROMOTIONS);
 
-        Promotions response = controller.getPromotions(null, PROGRAM_REF_ID, null, null, 0, 25);
+        Promotions response = controller.getPromotions(null, PROGRAM_REF_ID, null, null, null, 0, 25);
         Assert.assertNotNull(response);
         Assert.assertNotNull(response.getItems().get(0));
     }
 
     @Test(expected = InvalidRequest.class)
     public void testGetPromotionsByProgramReferenceIdNFailure() throws Exception {
-        doThrow(ApiException.class).when(optInService).getActivePromotions(null, PROGRAM_REF_ID, null, null, 0, 25);
+        doThrow(ApiException.class).when(optInService).getActivePromotions(null, PROGRAM_REF_ID, null, null, null, 0, 25);
         MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
         httpServletRequest.setRequestURI(PROMOTIONS);
 
-        controller.getPromotions(null, PROGRAM_REF_ID, null, null, 0, 25);
+        controller.getPromotions(null, PROGRAM_REF_ID, null, null, null, 0, 25);
     }
 
     @Test
@@ -162,3 +162,4 @@ public class OptInControllerTest {
         return optInCreateValueBean;
     }
 }
+

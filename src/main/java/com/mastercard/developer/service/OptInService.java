@@ -5,6 +5,7 @@ import org.openapitools.client.ApiClient;
 import org.openapitools.client.ApiException;
 import org.openapitools.client.api.PromotionManagementApi;
 import org.openapitools.client.model.OptIn;
+import org.openapitools.client.model.PromotionDetail;
 import org.openapitools.client.model.Promotions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,12 @@ public class OptInService {
         promotionManagementApi.promotionOptInUsingPOST(optInCreateValueBeanList);
     }
 
-    public Promotions getActivePromotions(String businessPartnerReferenceId, String programReferenceId, String accountId, String promotionState, Integer offset, Integer limit) throws ApiException {
-        return promotionManagementApi.getPromotionsUsingGET(businessPartnerReferenceId, programReferenceId, accountId, promotionState, offset, limit);
+    public Promotions getActivePromotions(String businessPartnerReferenceId, String programReferenceId, String promotionId, String accountId, String promotionState, Integer offset, Integer limit) throws ApiException {
+        return promotionManagementApi.getPromotionsUsingGET(businessPartnerReferenceId, programReferenceId, promotionId, accountId, promotionState, offset, limit);
+    }
+
+    public PromotionDetail getPromotionDetail(String promotionId) throws ApiException {
+        return promotionManagementApi.getPromotionDetailsUsingGET(promotionId);
     }
 }
+

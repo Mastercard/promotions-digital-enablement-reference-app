@@ -51,6 +51,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/RewardsCompanyId'
         - $ref: '#/components/parameters/ProgramId'
+        - $ref: '#/components/parameters/PromotionIdQueryParam'
         - $ref: '#/components/parameters/AccountId'
         - $ref: '#/components/parameters/PromotionState'
         - $ref: '#/components/parameters/Offset'
@@ -58,6 +59,26 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/ResponseOKActivePromotion'
+        '400':
+          $ref: '#/components/responses/ResponseBadRequest'
+        '401':
+          $ref: '#/components/responses/ResponseUnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ResponseForbidden'
+        '404':
+          $ref: '#/components/responses/ResponseNotFound'
+  /promotions/{promotion_id}/details:
+    get:
+      tags:
+        - Promotion Management
+      summary: getPromotionDetails
+      description: Retrieve Promotion Details
+      operationId: getPromotionDetailsUsingGET
+      parameters:
+        - $ref: '#/components/parameters/PromotionId'
+      responses:
+        '200':
+          $ref: '#/components/responses/ResponseOKPromotionDetail'
         '400':
           $ref: '#/components/responses/ResponseBadRequest'
         '401':
@@ -171,6 +192,21 @@ components:
       example: "aae5ce99-58d1-47f4-8b6a-43b427be9d74"
       schema:
         type: string
+    PromotionIdQueryParam:
+      name: promotion_id
+      in: query
+      description: Promotion Identifier
+      example: "de0e1456-e678-4270-b027-fc9950b8aba5"
+      schema:
+        type: string
+    PromotionId:
+      name: promotion_id
+      in: path
+      description: Promotion Identifier
+      example: "de0e1456-e678-4270-b027-fc9950b8aba5"
+      required: true
+      schema:
+        type: string
     AccountId:
       name: account_id
       in: query
@@ -267,6 +303,12 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/Promotions"
+    ResponseOKPromotionDetail:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/PromotionDetail"
     ResponseActivated:
       description: Successfully updated Opt-In choice
   schemas:
@@ -304,11 +346,6 @@ components:
           type: string
           description: The unique account identifier defined and provided by the client.
           example: '5330333671236516'
-        companyId:
-          maxLength: 11
-          type: string
-          description: Mastercard assigned unique identifier for a client.
-          example: '611532'
         enrollmentDate:
           maxLength: 10
           type: string
@@ -321,11 +358,6 @@ components:
           type: string
           description: Unique Account identifier assigned by Mastercard and provided to client in the account enrollment response.
           example: d8753780-62d1-4775-9549-8ed92c48c290
-        memberICA:
-          type: integer
-          description: Interbank Card Association number assigned by Mastercard to the client.
-          format: int64
-          example: 898923
         openDate:
           maxLength: 10
           minLength: 0
@@ -338,11 +370,6 @@ components:
           type: string
           description: The account's associated reward product identifier as defined by the client and configured during the implementation of the program.
           example: 7274VCC
-        programEnrollmentCode:
-          maxLength: 18
-          type: string
-          description: 'The unique identifier for a client''s reward program, defined by the client and configured during implementation.'
-          example: ZXSzM
         status:
           maxLength: 20
           type: string
@@ -359,6 +386,45 @@ components:
           type: string
           description: Unique Household identifier assigned by Mastercard.
           example: 87ht3780-62d1-4775-9549-8ed92c48c290
+        program:
+          $ref: '#/components/schemas/Program'
+        company:
+          $ref: '#/components/schemas/Company'
+    Program:
+      title: Program
+      type: object
+      properties:
+        enrollmentCode:
+          maxLength: 18
+          type: string
+          description: 'The unique identifier for a client''s reward program, defined by the client and configured during implementation.'
+          example: ZXSzM
+        id:
+          maxLength: 50
+          minLength: 20
+          type: string
+          description: Unique Program identifier assigned by Mastercard and provided to client in the account enrollment response.
+          example: c8753780-62d1-4775-9549-8ed92c48c278
+    Company:
+      title: Company
+      type: object
+      properties:
+        memberICA:
+          type: integer
+          description: Interbank Card Association number assigned by Mastercard to the client.
+          format: int64
+          example: 898923
+        companyId:
+          maxLength: 11
+          type: string
+          description: Mastercard assigned unique identifier for a client.
+          example: '611532'
+        id:
+          maxLength: 50
+          minLength: 20
+          type: string
+          description: Unique Reward Company identifier assigned by Mastercard and provided to client in the account enrollment response.
+          example: 98753780-62d1-4775-9549-8ed92c48c245
     Cap:
       type: object
       properties:
@@ -574,9 +640,15 @@ components:
         activationRequired:
           type: boolean
           example: true
-          description: Specifies if a promotion is enabled for Opt-In/Opt-Out.
-            true = Opt-in/out enabled
+          description: Specifies if a promotion is enabled for Opt-In/Opt-Out.<br/>
+            true = Opt-in/out enabled<br/>
             false = Opt-in/out not enabled, account is opted into promotion by default if targeted.
+        targetingEnabled:
+          type: boolean
+          example: false
+          description: Specifies if a promotion is enabled for targetting.<br/>
+            true = Targetting enabled, account has to be targetted for transactions to qualify <br/>
+            false = Targetting not enabled, all accounts are eligible into promotion by default.
         beginDateTime:
           type: string
           description: Promotion start date.
@@ -622,8 +694,8 @@ components:
           example: "Gd3pnH3bQh"
         activation:
           type: boolean
-          description: Specifies if the consumer is opting in or opting out of a promotion
-            true = Opt-In
+          description: Specifies if the consumer is opting in or opting out of a promotion.<br/>
+            true = Opt-In<br/>
             false = Opt-Out
           example: true
         promotionId:
@@ -658,6 +730,151 @@ components:
           description: List of Promotions
           items:
             $ref: "#/components/schemas/Promotion"
+    PromotionDetail:
+      type: object
+      properties:
+        caps:
+          type: array
+          description: List of Caps applied to the Promotion
+          items:
+            $ref: '#/components/schemas/PromotionCap'
+        promotionId:
+          type: string
+          description: Unique promotion identifier
+          example: "de0e1456-e678-4270-b027-fc9950b8aba5"
+        rewardConfig:
+          type: object
+          description: Rewards information
+          properties:
+            promotionId:
+              type: string
+              description: Unique promotion identifier
+              example: "de0e1456-e678-4270-b027-fc9950b8aba5"
+            referenceId:
+              type: string
+              description: Unique reward config identifier
+              example: "de89f43c-8fbe-45ae-b5d2-ab965ecaa956"
+            rebateText:
+              type: string
+              description: Specifies the text that shows up on cardholders billing statement for a purchase (Only applicable for a rebate)
+              example: "REBATE"
+            negativeRebateText:
+              type: string
+              description: Specifies the text that shows up on cardholders billing statement for a return (Only applicable for a rebate)
+              example: "RETURN"
+            rewardType:
+              type: string
+              description: Specifies the type of reward.<br/>
+                CASHBACK - Cashback<br/>
+                POINTS - Points
+              example: "CASHBACK"
+            pointType:
+              type: string
+              description: Specifies how the points are awarded (Only applicable is rewardType is POINTS).<br/>
+                BASE_POINTS - Base points<br/>
+                BONUS_POINTS - Bonus points
+              example: "BASE_POINTS"
+            awardType:
+              type: string
+              description: Specifies if the award is going to be a fixed amount or if its going to be based on transaction amount.<br/>
+                FIXED - Fixed amount<br/>
+                PERCENTAGE - Percentage of transaction amount
+              example: "FIXED"
+            applyAwardTo:
+              type: string
+              description: Specifies if the award is applied to trasacting account or the household primary account.<br/>
+                TRANSACTING_ACCOUNT - Transacting account<br/>
+                PRIMARY_ACCOUNT - Household primary account
+              example: "TRANSACTING_ACCOUNT"
+            scoreBasedOn:
+              type: string
+              description: Specifies how the transactions are scored.<br/>
+                DE4_TRANSACTION_AMOUNT - Transaction amount<br/>
+                DE5_SETTLEMENT_AMOUNT - Settlement amount<br/>
+                DE6_CARDHOLDER_BILLING_AMOUNT - Cardholder billing amount
+              example: "DE4_TRANSACTION_AMOUNT"
+            rewardRate:
+              type: string
+              description: If the awardType is FIXED, this field specifies the amount that is awarded. And if the awardType is not fixed then it specifies the percentage of transaction amount
+              example: "10"
+        thresholds:
+          type: array
+          description: List of Thresholds applied to the Promotion
+          items:
+            $ref: '#/components/schemas/PromotionThreshold'
+    PromotionThreshold:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique threshold identifier
+          example: "fbbbba72-141d-41f5-9ace-69129f971010"
+        type:
+          type: string
+          description: Specifies if the threshold is based on transaction count or transaction spend amount.<br/>
+            COUNT - Transaction count<br/>
+            SPEND - Transaction spend amount
+          example: "AMOUNT"
+        fieldType:
+          type: string
+          description: If the type selected is SPEND, then this field specifies which amount value is used to accumulate toward the threshold.<br/>
+            DE04 - Transaction Amount<br/>
+            DE06 - Cardholder Billing Amount
+          example: "DE04"
+        value:
+          type: number
+          format: double
+          description: The spend amount or the count that must be reached before the award is given
+          example: 1000.00
+        level:
+          type: string
+          description: Specifies the level at which the threshold is applied.<br/>
+            A - Account level (All accounts have their own threshold)<br/>
+            H - Household level (Each account contributes toward reaching the threshold)
+          example: "A"
+        periodInDaysAfterDate:
+          type: integer
+          format: int32
+          description: Number of days the cardholder has to meet the threshold before its expired
+          example: 10
+        dateFieldType:
+          type: string
+          description: Specifies the date type used for starting the count on how long the account has for meeting the threshold.<br/>
+            ENROLLMENT_DATE - The date on which the cardholder has enrolled to the program<br/>
+            TARGET_BEGIN_DATE - The date on which the account is set to be targetted into a promotion<br/>
+            ACTIVE_DATE - The date on which enrollment record was added to the system<br/>
+            OPTIN_DATE - The date on which the account has opted into the promotion<br/>
+          example: "ENROLLMENT_DATE"
+    PromotionCap:
+      type: object
+      properties:
+        amount:
+          type: number
+          format: double
+          description: Specifies the cap amount
+          example: 1000.00
+        enabled:
+          type: boolean
+          description: Indicates if capping is enabled for the promotion
+          example: TRUE
+        id:
+          type: string
+          description: Unique cap identifier
+          example: "59266873-45c9-418f-a9dc-1b0f00d0bc16"
+        level:
+          type: string
+          description: Specifies the level at which cap is applied.<br/>
+            A - Account level<br/>
+            P - Household level<br/>
+            T - Transaction level
+          example: "A"
+        period:
+          type: string
+          description: Specifies the period for which cap is applied.<br/>
+            M - Monthly<br/>
+            Y - Yearly<br/>
+            L - Lifetime
+          example: "M"
     PagedResponseOfAccountSearch:
       type: object
       properties:

@@ -26,13 +26,13 @@ public class OptInValidator {
         }
     }
 
-    public void validateGetPromotions(String rewardsCompanyId, String programReferenceId, String userId) {
+    public void validateGetPromotions(String rewardsCompanyId, String programReferenceId, String promotionId,  String userId) {
         List<String> messages = new ArrayList<>();
-        if (!StringUtils.hasText(rewardsCompanyId) && !StringUtils.hasText(programReferenceId)) {
+        if (!StringUtils.hasText(rewardsCompanyId) && !StringUtils.hasText(programReferenceId) && !StringUtils.hasText(promotionId)) {
             if (!StringUtils.hasText(userId)) {
-                messages.add("Either the rewardsCompanyId or programId or accountId must be provided");
+                messages.add("Either the rewardsCompanyId or programId or promotionId or accountId must be provided");
             } else {
-                messages.add("Either the rewardsCompanyId or programId must be provided");
+                messages.add("Either the rewardsCompanyId, programId or promotionId must be provided");
             }
         }
         if (!messages.isEmpty()) {
@@ -42,3 +42,4 @@ public class OptInValidator {
 
 
 }
+
