@@ -208,7 +208,7 @@ Output:
 Example using the configuration [above](#configuring-jwe-instance):
 ```java
 String encryptedPayload = "{" +
-    "  \"encryptedPayload\": \"eyJhbGciOiJSU0EtT0F(...)BiYzQyTIyNTQ1ODgzNSJ9.VkO7N6gAptqoD7IQaK(...)ptYySP_TuvERby89DY1EezAm3A.qj6ISyzq1ASDJKD0.ENF7bUfBkoWAEYvk(...)o9JGMctx-PSdeVqwCQAVRNj0pYs1WjOp4UDbE4eEZIF6YA.Wc7ARH7R6sikpKzxET3MYA\" +
+    "  \"encryptedPayload\": \"eyHhbGciOiJSU0EtT0F(...)BiYzQyTIyNTQ1ODgzNSJ9.VkO7N6gAptqoD7IQaK(...)ptYySP_TuvERby89DY1EezAm3A.qj6ISyzq1ASDJKD0.ENF7bUfBkoWAEYvk(...)o9JGMctx-PSdeVqwCQAVRNj0pYs1WjOp4UDbE4eEZIF6YA.Wc7ARH7R6sikpKzxET3MYA\" +
     "}";
 ```
 
