@@ -313,8 +313,6 @@ components:
       description: Successfully updated Opt-In choice
   schemas:
     AccountSearch:
-      required:
-        - accountNumber
       type: object
       properties:
         companyId:
@@ -332,54 +330,36 @@ components:
           type: string
           description: The unique account identifier defined and provided by the client.
           example: '5330333671236516'
-        programEnrollmentCode:
-          maxLength: 18
-          minLength: 0
+        accountNumberType:
+          maxLength: 5
           type: string
-          description: 'The unique identifier for a client''s reward program, defined by the client and configured during implementation.'
-          example: ZXSzM
+          description: The filed to identify accountNumber type BAN/RANAC/AREF.
+          example: 'BAN'
+        userNumber:
+          maxLength: 19
+          type: string
+          description: The unique user identifier defined and provided by the client.
+          example: '5330333671236516'
+        userNumberType:
+          maxLength: 5
+          type: string
+          description: The filed to identify userNumber type BCN/RANCU/AREF.
+          example: 'BCN'
     AccountSearchItem:
       type: object
       properties:
-        accountNumber:
-          maxLength: 19
-          type: string
-          description: The unique account identifier defined and provided by the client.
-          example: '5330333671236516'
-        enrollmentDate:
-          maxLength: 10
-          type: string
-          format: date
-          description: 'The date for when the account becomes eligible for rewards program. If undefined, enrollment date is default to the date when Mastercard processes the enrollment.'
-          example: '2018-03-11'
-        id:
+        userId:
           maxLength: 50
-          minLength: 20
-          type: string
-          description: Unique Account identifier assigned by Mastercard and provided to client in the account enrollment response.
-          example: d8753780-62d1-4775-9549-8ed92c48c290
-        openDate:
-          maxLength: 10
           minLength: 0
           type: string
-          format: date
-          description: The date of account opening as defined by the client.
-          example: '2017-04-21'
-        productCode:
-          maxLength: 20
+          description: Unique User identifier assigned by Mastercard.
+          example: 87ht3780-62d1-4775-9549-8ed92c48c290
+        accountId:
+          maxLength: 50
+          minLength: 0
           type: string
-          description: The account's associated reward product identifier as defined by the client and configured during the implementation of the program.
-          example: 7274VCC
-        status:
-          maxLength: 20
-          type: string
-          description: Status for the user's account.
-          example: NEW
-        userNumber:
-          maxLength: 30
-          type: string
-          description: The unique identifier of a user assigned by the client.
-          example: C02333333325
+          description: Unique Account identifier assigned by Mastercard.
+          example: 87ht3780-62d1-4775-9549-8ed92c48c290
         householdId:
           maxLength: 50
           minLength: 0
@@ -390,6 +370,8 @@ components:
           $ref: '#/components/schemas/Program'
         company:
           $ref: '#/components/schemas/Company'
+        bankProduct:
+          $ref: '#/components/schemas/BankProduct'
     Program:
       title: Program
       type: object
@@ -425,6 +407,22 @@ components:
           type: string
           description: Unique Reward Company identifier assigned by Mastercard and provided to client in the account enrollment response.
           example: 98753780-62d1-4775-9549-8ed92c48c245
+    BankProduct:
+      title: BankProduct
+      type: object
+      properties:
+        code:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: Bank Product Code
+          example: 7274VCC
+        id:
+          maxLength: 50
+          minLength: 20
+          type: string
+          description: Bank Product Id
+          example: ff34f660-5793-4f33-a3bc-ffc7bee39238
     Cap:
       type: object
       properties:
@@ -465,6 +463,11 @@ components:
           maxLength: 15
           description: Current value of earned rewards for this promotion. Could be one of (points, miles, amount, vouchers).
           format: int64
+        capCurrencyCode:
+          type: string
+          example: USD
+          maxLength: 5
+          description: ISO currency code for Caps configured for the given Promotion. Ex. US Dollar ISO code is USD.
     ErrorItem:
       type: object
       properties:
@@ -569,6 +572,11 @@ components:
           example: 5
           maxLength: 15
           description: Total rewards (points, miles, rebate amount) received for this promotion.
+        rewardsCurrencyCode:
+          type: string
+          example: USD
+          maxLength: 5
+          description: ISO currency code for the promotion award currency selected by the client during the Promotion Setup. Ex. US Dollar ISO code is USD.
     Rule:
       type: object
       properties:
@@ -614,6 +622,11 @@ components:
           example: "202108"
           maxLength: 15
           description: Period value corresponding to rule Period - "YYYYMM” when rulePeriod is “MONTH”.
+        ruleCurrencyCode:
+          type: string
+          example: USD
+          maxLength: 5
+          description: ISO currency code for threshold Rules configured for the given Promotion. Ex. US Dollar ISO code is USD.
     Account:
       type: object
       properties:

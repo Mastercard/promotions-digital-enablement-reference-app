@@ -180,7 +180,6 @@ Use the `JweConfigBuilder` to create `JweConfig` instances. Example:
 JweConfig jweConfig = JweConfigBuilder.aJweEncryptionConfig()
         .withEncryptionCertificate(certificate)
         .withEncryptionPath("$", "$")
-        .withDecryptionPath("$.encryptedPayload", "$")
         .withEncryptedValueFieldName("encryptedPayload")
         .withDecryptionKey(decryptionKey)
         .build();
