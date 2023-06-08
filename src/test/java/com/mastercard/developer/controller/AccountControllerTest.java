@@ -56,7 +56,6 @@ public class AccountControllerTest {
     public void testAccountsSearchesWithProgramEnrollmentAndMemberIcaIsNull() throws ApiException {
         AccountSearch searchRequest = getSearchRequest();
         searchRequest.setMemberICA(null);
-        searchRequest.setProgramEnrollmentCode(null);
         PagedResponseOfAccountSearch searchOutDto = getPagedResponseOfAccountSearch();
         when(accountService.searchAccount(0, 25, searchRequest)).thenReturn(searchOutDto);
 
@@ -99,7 +98,6 @@ public class AccountControllerTest {
         searchRequest.setCompanyId(COMPANY_ID);
         searchRequest.setAccountNumber(ACCOUNT_NUMBER);
         searchRequest.setMemberICA(ICA);
-        searchRequest.setProgramEnrollmentCode(PROGRAM_ENROLLMENT_CODE);
         return searchRequest;
     }
 

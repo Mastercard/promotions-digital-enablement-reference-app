@@ -1,8 +1,8 @@
 package com.mastercard.developer.config;
 
+import com.mastercard.developer.crypto.interceptor.OkHttpJweEncryptionInterceptor;
 import com.mastercard.developer.encryption.JweConfig;
 import com.mastercard.developer.encryption.JweConfigBuilder;
-import com.mastercard.developer.interceptors.OkHttpJweInterceptor;
 import com.mastercard.developer.interceptors.OkHttpOAuth1Interceptor;
 import com.mastercard.developer.utils.AuthenticationUtils;
 import com.mastercard.developer.utils.EncryptionUtils;
@@ -57,14 +57,13 @@ public class ApiClientConfiguration {
         JweConfig jweConfig = JweConfigBuilder.aJweEncryptionConfig()
                 .withEncryptionCertificate(certificate)
                 .withEncryptionPath("$", "$")
-                .withDecryptionPath("$.encryptedPayload", "$")
                 .withEncryptedValueFieldName("encryptedPayload")
                 .withDecryptionKey(decryptionKey)
                 .build();
 
         return cryptoApiClient.setHttpClient(cryptoApiClient.getHttpClient()
                 .newBuilder()
-                .addInterceptor(new OkHttpJweInterceptor(jweConfig))
+                .addInterceptor(new OkHttpJweEncryptionInterceptor(jweConfig))
                 .addInterceptor(okHttpOAuth1Interceptor)
                 .build()
         );

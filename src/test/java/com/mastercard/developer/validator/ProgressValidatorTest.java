@@ -24,15 +24,15 @@ public class ProgressValidatorTest {
     @Test
     public void testValidateGetPromotionsByAccountIdNull() throws Exception {
         expectedEx.expect(InvalidRequest.class);
-        expectedEx.expectMessage("Either household_id or account_id is required");
+        expectedEx.expectMessage("household_id or account_id is missing");
         validator.validateGetProgress(null, null);
     }
-
+    
     @Test
     public void testValidateGetForNotEmptyHouseholdIdAndAccountId() throws Exception {
         validator.validateGetProgress("f35e51fe-bc77-432f-b412-3800e3c04e78", "935e51fe-bc77-432f-b412-3800e3c04e90");
     }
-
+    
     @Test
     public void testValidateGetForNotEmptyHouseholdIdEmptyAccountId() throws Exception {
         validator.validateGetProgress("a35e51fe-bc77-432f-b412-3800e3c08942", "");
@@ -41,5 +41,5 @@ public class ProgressValidatorTest {
     public void testValidateGetForEmptyHouseholdIdNotEmptyAccountId() throws Exception {
         validator.validateGetProgress("", "bc5e51fe-bc77-432f-b412-3800e3c04ec2");
     }
-
+    
 }
