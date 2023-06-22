@@ -354,11 +354,11 @@ components:
           type: string
           description: Unique User identifier assigned by Mastercard.
           example: 87ht3780-62d1-4775-9549-8ed92c48c290
-        accountId:
+        Id:
           maxLength: 50
           minLength: 0
           type: string
-          description: Unique Account identifier assigned by Mastercard.
+          description: Unique reward account identifier assigned by Mastercard.
           example: 87ht3780-62d1-4775-9549-8ed92c48c290
         householdId:
           maxLength: 50
