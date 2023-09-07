@@ -20,6 +20,8 @@ tags:
     description: Promotion Management API
   - name: Promotion Progress
     description: Promotion Progress Controller
+  - name: Transactions
+    description: Transactions Controller
 paths:
   /accounts/searches:
     post:
@@ -130,9 +132,36 @@ paths:
           $ref: '#/components/responses/ResponseForbidden'
         '404':
           $ref: '#/components/responses/ResponseNotFound'
+  /transactions:
+    get:
+      tags:
+        - Transaction
+      summary: Get Transactions
+      description: Fetches data from transaction table
+      operationId: getTransactionsUsingGET
+      parameters:
+        - $ref: '#/components/parameters/AccountIdParam'
+        - $ref: '#/components/parameters/FromDateParam'
+        - $ref: '#/components/parameters/ToDateParam'
+        - $ref: '#/components/parameters/PromotionIdParam'
+        - $ref: '#/components/parameters/OffsetParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          $ref: '#/components/responses/ResponseOkTransaction'
+        '400':
+          $ref: '#/components/responses/ResponseBadRequest'
+        '401':
+          $ref: '#/components/responses/ResponseUnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ResponseForbidden'
+        '404':
+          $ref: '#/components/responses/ResponseNotFound'
+
 components:
   requestBodies:
     AccountSearchRequest:
+      required: true
       content:
         application/json:
           schema:
@@ -147,6 +176,38 @@ components:
             items:
               $ref: "#/components/schemas/OptIn"
   parameters:
+    FromDateParam:
+      name: from_date
+      in: query
+      description: from_date
+      schema:
+        type: string
+        example: "2021-01-21T16:26:56"
+    ToDateParam:
+      name: to_date
+      in: query
+      description: to_date
+      schema:
+        type: string
+        example: "2021-01-22T16:26:56"
+    OffsetParam:
+      name: offset
+      in: query
+      description: offset
+      schema:
+        type: integer
+        format: int32
+        example: 1
+        default:
+    LimitParam:
+      name: limit
+      in: query
+      description: limit
+      schema:
+        type: integer
+        format: int32
+        example: 20
+        default: 25
     HouseholdIdParam:
       name: household_id
       in: query
@@ -211,7 +272,7 @@ components:
       name: account_id
       in: query
       description: Account Identifier
-      example: "Gd3pnH3bQh"
+      example: "f35e51fe-bc77-432f-b412-3800e3c04e5c"
       schema:
         type: string
     PromotionState:
@@ -264,6 +325,12 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/PromotionProgressList'
+    ResponseOkTransaction:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PagedResponseGetTransactionDto'
     ResponseBadRequest:
       description: Bad Request
       content:
@@ -291,6 +358,9 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorsList'
+          examples:
+            FORBIDDEN:
+              $ref: '#/components/examples/Forbidden'
     ResponseNotFound:
       description: Not Found
       content:
@@ -325,41 +395,44 @@ components:
           description: Interbank Card Association number assigned by Mastercard to the client.
           format: int64
           example: 611532
+        accountNumberType:
+          maxLength: 5
+          type: string
+          description: The Field to identify type of value provided in accountNumber.<br/> BAN <br/> RANAC <br/> AREF
+            <br/> If accountNumberType is not provided then default value will be BAN
+          example: 'BAN'
         accountNumber:
           maxLength: 19
           type: string
           description: The unique account identifier defined and provided by the client.
           example: '5330333671236516'
-        accountNumberType:
-          maxLength: 5
-          type: string
-          description: The filed to identify accountNumber type BAN/RANAC/AREF.
-          example: 'BAN'
-        userNumber:
-          maxLength: 19
-          type: string
-          description: The unique user identifier defined and provided by the client.
-          example: '5330333671236516'
         userNumberType:
           maxLength: 5
           type: string
-          description: The filed to identify userNumber type BCN/RANCU/AREF.
+          description: The Field to identify type of value provided in userNumber. <br/> BCN <br/> RANCU <br/> AREF
+            <br/> If userNumberType is not provided then default value will be BCN
           example: 'BCN'
+        userNumber:
+          maxLength: 30
+          type: string
+          description: The unique identifier of a user assigned by the client.
+          example: C02333333325
     AccountSearchItem:
       type: object
       properties:
-        userId:
-          maxLength: 50
-          minLength: 0
-          type: string
-          description: Unique User identifier assigned by Mastercard.
-          example: 87ht3780-62d1-4775-9549-8ed92c48c290
         id:
           maxLength: 50
           minLength: 0
           type: string
-          description: Unique reward account identifier assigned by Mastercard.
-          example: 87ht3780-62d1-4775-9549-8ed92c48c290
+          description: The unique reward account identifier assigned by the Mastercard.
+          example: '308a1596-f42e-4569-bd12-c8f0827eed48'
+        userId:
+          maxLength: 50
+          minLength: 0
+          type: string
+          format: string
+          description: The unique User identifier assigned by the Mastercard.
+          example: 'aee00b64-f320-4579-a87f-782a3c0b9722'
         householdId:
           maxLength: 50
           minLength: 0
@@ -377,36 +450,17 @@ components:
       type: object
       properties:
         enrollmentCode:
-          maxLength: 18
+          maxLength: 50
+          minLength: 0
           type: string
-          description: 'The unique identifier for a client''s reward program, defined by the client and configured during implementation.'
+          description: Program Enrollment Code
           example: ZXSzM
         id:
           maxLength: 50
           minLength: 20
           type: string
-          description: Unique Program identifier assigned by Mastercard and provided to client in the account enrollment response.
-          example: c8753780-62d1-4775-9549-8ed92c48c278
-    Company:
-      title: Company
-      type: object
-      properties:
-        memberICA:
-          type: integer
-          description: Interbank Card Association number assigned by Mastercard to the client.
-          format: int64
-          example: 898923
-        companyId:
-          maxLength: 11
-          type: string
-          description: Mastercard assigned unique identifier for a client.
-          example: '611532'
-        id:
-          maxLength: 50
-          minLength: 20
-          type: string
-          description: Unique Reward Company identifier assigned by Mastercard and provided to client in the account enrollment response.
-          example: 98753780-62d1-4775-9549-8ed92c48c245
+          description: Program Id
+          example: 4f74f660-5793-4f33-a3bc-ffc7bee39238
     BankProduct:
       title: BankProduct
       type: object
@@ -423,6 +477,27 @@ components:
           type: string
           description: Bank Product Id
           example: ff34f660-5793-4f33-a3bc-ffc7bee39238
+    Company:
+      title: Company
+      type: object
+      properties:
+        memberICA:
+          type: integer
+          description: Interbank Card Association number assigned by Mastercard to the client.
+          format: int64
+          example: 898923
+        companyId:
+          maxLength: 11
+          minLength: 0
+          type: string
+          description: Mastercard assigned unique identifier for a client.
+          example: '611532'
+        id:
+          maxLength: 50
+          minLength: 20
+          type: string
+          description: Reward Company Id
+          example: 5f74g660-5793-4f33-a3bc-ffc7bee39234
     Cap:
       type: object
       properties:
@@ -446,6 +521,11 @@ components:
           example: M
           maxLength: 10
           description: The promotion period for which the cap will reset. For example, M (Month), indicates that the cap resets monthly. <br/> Eg. "<null | M (Month) | Y (Year) | L (Lifetime)>"
+        capType:
+          type: string
+          example: group-cap
+          maxLength: 15
+          description: Type of cap = "promotion-cap" or "group-cap".
         capPeriodValue:
           type: string
           example: "202108"
@@ -508,6 +588,361 @@ components:
       properties:
         Errors:
           $ref: '#/components/schemas/Errors'
+    PagedResponseGetTransactionDto:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items that are in this offset batch
+          format: int32
+          example: 1
+        offset:
+          type: integer
+          description: The number of items to offset the start of the list from
+          format: int32
+          example: 0
+        limit:
+          type: integer
+          description: The number of items in the list to be limited to
+          format: int32
+          example: 25
+        total:
+          type: integer
+          description: The total number of items that are in the entire collection
+          format: int64
+          example: 1
+        items:
+          type: array
+          description: Items in transaction response
+          items:
+            $ref: '#/components/schemas/GetTransactionDto'
+    CurrencyDto:
+      type: object
+      properties:
+        issuerAmountSettlementCurrency:
+          type: integer
+          description: CardHolder billing currency
+          format: int64
+          example: 5000
+        issuerCurrencyCode:
+          type: string
+          description: CardHolder billing currency code
+          example: USD
+        issuerCurrencyExponent:
+          type: integer
+          description: CardHolder billing currency exponent
+          format: int32
+          example: 2
+        settlementCurrencyCode:
+          type: string
+          description: Issuer settlement currency code
+          example: USD
+        settlementCurrencyExponent:
+          type: integer
+          description: Issuer settlement currency exponent
+          format: int32
+          example: 2
+        transactionAmountSettlementCurrency:
+          type: integer
+          description: Issuer settlement currency
+          format: int64
+          example: 5000
+        transactionAmountTransactionCurrency:
+          type: integer
+          description: The entire amount of a particular transaction
+          format: int64
+          example: 5000
+        transactionCurrencyCode:
+          type: string
+          description: Currency code for the transaction amount
+          example: USD
+        transactionCurrencyExponent:
+          type: integer
+          description: Currency exponent for transaction amount
+          format: int32
+          example: 2
+    MerchantDto:
+      type: object
+      properties:
+        acquirerIca:
+          type: string
+          description: Merchant acquirer Ica for the transaction
+          example: 12345
+        aggregateMerchantId:
+          type: string
+          description: A unique identifier for merchant chain
+          example: "12948"
+        city:
+          type: string
+          description: Merchant city of the transaction
+          example: Miloha
+        country:
+          type: string
+          description: Merchant country code of the transaction
+          example: USA
+        countryCode:
+          type: string
+          description: Merchant country code for the transaction
+          example: "IND"
+        crossBorder:
+          type: boolean
+          description: Is transaction happened outside of country
+          example: false
+        dbaName:
+          type: string
+          description: Merchant Dba name of the transaction
+          example: AAA
+        locationId:
+          type: string
+          description: Identifier for the merchant location
+          example: "473654710"
+        mccClassificationCode:
+          type: string
+          description: Merchant mcc classification code for the transaction
+          example: 4K
+        mccGroup:
+          type: string
+          description: 'MCC Group '
+          example: "4"
+        merchantCategoryCode:
+          type: string
+          description: Code used by MasterCard to identify the type of a merchant
+          example: "5311"
+        merchantId:
+          type: string
+          description: Unique Identifier for each merchant
+          example: "1234"
+        name:
+          type: string
+          description: Merchant name of the transaction
+          example: AAA
+        postalCode:
+          type: string
+          description: Merchant postal code of the transaction
+          example: "63413"
+        region:
+          type: string
+          description: Merchant region of the transaction
+          example: "12"
+        shortDbaName:
+          type: string
+          description: Merchant short Dba name of the transaction
+          example: AAA
+        state:
+          type: string
+          description: Merchant state of the transaction
+          example: CA
+        storeDivision:
+          type: string
+          description: Store Division
+          example: "30018"
+        storeNumber:
+          type: string
+          description: Store Number
+          example: "20001"
+        streetAddress:
+          type: string
+          description: Merchant street address of the transaction
+          example: "937Aracelis"
+    TransactionScoreDto:
+      type: object
+      properties:
+        pointType:
+          type: string
+          description: Point Type
+          example: Base
+        promotionId:
+          type: string
+          description: Promotion unique reference Id
+          example: "e6908dc9-e5a8-464b-a5b3-464053cab171"
+        promotionName:
+          type: string
+          description: Promotion name
+          example: Rewards Promo
+        rawScore:
+          type: string
+          description: PreCaped Score
+          example: "1"
+        reason:
+          type: string
+          description: Reason code if there is any change in preCaped and final score
+          example: cap
+        rewardType:
+          type: string
+          description: Reward Type
+          example: "Rebates"
+        score:
+          type: string
+          description: Final Score after capping
+          example: "12"
+        postingAccountReferenceId:
+          type: string
+          description: postingAccountReferenceId
+          example: "5d526e05-9295-4483-a8b2-95c7d11e0476"
+    GetTransactionDto:
+      type: object
+      properties:
+        accountNumber:
+          type: string
+          description: The unique account identifier defined and provided by the client
+          example: "**8345"
+        accountInfo:
+          type: boolean
+          description: Boolean value for membership API account Info
+          example: "true or false"
+        acquirerCountryCode:
+          type: string
+          description: Acquirer Country
+          example: RUS
+        acquirerId:
+          type: string
+          description: Acquiring Institution ID Code identifies a transaction acquirer
+          example: "5023"
+        acquirerReferenceNumber:
+          type: string
+          description: Acquirer Reference Number
+          example: "3080528744"
+        authCode:
+          type: string
+          description: auth Code
+          example: "IN2OXi"
+        cardDataInputModeCode:
+          type: string
+          description: POS Entry Mode,Example 0,1,2,C,M,R,7,6,B,S,T,B,A,C,F
+          example: "1"
+        cardHolderPresentCode:
+          type: string
+          description: Code represents the cardholder presence,Example 0,1
+          example: "0"
+        cardPresentCode:
+          type: string
+          description: code represents the physical card Presence,Example 0,1
+          example: "1"
+        clientTransactionCode:
+          type: string
+          description: Client Transaction Code
+          example: DVWPO
+        companyIca:
+          type: string
+          description: 'Company Ica '
+          example: "611532"
+        companyId:
+          type: string
+          description: Company Id
+          example: 4K
+        companyPromotionField:
+          type: string
+          description: Company Promotion Field
+          example: "72882990"
+        currency:
+          $ref: '#/components/schemas/CurrencyDto'
+        debitSwitch:
+          type: string
+          description: Debit Switch
+          example: N
+        exceptionId:
+          type: string
+          description: Exception Id
+          example: "0"
+        interchangeRateDesignator:
+          type: string
+          description: interchange rate designator for the transaction
+          example: 2A
+        issuerCountryCode:
+          type: string
+          description: Issuer Country
+          example: USA
+        issuerId:
+          type: string
+          description: Issuer Id
+          example: "10455"
+        issuerRegion:
+          type: string
+          description: Issuer Region
+          example: "05"
+        itemCode:
+          type: string
+          description: Item Code
+          example: Orbit
+        itemDescription:
+          type: string
+          description: Item Description
+          example: Sony Sports Walkman
+        itemSku:
+          type: string
+          description: Item Sku
+          example: "21043332"
+        merchant:
+          $ref: '#/components/schemas/MerchantDto'
+        offerType:
+          type: string
+          description: Offer Type
+          example: "00101"
+        productCode:
+          type: string
+          description: 'product code of the transaction '
+          example: MCB
+        productLine:
+          type: string
+          description: Product Line
+          example: "30003"
+        rewardPostingDateTime:
+          type: string
+          description: Date when the transaction posted into GRP
+          example: 2020-06-17 20:42:48.00
+        routeNumber:
+          type: string
+          description: Route Number
+          example: "29920202"
+        sellingChannel:
+          type: string
+          description: selling Channel
+          example: "2524635"
+        sequenceNumber:
+          type: string
+          description: 'Sequence number '
+          example: "10000124564"
+        tokenRequestorId:
+          type: string
+          description: The TRID uniquely identifies a token requestor (such as a Wallet
+            Provider) that's leveraging MDES for tokenized transactions
+          example: "50139059239"
+        transactionAmount:
+          type: integer
+          description: Transaction amount
+          format: int64
+          example: 5000
+        transactionAmountFormatted:
+          type: string
+          description: Formatted transaction amount
+          example: $50.00
+        transactionDateTime:
+          type: string
+          description: The date of the transaction
+          example: 2020-01-12T05:00:00+0000
+        transactionId:
+          type: string
+          description: Unique transaction identifier
+          example: e20233ee-9f
+        transactionScores:
+          type: array
+          description: Transaction Scores
+          items:
+            $ref: '#/components/schemas/TransactionScoreDto'
+        transactionSourceCode:
+          type: string
+          description: Transaction source code
+          example: GCMS
+        transactionType:
+          type: string
+          description: Type of the transaction.Example CREDITS,PAYMENT TRANSACTION,
+            Balance Inquiry
+          example: credits
+        walletProgramCode:
+          type: string
+          description: Wallet Identifies provides information about transactions
+            initiated
+          example: "146"
     PromotionProgressList:
       type: object
       properties:
@@ -633,7 +1068,7 @@ components:
         accountId:
           type: string
           description: Unique Account identifier assigned by Mastercard and provided in the Account enrollment response.
-          example: "Gd3pnH3bQh"
+          example: "f35e51fe-bc77-432f-b412-3800e3c04e5c"
         activation:
           type: boolean
           description: Specifies if the account is opted-in or out for this promotion.
@@ -674,6 +1109,34 @@ components:
           type: string
           description: Promotion end date.
           example: "2020-07-05T15:19:31.827Z"
+        scoringBeginDateTime:
+          type: string
+          description: Scoring begin date.
+          example: "2023-02-01T15:15:31.827Z"
+        scoringEndDateTime:
+          type: string
+          description: Scoring end date.
+          example: "2023-02-01T15:15:31.827Z"
+        postingBeginDateTime:
+          type: string
+          description: posting begin date.
+          example: "2023-02-01T15:15:31.827Z"
+        postingEndDateTime:
+          type: string
+          description: posting end date.
+          example: "2023-02-01T15:15:31.827Z"
+        transactionBeginDateTime:
+          type: string
+          description: transaction begin date.
+          example: "2023-02-01T15:15:31.827Z"
+        transactionEndDateTime:
+          type: string
+          description: transaction end date.
+          example: "2023-02-01T15:15:31.827Z"
+        frequency:
+          type: string
+          description: Promotion frequency.
+          example: "RECURRING"
         name:
           type: string
           description: Promotion name.
@@ -704,7 +1167,7 @@ components:
         accountId:
           type: string
           description: Unique Account identifier assigned by Mastercard and provided in the Account enrollment response.
-          example: "Gd3pnH3bQh"
+          example: "f35e51fe-bc77-432f-b412-3800e3c04e5c"
         activation:
           type: boolean
           description: Specifies if the consumer is opting in or opting out of a promotion.<br/>
@@ -771,7 +1234,7 @@ components:
               type: string
               description: Specifies the text that shows up on cardholders billing statement for a purchase (Only applicable for a rebate)
               example: "REBATE"
-            negativeRebateText:
+            rebateTextNegative:
               type: string
               description: Specifies the text that shows up on cardholders billing statement for a return (Only applicable for a rebate)
               example: "RETURN"
@@ -934,5 +1397,14 @@ components:
             - Source: Loyalty-Enrollment
               ReasonCode: AUTHORIZATION_ERROR
               Description: Client could not be authorized.
+              Recoverable: true
+              Details: null
+    Forbidden:
+      value:
+        Errors:
+          Error:
+            - Source: Loyalty-Enrollment
+              ReasonCode: FORBIDDEN
+              Description: Client does not have permission.
               Recoverable: true
               Details: null
