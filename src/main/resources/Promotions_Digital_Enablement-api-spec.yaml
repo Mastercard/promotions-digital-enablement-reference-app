@@ -135,7 +135,7 @@ paths:
   /transactions:
     get:
       tags:
-        - Transaction
+        - Transactions
       summary: Get Transactions
       description: Fetches data from transaction table
       operationId: getTransactionsUsingGET
