@@ -161,7 +161,6 @@ paths:
 components:
   requestBodies:
     AccountSearchRequest:
-      required: true
       content:
         application/json:
           schema:
@@ -272,7 +271,7 @@ components:
       name: account_id
       in: query
       description: Account Identifier
-      example: "f35e51fe-bc77-432f-b412-3800e3c04e5c"
+      example: "Gd3pnH3bQh"
       schema:
         type: string
     PromotionState:
@@ -395,44 +394,41 @@ components:
           description: Interbank Card Association number assigned by Mastercard to the client.
           format: int64
           example: 611532
-        accountNumberType:
-          maxLength: 5
-          type: string
-          description: The Field to identify type of value provided in accountNumber.<br/> BAN <br/> RANAC <br/> AREF
-            <br/> If accountNumberType is not provided then default value will be BAN
-          example: 'BAN'
         accountNumber:
           maxLength: 19
           type: string
           description: The unique account identifier defined and provided by the client.
           example: '5330333671236516'
+        accountNumberType:
+          maxLength: 5
+          type: string
+          description: The filed to identify accountNumber type BAN/RANAC/AREF.
+          example: 'BAN'
+        userNumber:
+          maxLength: 19
+          type: string
+          description: The unique user identifier defined and provided by the client.
+          example: '5330333671236516'
         userNumberType:
           maxLength: 5
           type: string
-          description: The Field to identify type of value provided in userNumber. <br/> BCN <br/> RANCU <br/> AREF
-            <br/> If userNumberType is not provided then default value will be BCN
+          description: The filed to identify userNumber type BCN/RANCU/AREF.
           example: 'BCN'
-        userNumber:
-          maxLength: 30
-          type: string
-          description: The unique identifier of a user assigned by the client.
-          example: C02333333325
     AccountSearchItem:
       type: object
       properties:
+        userId:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: Unique User identifier assigned by Mastercard.
+          example: 87ht3780-62d1-4775-9549-8ed92c48c290
         id:
           maxLength: 50
           minLength: 0
           type: string
           description: The unique reward account identifier assigned by the Mastercard.
           example: '308a1596-f42e-4569-bd12-c8f0827eed48'
-        userId:
-          maxLength: 50
-          minLength: 0
-          type: string
-          format: string
-          description: The unique User identifier assigned by the Mastercard.
-          example: 'aee00b64-f320-4579-a87f-782a3c0b9722'
         householdId:
           maxLength: 50
           minLength: 0
@@ -450,17 +446,36 @@ components:
       type: object
       properties:
         enrollmentCode:
-          maxLength: 50
-          minLength: 0
+          maxLength: 18
           type: string
-          description: Program Enrollment Code
+          description: 'The unique identifier for a client''s reward program, defined by the client and configured during implementation.'
           example: ZXSzM
         id:
           maxLength: 50
           minLength: 20
           type: string
-          description: Program Id
-          example: 4f74f660-5793-4f33-a3bc-ffc7bee39238
+          description: Unique Program identifier assigned by Mastercard and provided to client in the account enrollment response.
+          example: c8753780-62d1-4775-9549-8ed92c48c278
+    Company:
+      title: Company
+      type: object
+      properties:
+        memberICA:
+          type: integer
+          description: Interbank Card Association number assigned by Mastercard to the client.
+          format: int64
+          example: 898923
+        companyId:
+          maxLength: 11
+          type: string
+          description: Mastercard assigned unique identifier for a client.
+          example: '611532'
+        id:
+          maxLength: 50
+          minLength: 20
+          type: string
+          description: Unique Reward Company identifier assigned by Mastercard and provided to client in the account enrollment response.
+          example: 98753780-62d1-4775-9549-8ed92c48c245
     BankProduct:
       title: BankProduct
       type: object
@@ -477,27 +492,6 @@ components:
           type: string
           description: Bank Product Id
           example: ff34f660-5793-4f33-a3bc-ffc7bee39238
-    Company:
-      title: Company
-      type: object
-      properties:
-        memberICA:
-          type: integer
-          description: Interbank Card Association number assigned by Mastercard to the client.
-          format: int64
-          example: 898923
-        companyId:
-          maxLength: 11
-          minLength: 0
-          type: string
-          description: Mastercard assigned unique identifier for a client.
-          example: '611532'
-        id:
-          maxLength: 50
-          minLength: 20
-          type: string
-          description: Reward Company Id
-          example: 5f74g660-5793-4f33-a3bc-ffc7bee39234
     Cap:
       type: object
       properties:
@@ -1065,7 +1059,7 @@ components:
         accountId:
           type: string
           description: Unique Account identifier assigned by Mastercard and provided in the Account enrollment response.
-          example: "f35e51fe-bc77-432f-b412-3800e3c04e5c"
+          example: "Gd3pnH3bQh"
         activation:
           type: boolean
           description: Specifies if the account is opted-in or out for this promotion.
@@ -1106,34 +1100,6 @@ components:
           type: string
           description: Promotion end date.
           example: "2020-07-05T15:19:31.827Z"
-        scoringBeginDateTime:
-          type: string
-          description: Scoring begin date.
-          example: "2023-02-01T15:15:31.827Z"
-        scoringEndDateTime:
-          type: string
-          description: Scoring end date.
-          example: "2023-02-01T15:15:31.827Z"
-        postingBeginDateTime:
-          type: string
-          description: posting begin date.
-          example: "2023-02-01T15:15:31.827Z"
-        postingEndDateTime:
-          type: string
-          description: posting end date.
-          example: "2023-02-01T15:15:31.827Z"
-        transactionBeginDateTime:
-          type: string
-          description: transaction begin date.
-          example: "2023-02-01T15:15:31.827Z"
-        transactionEndDateTime:
-          type: string
-          description: transaction end date.
-          example: "2023-02-01T15:15:31.827Z"
-        frequency:
-          type: string
-          description: Promotion frequency.
-          example: "RECURRING"
         name:
           type: string
           description: Promotion name.
@@ -1164,7 +1130,7 @@ components:
         accountId:
           type: string
           description: Unique Account identifier assigned by Mastercard and provided in the Account enrollment response.
-          example: "f35e51fe-bc77-432f-b412-3800e3c04e5c"
+          example: "Gd3pnH3bQh"
         activation:
           type: boolean
           description: Specifies if the consumer is opting in or opting out of a promotion.<br/>
@@ -1231,7 +1197,7 @@ components:
               type: string
               description: Specifies the text that shows up on cardholders billing statement for a purchase (Only applicable for a rebate)
               example: "REBATE"
-            rebateTextNegative:
+            negativeRebateText:
               type: string
               description: Specifies the text that shows up on cardholders billing statement for a return (Only applicable for a rebate)
               example: "RETURN"
@@ -1394,14 +1360,5 @@ components:
             - Source: Loyalty-Enrollment
               ReasonCode: AUTHORIZATION_ERROR
               Description: Client could not be authorized.
-              Recoverable: true
-              Details: null
-    Forbidden:
-      value:
-        Errors:
-          Error:
-            - Source: Loyalty-Enrollment
-              ReasonCode: FORBIDDEN
-              Description: Client does not have permission.
               Recoverable: true
               Details: null
