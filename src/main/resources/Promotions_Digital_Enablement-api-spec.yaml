@@ -427,8 +427,8 @@ components:
           maxLength: 50
           minLength: 0
           type: string
-          description: The unique reward account identifier assigned by the Mastercard.
-          example: '308a1596-f42e-4569-bd12-c8f0827eed48'
+          description: Unique reward account identifier assigned by Mastercard.
+          example: '87ht3780-62d1-4775-9549-8ed92c48c290'
         householdId:
           maxLength: 50
           minLength: 0
