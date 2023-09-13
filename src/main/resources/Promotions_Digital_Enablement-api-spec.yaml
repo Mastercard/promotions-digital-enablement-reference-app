@@ -20,6 +20,8 @@ tags:
     description: Promotion Management API
   - name: Promotion Progress
     description: Promotion Progress Controller
+  - name: Transactions
+    description: Transactions Controller
 paths:
   /accounts/searches:
     post:
@@ -130,6 +132,32 @@ paths:
           $ref: '#/components/responses/ResponseForbidden'
         '404':
           $ref: '#/components/responses/ResponseNotFound'
+  /transactions:
+    get:
+      tags:
+        - Transactions
+      summary: Get Transactions
+      description: Fetches data from transaction table
+      operationId: getTransactionsUsingGET
+      parameters:
+        - $ref: '#/components/parameters/AccountIdParam'
+        - $ref: '#/components/parameters/FromDateParam'
+        - $ref: '#/components/parameters/ToDateParam'
+        - $ref: '#/components/parameters/PromotionIdParam'
+        - $ref: '#/components/parameters/OffsetParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          $ref: '#/components/responses/ResponseOkTransaction'
+        '400':
+          $ref: '#/components/responses/ResponseBadRequest'
+        '401':
+          $ref: '#/components/responses/ResponseUnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ResponseForbidden'
+        '404':
+          $ref: '#/components/responses/ResponseNotFound'
+
 components:
   requestBodies:
     AccountSearchRequest:
@@ -147,6 +175,38 @@ components:
             items:
               $ref: "#/components/schemas/OptIn"
   parameters:
+    FromDateParam:
+      name: from_date
+      in: query
+      description: from_date
+      schema:
+        type: string
+        example:
+    ToDateParam:
+      name: to_date
+      in: query
+      description: to_date
+      schema:
+        type: string
+        example:
+    OffsetParam:
+      name: offset
+      in: query
+      description: offset
+      schema:
+        type: integer
+        format: int32
+        example: 0
+        default:
+    LimitParam:
+      name: limit
+      in: query
+      description: limit
+      schema:
+        type: integer
+        format: int32
+        example: 25
+        default: 25
     HouseholdIdParam:
       name: household_id
       in: query
@@ -264,6 +324,12 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/PromotionProgressList'
+    ResponseOkTransaction:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PagedResponseGetTransactionDto'
     ResponseBadRequest:
       description: Bad Request
       content:
@@ -291,6 +357,9 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorsList'
+          examples:
+            FORBIDDEN:
+              $ref: '#/components/examples/Forbidden'
     ResponseNotFound:
       description: Not Found
       content:
@@ -446,6 +515,11 @@ components:
           example: M
           maxLength: 10
           description: The promotion period for which the cap will reset. For example, M (Month), indicates that the cap resets monthly. <br/> Eg. "<null | M (Month) | Y (Year) | L (Lifetime)>"
+        capType:
+          type: string
+          example: group-cap
+          maxLength: 15
+          description: Type of cap = "promotion-cap" or "group-cap".
         capPeriodValue:
           type: string
           example: "202108"
@@ -508,6 +582,358 @@ components:
       properties:
         Errors:
           $ref: '#/components/schemas/Errors'
+    PagedResponseGetTransactionDto:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of items that are in this offset batch
+          format: int32
+          example: 1
+        offset:
+          type: integer
+          description: The number of items to offset the start of the list from
+          format: int32
+          example: 0
+        limit:
+          type: integer
+          description: The number of items in the list to be limited to
+          format: int32
+          example: 25
+        total:
+          type: integer
+          description: The total number of items that are in the entire collection
+          format: int64
+          example: 1
+        items:
+          type: array
+          description: Items in transaction response
+          items:
+            $ref: '#/components/schemas/GetTransactionDto'
+    CurrencyDto:
+      type: object
+      properties:
+        issuerAmountSettlementCurrency:
+          type: integer
+          description: Transaction amount converted to cardholders currency.
+          format: int64
+          example: 12000
+        issuerCurrencyCode:
+          type: string
+          description: Currency code that defines the currency type, the country of origin, and the implied decimal point location for the related amount of the transaction.
+          example: USD
+        issuerCurrencyExponent:
+          type: integer
+          description: CardHolder billing currency exponent.
+          format: int32
+          example: 2
+        settlementCurrencyCode:
+          type: string
+          description: Issuer settlement currency code.
+          example: USD
+        settlementCurrencyExponent:
+          type: integer
+          description: Issuer settlement currency exponent.
+          format: int32
+          example: 2
+        transactionAmountSettlementCurrency:
+          type: integer
+          description: Issuer settlement currency.
+          format: int64
+          example: 12000
+        transactionAmountTransactionCurrency:
+          type: integer
+          description: The entire amount of a particular transaction.
+          format: int64
+          example: 12000
+        transactionCurrencyCode:
+          type: string
+          description: Currency code that defines the currency type, the country of origin, and the implied decimal point location for the related amount of the transaction.
+          example: USD
+        transactionCurrencyExponent:
+          type: integer
+          description: Currency exponent for transaction amount.
+          format: int32
+          example: 2
+    MerchantDto:
+      type: object
+      properties:
+        acquirerIca:
+          type: string
+          description: Merchant acquirer Ica for the transaction.
+          example: 12345
+        aggregateMerchantId:
+          type: string
+          description: The aggregate merchant ID of the merchant location matched to the transaction (or as assigned based on scrubbed transaction data if no location was matched and aggregate merchant assignment was requested). 99999 if not assigned.
+          example: '985'
+        city:
+          type: string
+          description: City of the merchant.
+          example: BULGAKOVO
+        country:
+          type: string
+          description: Merchant country code of the transaction.
+          example: USA
+        countryCode:
+          type: string
+          description: Country code of the merchant.
+          example: 'USA'
+        crossBorder:
+          type: boolean
+          description: Identifies whether the transaction is a cross-border transaction.
+          example: true
+        dbaName:
+          type: string
+          description: DBA name of merchant.
+          example: AAA
+        locationId:
+          type: string
+          description: Location ID of the merchant location matched to the transaction. If no location can be determined the value 999999999 will be assigned.
+          example: '624103356'
+        mccClassificationCode:
+          type: string
+          description: Mastercard defined classification of Merchant Category Code.
+          example: 4K
+        mccGroup:
+          type: string
+          description: MCC Group
+          example: '78'
+        merchantCategoryCode:
+          type: string
+          description: Identifies the merchants primary business.
+          example: '5311'
+        merchantId:
+          type: string
+          description: Acquirer Merchant ID as defined by merchant processing for the transaction.
+          example: '6442456804'
+        name:
+          type: string
+          description: Merchant name of the transaction
+          example: AAA
+        postalCode:
+          type: string
+          description: Postal code of the merchant.
+          example: '81801'
+        region:
+          type: string
+          description: Region code of the merchant location matched to the transaction (or the business region code of the scrubbed country code if no location was matched). If the scrubbed country code is unknown (XXX), a value of 99 is assigned.
+          example: '5'
+        shortDbaName:
+          type: string
+          description: The short DBA name derived from the scrubbed merchant DBA name for the transaction.
+          example: OOOTERMSERV
+        state:
+          type: string
+          description: The state/province code of the merchant location matched to the transaction (or the scrubbed state/province code of the transaction if no location was matched. This will be spaces except for USA, CAN, and AUS. If the state/province code cannot be determined, values of 'XX', 'XP' or 'UNK" will be assigned for USA, CAN and AUS respectively.
+          example: MO
+        storeDivision:
+          type: string
+          description: Merchant store division.
+          example: '30078'
+        storeNumber:
+          type: string
+          description: Merchant store number.
+          example: '20002'
+        streetAddress:
+          type: string
+          description: Street address of the merchant.
+          example: 'B-N M-N AEROPORT STR BLD PAR'
+    TransactionScoreDto:
+      type: object
+      properties:
+        pointType:
+          type: string
+          description: Specifies the point type which is either Base Points or Bonus Points.
+          example: BONUS
+        promotionId:
+          type: string
+          description: Unique promotion identifier.
+          example: '2aee0729-3a1a-451a-affa-84f3a6bc5acc'
+        promotionName:
+          type: string
+          description: Name of the promotion.
+          example: Rewards Promo
+        rawScore:
+          type: string
+          description: Raw score (pre-capped score).
+          example: '120'
+        reason:
+          type: string
+          description: Reason code if there is any change in pre-capping or threshold score.
+          example: cap
+        rewardType:
+          type: string
+          description: Specifies the reward type which is either Points or Rebate.
+          example: 'CASHBACK'
+        score:
+          type: string
+          description: Final Score after capping.
+          example: '100'
+        postingAccountReferenceId:
+          type: string
+          description: Posting Account ReferenceId
+          example: '751678c0-079b-11eb-adc1-0242ac12aaaa'
+    GetTransactionDto:
+      type: object
+      properties:
+        accountInfo:
+          type: boolean
+          description: Indicates if an account number is present.
+          example: 'true'
+        accountNumber:
+          type: string
+          description: Unique account identifier defined and provided by the client.
+          example: '**8345'
+        acquirerCountryCode:
+          type: string
+          description: Identifies the geographic country of the Acquirer.
+          example: USA
+        acquirerId:
+          type: string
+          description: Acquiring Institution ID Code identifies a transaction acquirer.
+          example: '5037'
+        acquirerReferenceNumber:
+          type: string
+          description: Acquirer Reference Number.
+          example: '3080528744'
+        authCode:
+          type: string
+          description: Auth Code
+          example: '050913'
+        cardDataInputModeCode:
+          type: string
+          description: Indicates the method used for entry to initiate a transaction (example:0,1,2,C,M,R,7,6,B,S,T,B,A,C,F).
+          example: 'M'
+        cardHolderPresentCode:
+          type: string
+          description: Indicates whether the cardholder is present at the point of service and explains the condition if the cardholder is not present (example:0,1).
+          example: '0'
+        cardPresentCode:
+          type: string
+          description: Indicates if the card is present at the point of service (example:0,1).
+          example: '1'
+        clientTransactionCode:
+          type: string
+          description: Client Transaction Code
+          example: DVWPO
+        companyIca:
+          type: string
+          description: Company Ica
+          example: '611532'
+        companyId:
+          type: string
+          description: Company Id
+          example: 4K
+        companyPromotionField:
+          type: string
+          description: Company Promotion Field
+          example: '72882990'
+        currency:
+          $ref: '#/components/schemas/CurrencyDto'
+        debitSwitch:
+          type: string
+          description: Debit Switch
+          example: N
+        exceptionId:
+          type: string
+          description: Exception Id
+          example: '208058744'
+        interchangeRateDesignator:
+          type: string
+          description: Interchange rate designator for the transaction.
+          example: 2A
+        issuerCountryCode:
+          type: string
+          description: Identifies the geographic country of the Issuer.
+          example: USA
+        issuerId:
+          type: string
+          description: Unique identifier of Issuer.
+          example: '10455'
+        issuerRegion:
+          type: string
+          description: Identifies the region of the Issuer.
+          example: '05'
+        itemCode:
+          type: string
+          description: Unique code number for item in transaction.
+          example: Orbit
+        itemDescription:
+          type: string
+          description: Description of item in transaction.
+          example: Sony Walkman
+        itemSku:
+          type: string
+          description: Unique SKU number associated with item in transaction.
+          example: '21043332'
+        merchant:
+          $ref: '#/components/schemas/MerchantDto'
+        offerType:
+          type: string
+          description: Offer Type
+          example: '00101'
+        productCode:
+          type: string
+          description: Product code of the transaction.
+          example: MCB
+        productLine:
+          type: string
+          description: Product Line
+          example: '30003'
+        rewardPostingDateTime:
+          type: string
+          description: Date when the transaction posted.
+          example: 2020-01-12T05:00:00+0000
+        routeNumber:
+          type: string
+          description: Route Number
+          example: '29920212'
+        sellingChannel:
+          type: string
+          description: Selling Channel
+          example: '2524635'
+        sequenceNumber:
+          type: string
+          description: Unique sequence number.
+          example: '10000124564'
+        tokenRequestorId:
+          type: string
+          description: The TRID uniquely identifies a token requestor (such as a Wallet Provider) that’s leveraging MDES for tokenized transactions.
+          example: '50139059239'
+        transactionAmount:
+          type: integer
+          description: Indicates the amount of the transaction.
+          format: int64
+          example: 12000
+        transactionAmountFormatted:
+          type: string
+          description: Formatted transaction amount.
+          example: $120.00
+        transactionDateTime:
+          type: string
+          description: Date and time of the transaction.
+          example: 2020-01-12T05:00:00+0000
+        transactionId:
+          type: string
+          description: Unique transaction identifier.
+          example: 'f66e7af3-3a09-451a-9331-e0baa8f97acd'
+        transactionScores:
+          type: array
+          description: Transaction Scores
+          items:
+            $ref: '#/components/schemas/TransactionScoreDto'
+        transactionSourceCode:
+          type: string
+          description: Source of Transaction (example:GCMS).
+          example: GCMS
+        transactionType:
+          type: string
+          description: Unique transaction type code in Data Warehouse; maps to DE3s1 value.
+          example: 5
+        walletProgramCode:
+          type: string
+          description: Provides information about how transactions initiated through the user of a digital wallet.
+          example: '146'
     PromotionProgressList:
       type: object
       properties:
