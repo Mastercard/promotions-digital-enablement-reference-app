@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 @Slf4j
 @RestController
 @RequestMapping(value = "", produces = {"application/json"})
@@ -35,9 +37,9 @@ public class ProgressController {
      * @return
      */
     @GetMapping(value = "/promotion-progresses")
-    public PromotionProgressList getProgress(@RequestParam(value = "household_id", required = false) String householdId,
-                                             @RequestParam(value = "account_id", required = false) String accountId,
-                                             @RequestParam(value = "promotion_id", required = false) String promotionID,
+    public PromotionProgressList getProgress(@RequestParam(value = "household_id", required = false) UUID householdId,
+                                             @RequestParam(value = "account_id", required = false) UUID accountId,
+                                             @RequestParam(value = "promotion_id", required = false) UUID promotionID,
                                              @RequestParam(value = "include_history", required = false, defaultValue = "false") boolean includeHistory) {
         progressValidator.validateGetProgress(householdId, accountId);
         try {

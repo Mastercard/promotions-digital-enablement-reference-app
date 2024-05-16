@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -24,15 +25,15 @@ public class OptInService {
     }
 
     public void optIn(List<OptIn> optInCreateValueBeanList) throws ApiException {
-        promotionManagementApi.promotionOptInUsingPOST(optInCreateValueBeanList);
+        promotionManagementApi.postPromotionOptIn(optInCreateValueBeanList);
     }
 
-    public Promotions getActivePromotions(String businessPartnerReferenceId, String programReferenceId, String promotionId, String accountId, String promotionState, Integer offset, Integer limit) throws ApiException {
-        return promotionManagementApi.getPromotionsUsingGET(businessPartnerReferenceId, programReferenceId, promotionId, accountId, promotionState, offset, limit);
+    public Promotions getActivePromotions(UUID businessPartnerReferenceId, UUID programReferenceId, UUID promotionId, UUID accountId, String promotionState, Integer offset, Integer limit) throws ApiException {
+        return promotionManagementApi.getPromotions(businessPartnerReferenceId, programReferenceId, promotionId, accountId, promotionState, offset, limit);
     }
 
-    public PromotionDetail getPromotionDetail(String promotionId) throws ApiException {
-        return promotionManagementApi.getPromotionDetailsUsingGET(promotionId);
+    public PromotionDetail getPromotionDetail(UUID promotionId) throws ApiException {
+        return promotionManagementApi.getPromotionDetails(promotionId);
     }
 }
 

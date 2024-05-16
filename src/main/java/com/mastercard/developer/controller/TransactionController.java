@@ -5,12 +5,15 @@ import com.mastercard.developer.service.TransactionService;
 import com.mastercard.developer.validator.TransactionValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.openapitools.client.ApiException;
-import org.openapitools.client.model.PagedResponseGetTransactionDto;
+import org.openapitools.client.model.PagedTransaction;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.time.LocalDate;
+import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -37,10 +40,10 @@ public class TransactionController {
      * @return
      */
     @GetMapping(value = "/transactions")
-    public PagedResponseGetTransactionDto getTransactions(@RequestParam(name = "account_id", required = false) String accountId,
-                                                          @RequestParam(name = "from_date", required = false) String fromDate,
-                                                          @RequestParam(name = "to_date", required = false) String toDate,
-                                                          @RequestParam(name = "promotion_id", required = false) String promotionId,
+    public PagedTransaction getTransactions(@RequestParam(name = "account_id", required = false) UUID accountId,
+                                                          @RequestParam(name = "from_date", required = false) LocalDate fromDate,
+                                                          @RequestParam(name = "to_date", required = false) LocalDate toDate,
+                                                          @RequestParam(name = "promotion_id", required = false) UUID promotionId,
                                                           @RequestParam(value = "offset", required = false, defaultValue = "0") int offset,
                                                           @RequestParam(value = "limit", required = false, defaultValue = "25") int limit) {
         transactionValidator.validateTransactionRequest(accountId);
@@ -48,7 +51,7 @@ public class TransactionController {
         transactionValidator.validatePaginationParams(offset, limit);
         try {
             log.info("Method : getTransactions, Message : Getting transactions");
-            PagedResponseGetTransactionDto response = transactionService.getTransactions(accountId, fromDate, toDate, promotionId, offset, limit);
+            PagedTransaction response = transactionService.getTransactions(accountId, fromDate, toDate, promotionId, offset, limit);
             if (response != null) {
                 log.debug("Method : getTransactions, Message :Successfully got the transactions" + response);
                 return response;

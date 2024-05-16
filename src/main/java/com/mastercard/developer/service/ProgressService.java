@@ -8,6 +8,8 @@ import org.openapitools.client.api.PromotionProgressApi;
 import org.openapitools.client.model.PromotionProgressList;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Slf4j
 @Service
 public class ProgressService {
@@ -18,8 +20,8 @@ public class ProgressService {
         this.promotionProgressApi = new PromotionProgressApi(apiClient);
     }
 
-    public PromotionProgressList getProgress(String householdId, String accountId, String promotionId, Boolean includeHistory) throws ApiException {
-        return promotionProgressApi.retrieveUsingGET(householdId, accountId, promotionId, includeHistory);
+    public PromotionProgressList getProgress(UUID householdId, UUID accountId, UUID promotionId, Boolean includeHistory) throws ApiException {
+        return promotionProgressApi.getPromotionProgress(householdId, accountId, promotionId, includeHistory);
     }
 
 }

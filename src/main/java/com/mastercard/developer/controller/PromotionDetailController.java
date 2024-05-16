@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 @Slf4j
 @RestController
 @RequestMapping(value = "", produces = {"application/json"})
@@ -35,7 +37,7 @@ public class PromotionDetailController {
     * @throws InvalidRequest If fail to validate input values and serialize the request body object
     */
     @GetMapping(value = "/promotions/{id}/details")
-    public PromotionDetail getPromotionDetails(@PathVariable(value = "id") String promotionId)  {
+    public PromotionDetail getPromotionDetails(@PathVariable(value = "id") UUID promotionId)  {
         try {
             log.info("Method : getPromotionDetails, Message : Getting promotions");
             PromotionDetail response = optInService.getPromotionDetail(promotionId);

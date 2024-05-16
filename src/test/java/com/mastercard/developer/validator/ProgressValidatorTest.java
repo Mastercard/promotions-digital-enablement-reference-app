@@ -8,6 +8,8 @@ import org.junit.rules.ExpectedException;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
 
+import java.util.UUID;
+
 public class ProgressValidatorTest {
 
     @InjectMocks
@@ -30,16 +32,16 @@ public class ProgressValidatorTest {
     
     @Test
     public void testValidateGetForNotEmptyHouseholdIdAndAccountId() throws Exception {
-        validator.validateGetProgress("f35e51fe-bc77-432f-b412-3800e3c04e78", "935e51fe-bc77-432f-b412-3800e3c04e90");
+        validator.validateGetProgress(UUID.fromString("f35e51fe-bc77-432f-b412-3800e3c04e78"), UUID.fromString("935e51fe-bc77-432f-b412-3800e3c04e90"));
     }
     
     @Test
     public void testValidateGetForNotEmptyHouseholdIdEmptyAccountId() throws Exception {
-        validator.validateGetProgress("a35e51fe-bc77-432f-b412-3800e3c08942", "");
+        validator.validateGetProgress(UUID.fromString("a35e51fe-bc77-432f-b412-3800e3c08942"), null);
     }
     @Test
     public void testValidateGetForEmptyHouseholdIdNotEmptyAccountId() throws Exception {
-        validator.validateGetProgress("", "bc5e51fe-bc77-432f-b412-3800e3c04ec2");
+        validator.validateGetProgress(null, UUID.fromString("bc5e51fe-bc77-432f-b412-3800e3c04ec2"));
     }
     
 }

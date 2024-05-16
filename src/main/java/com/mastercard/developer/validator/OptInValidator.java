@@ -8,6 +8,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Component
 public class OptInValidator {
@@ -17,7 +18,7 @@ public class OptInValidator {
             if (optIn.getActivation() == (null)) {
                 messages.add("activation cannot be null");
             }
-            if (messages.isEmpty() && !StringUtils.hasText(optIn.getPromotionId())) {
+            if (messages.isEmpty() && null == optIn.getPromotionId()) {
                 messages.add("promotionId cannot be null");
             }
         }
@@ -26,10 +27,10 @@ public class OptInValidator {
         }
     }
 
-    public void validateGetPromotions(String rewardsCompanyId, String programReferenceId, String promotionId,  String userId) {
+    public void validateGetPromotions(UUID rewardsCompanyId, UUID programReferenceId, UUID promotionId, UUID userId) {
         List<String> messages = new ArrayList<>();
-        if (!StringUtils.hasText(rewardsCompanyId) && !StringUtils.hasText(programReferenceId) && !StringUtils.hasText(promotionId)) {
-            if (!StringUtils.hasText(userId)) {
+        if (null == rewardsCompanyId && null == programReferenceId && null ==promotionId) {
+            if (null == userId) {
                 messages.add("Either the rewardsCompanyId or programId or promotionId or accountId must be provided");
             } else {
                 messages.add("Either the rewardsCompanyId, programId or promotionId must be provided");

@@ -26,6 +26,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.spy;
@@ -62,10 +63,11 @@ public class ProgressControllerTest {
         PromotionProgressList promotionProgressResponseBean = getResponse();
         Mockito.when(progressService.getProgress(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(promotionProgressResponseBean);
 
-        PromotionProgressList response = controller.getProgress("5283da1c-2bdf-40cc-a0e1-781fe30eab13", "9583da1c-2bdf-40cc-a0e1-781fe30eab12", null, false);
+        PromotionProgressList response = controller.getProgress(UUID.fromString("5283da1c-2bdf-40cc-a0e1-781fe30eab13"),
+                UUID.fromString("9583da1c-2bdf-40cc-a0e1-781fe30eab12"), null, false);
         Assert.assertNotNull(response);
-        Assert.assertTrue("5283da1c-2bdf-40cc-a0e1-781fe30eab13".equalsIgnoreCase(response.getPromotionProgresses().get(0).getProgresses().get(0).getEntityId()));
-        Assert.assertTrue("9583da1c-2bdf-40cc-a0e1-781fe30eab12".equalsIgnoreCase(response.getPromotionProgresses().get(0).getCaps().get(0).getEntityId()));
+        Assert.assertEquals(UUID.fromString("5283da1c-2bdf-40cc-a0e1-781fe30eab13"), response.getPromotionProgresses().get(0).getProgresses().get(0).getEntityId());
+        Assert.assertEquals(UUID.fromString("9583da1c-2bdf-40cc-a0e1-781fe30eab12"), response.getPromotionProgresses().get(0).getCaps().get(0).getEntityId());
     }
 
     @Test(expected = InvalidRequest.class)
@@ -73,7 +75,7 @@ public class ProgressControllerTest {
         doThrow(ApiException.class).when(progressService).getProgress(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
         MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
         httpServletRequest.setRequestURI(PROGRESS);
-        controller.getProgress(null, "9583da1c-2bdf-40cc-a0e1-781fe30eab12", null, false);
+        controller.getProgress(null, UUID.fromString("9583da1c-2bdf-40cc-a0e1-781fe30eab12"), null, false);
     }
 
     @Test
@@ -83,10 +85,11 @@ public class ProgressControllerTest {
         MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
         httpServletRequest.setRequestURI(PROGRESS);
 
-        PromotionProgressList response = controller.getProgress(null, "9583da1c-2bdf-40cc-a0e1-781fe30eab12", "6683aa1c-2bdf-40cc-a0e1-781fe30eab19", false);
+        PromotionProgressList response = controller.getProgress(null, UUID.fromString("9583da1c-2bdf-40cc-a0e1-781fe30eab12"),
+                UUID.fromString("6683aa1c-2bdf-40cc-a0e1-781fe30eab19"), false);
         Assert.assertNotNull(response);
-        Assert.assertTrue("9583da1c-2bdf-40cc-a0e1-781fe30eab12".equalsIgnoreCase(response.getPromotionProgresses().get(0).getCaps().get(0).getEntityId()));
-        Assert.assertTrue("6683aa1c-2bdf-40cc-a0e1-781fe30eab19".equalsIgnoreCase(response.getPromotionProgresses().get(0).getPromotionId()));
+        Assert.assertEquals(UUID.fromString("9583da1c-2bdf-40cc-a0e1-781fe30eab12"), response.getPromotionProgresses().get(0).getCaps().get(0).getEntityId());
+        Assert.assertEquals(UUID.fromString("6683aa1c-2bdf-40cc-a0e1-781fe30eab19"), response.getPromotionProgresses().get(0).getPromotionId());
     }
 
     private PromotionProgress getPromotion() {
@@ -96,22 +99,26 @@ public class ProgressControllerTest {
 
         PromotionProgress promotion = new PromotionProgress();
 
-        progressSummaryBeanList.add(getProgress("HOUSEHOLD", "5283da1c-2bdf-40cc-a0e1-781fe30eab13", 5L, 5));
+        progressSummaryBeanList.add(getProgress("HOUSEHOLD", UUID.fromString("5283da1c-2bdf-40cc-a0e1-781fe30eab13"),
+                5L, 5));
 
-        ruleList.add(getRule("HOUSEHOLD", "5283da1c-2bdf-40cc-a0e1-781fe30eab13", "6cef30ef-bcfc-429f-9aa5-b7bfc0a108f5", 5L, "COUNT", 4L, "M", "202006"));
+        ruleList.add(getRule("HOUSEHOLD", UUID.fromString("5283da1c-2bdf-40cc-a0e1-781fe30eab13"),
+                UUID.fromString("6cef30ef-bcfc-429f-9aa5-b7bfc0a108f5"),
+                5L, "COUNT", 4L, "M", "202006"));
 
-        capList.add(getCap("ACCOUNT", "9583da1c-2bdf-40cc-a0e1-781fe30eab12", "1afd11e2-d1b8-4787-b848-5fc1d4533986", "M", "202005", 5L, 3L));
+        capList.add(getCap("ACCOUNT", UUID.fromString("9583da1c-2bdf-40cc-a0e1-781fe30eab12"),
+                UUID.fromString("1afd11e2-d1b8-4787-b848-5fc1d4533986"), "M", "202005", 5L, 3L));
 
-        promotion.setPromotionId("6683aa1c-2bdf-40cc-a0e1-781fe30eab19");
+        promotion.setPromotionId(UUID.fromString("6683aa1c-2bdf-40cc-a0e1-781fe30eab19"));
         promotion.setActive(true);
-        promotion.setProgramId("36a28951-86bf-45bc-bcf1-a89aa8ffdff0");
+        promotion.setProgramId(UUID.fromString("36a28951-86bf-45bc-bcf1-a89aa8ffdff0"));
         promotion.setProgresses(progressSummaryBeanList);
         promotion.setRules(ruleList);
         promotion.setCaps(capList);
         return promotion;
     }
 
-    private ProgressSummary getProgress(String entityType, String entityId, Long rewardsReceivedCount, Integer totalRewardsReceived) {
+    private ProgressSummary getProgress(String entityType, UUID entityId, Long rewardsReceivedCount, Integer totalRewardsReceived) {
         ProgressSummary progress = new ProgressSummary();
         progress.setEntityType(entityType);
         progress.setEntityId(entityId);
@@ -120,7 +127,7 @@ public class ProgressControllerTest {
         return progress;
     }
 
-    private Rule getRule(String entityType, String entityId, String ruleId, Long ruleThreshold, String ruleType, Long ruleValue, String rulePeriod, String rulePeriodValue) {
+    private Rule getRule(String entityType, UUID entityId, UUID ruleId, Long ruleThreshold, String ruleType, Long ruleValue, String rulePeriod, String rulePeriodValue) {
         Rule rule = new Rule();
         rule.setEntityType(entityType);
         rule.setEntityId(entityId);
@@ -133,7 +140,7 @@ public class ProgressControllerTest {
         return rule;
     }
 
-    private Cap getCap(String entityType, String entityId, String capId, String capPeriod, String capPeriodValue, Long capThreshold, Long capValue) {
+    private Cap getCap(String entityType, UUID entityId, UUID capId, String capPeriod, String capPeriodValue, Long capThreshold, Long capValue) {
         Cap cap = new Cap();
         cap.setEntityType(entityType);
         cap.setEntityId(entityId);
