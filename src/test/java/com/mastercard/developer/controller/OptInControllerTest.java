@@ -28,6 +28,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doNothing;
@@ -49,11 +50,11 @@ public class OptInControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    private static final String REWARDS_COMPANY_ID = RandomStringUtils.randomAlphabetic(10);
-    private static final String PROGRAM_REF_ID = RandomStringUtils.randomAlphabetic(10);
-    private static final String PROMOTION_REFERENCE_ID = "PROMOTION_REFERENCE_ID";
+    private static final UUID REWARDS_COMPANY_ID = UUID.fromString("3c16daf9-8c2c-437a-99e6-1da37c3c8997");
+    private static final UUID PROGRAM_REF_ID = UUID.fromString("4af2d508-96de-4a84-bcb0-c60337bc57b8");
+    private static final UUID PROMOTION_REFERENCE_ID = UUID.fromString("38771612-a145-4096-a024-22578b1a2d8a");
     private static final String PROMOTION_REFERENCE_ID_INVALID = "PROMOTION_REFERENCE_ID_INVALID";
-    private static final String ACCOUNT_ID = "ACCOUNT_ID";
+    private static final UUID ACCOUNT_ID = UUID.fromString("63389d6c-cb0e-4911-a845-4424ff36ea2d");
     private static final String PROMOTION_ACTIVATION = "/promotion-activations";
     private static final String PROMOTIONS = "/promotions";
 
@@ -68,7 +69,7 @@ public class OptInControllerTest {
     }
 
     private static final String BASE_API_PATH = "/api/promotions";
-    private static final String PROMOTION_REF_ID = RandomStringUtils.randomAlphanumeric(10);
+    private static final UUID PROMOTION_REF_ID = UUID.fromString("ad2a9cf9-c00f-497a-9344-eef86d22370a");
 
 
     @Test

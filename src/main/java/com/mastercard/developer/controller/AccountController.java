@@ -13,7 +13,7 @@ import io.swagger.annotations.ExampleProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.openapitools.client.ApiException;
 import org.openapitools.client.model.AccountSearch;
-import org.openapitools.client.model.PagedResponseOfAccountSearch;
+import org.openapitools.client.model.PagedAccountSearchItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -68,12 +68,12 @@ public class AccountController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully Retrieved Account")
     })
-    public PagedResponseOfAccountSearch searchAccount(@RequestParam(value = "offset", required = false, defaultValue = "0") int offset,
+    public PagedAccountSearchItem searchAccount(@RequestParam(value = "offset", required = false, defaultValue = "0") int offset,
                                                       @RequestParam(value = "limit", required = false, defaultValue = "25") int limit,
                                                       @RequestBody AccountSearch accountSearch) {
         accountValidator.validateSearchAccount(accountSearch);
         try {
-            PagedResponseOfAccountSearch response = accountService.searchAccount(offset, limit, accountSearch);
+            PagedAccountSearchItem response = accountService.searchAccount(offset, limit, accountSearch);
             if (response != null && response.getItems() != null) {
                 log.debug("Method : searchAccount, Message :Successfully got the accounts" + response);
                 return response;

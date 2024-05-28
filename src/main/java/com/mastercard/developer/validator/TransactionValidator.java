@@ -13,37 +13,35 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @Component
 public class TransactionValidator {
 
     static Map<String, SimpleDateFormat> sdfMap = new HashMap();
 
-    public void validateTransactionRequest(String accountId) {
-        if (!StringUtils.hasText(accountId)) {
+    public void validateTransactionRequest(UUID accountId) {
+        if (null == accountId) {
             throw new InvalidRequest(ErrorCodes.INVALID_INPUT.code, "account_id is missing");
         }
 
     }
 
-    public void validateTransactionDates(String fromDateAsString, String toDateAsString, int maxDuration) {
-        if (fromDateAsString == null && toDateAsString == null) {
+    public void validateTransactionDates(LocalDate fromDate, LocalDate toDate, int maxDuration) {
+        if (fromDate == null && toDate == null) {
             return;
         }
-        try {
-            Date fromDate = convertStringToDate("yyyy-MM-dd", fromDateAsString);
-            Date toDate = convertStringToDate("yyyy-MM-dd", toDateAsString);
 
-            if (fromDate == null) {
-                fromDate = getFromDate(fromDateAsString, maxDuration);
-            }
+        if (fromDate == null) {
+            fromDate = getFromDate(fromDate, maxDuration);
+        }
 
-            if (fromDate != null && toDate != null && toDate.compareTo(fromDate) < 0) {
-                throw new InvalidRequest(HttpStatus.BAD_REQUEST.toString(), "Invalid Date Range");
-            }
-        } catch (ParseException ex) {
-            throw new InvalidRequest(HttpStatus.BAD_REQUEST.toString(),
-                    "Invalid Date Format. Acceptable Date format is YYYY-MM-DD");
+        if (fromDate != null && toDate != null && toDate.compareTo(fromDate) < 0) {
+            throw new InvalidRequest(HttpStatus.BAD_REQUEST.toString(), "Invalid Date Range");
+        }
+
+        if (fromDate != null && toDate != null && toDate.isBefore(fromDate)) {
+            throw new InvalidRequest(HttpStatus.BAD_REQUEST.toString(), "Invalid Date Range");
         }
     }
 
@@ -54,19 +52,11 @@ public class TransactionValidator {
         }
     }
 
-    public static Date getFromDate(String fromDateAsString, int maxDuration) {
-        Date fromDate = null;
+    public static LocalDate getFromDate(LocalDate fromDate, int maxDuration) {
 
-        try {
-            fromDate = convertStringToDate("yyyy-MM-dd", fromDateAsString);
-            if (fromDate == null || fromDate.compareTo(Date.from(LocalDate.now().minusMonths((long) maxDuration).atStartOfDay(ZoneId.systemDefault()).toInstant())) < 0) {
-                fromDate = Date.from(LocalDate.now().minusMonths((long) maxDuration).atStartOfDay(ZoneId.systemDefault()).toInstant());
-            }
+        fromDate = LocalDate.now().minusMonths(maxDuration);
 
-            return fromDate;
-        } catch (ParseException var4) {
-            return null;
-        }
+        return fromDate;
     }
 
     public static Date convertStringToDate(String dateFormat, String date) throws ParseException {

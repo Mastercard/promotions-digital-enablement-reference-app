@@ -12,7 +12,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.openapitools.client.ApiException;
 import org.openapitools.client.model.AccountSearch;
 import org.openapitools.client.model.AccountSearchItem;
-import org.openapitools.client.model.PagedResponseOfAccountSearch;
+import org.openapitools.client.model.PagedAccountSearchItem;
 
 import static com.mastercard.developer.constants.ApplicationConstants.ErrorMessages.ACCOUNT_NUMBER_REQUIRED;
 import static com.mastercard.developer.constants.ApplicationConstants.ErrorMessages.COMPANY_ID_OR_MEMBER_ICA_REQUIRED;
@@ -43,10 +43,10 @@ public class AccountControllerTest {
     @Test
     public void testAccountsSearches() throws ApiException {
         AccountSearch searchRequest = getSearchRequest();
-        PagedResponseOfAccountSearch searchOutDto = getPagedResponseOfAccountSearch();
+        PagedAccountSearchItem searchOutDto = getPagedAccountSearchItem();
         when(accountService.searchAccount(anyInt(), anyInt(), any(AccountSearch.class))).thenReturn(searchOutDto);
 
-        PagedResponseOfAccountSearch response = controller.searchAccount(0, 25, searchRequest);
+        PagedAccountSearchItem response = controller.searchAccount(0, 25, searchRequest);
 
         assertNotNull(response);
         assertEquals(1, response.getCount().intValue());
@@ -56,10 +56,10 @@ public class AccountControllerTest {
     public void testAccountsSearchesWithProgramEnrollmentAndMemberIcaIsNull() throws ApiException {
         AccountSearch searchRequest = getSearchRequest();
         searchRequest.setMemberICA(null);
-        PagedResponseOfAccountSearch searchOutDto = getPagedResponseOfAccountSearch();
+        PagedAccountSearchItem searchOutDto = getPagedAccountSearchItem();
         when(accountService.searchAccount(0, 25, searchRequest)).thenReturn(searchOutDto);
 
-        PagedResponseOfAccountSearch response = controller.searchAccount(0, 25, searchRequest);
+        PagedAccountSearchItem response = controller.searchAccount(0, 25, searchRequest);
 
         assertNotNull(response);
         assertEquals(1, response.getCount().intValue());
@@ -101,8 +101,8 @@ public class AccountControllerTest {
         return searchRequest;
     }
 
-    private PagedResponseOfAccountSearch getPagedResponseOfAccountSearch() {
-        PagedResponseOfAccountSearch searchResponse = new PagedResponseOfAccountSearch();
+    private PagedAccountSearchItem getPagedAccountSearchItem() {
+        PagedAccountSearchItem searchResponse = new PagedAccountSearchItem();
         searchResponse.setCount(1);
         searchResponse.addItemsItem(new AccountSearchItem());
         return searchResponse;

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -74,7 +75,13 @@ public class OptInController {
     * @throws InvalidRequest If fail to validate input values and serialize the request body object
     */
     @GetMapping(value = "/promotions")
-    public Promotions getPromotions(@RequestParam(name = "rewardsCompanyId", required = false) String rewardsCompanyId, @RequestParam(name = "programId", required = false) String programId, @RequestParam(name = "promotionId", required = false) String promotionId, @RequestParam(name = "accountId", required = false) String accountId, @RequestParam(name = "promotion_state", required = false) String promotionState, @RequestParam(name = "offset", required = false, defaultValue = "0") Integer offset, @RequestParam(name = "limit", required = false, defaultValue = "25") Integer limit) {
+    public Promotions getPromotions(@RequestParam(name = "rewardsCompanyId", required = false) UUID rewardsCompanyId,
+                                    @RequestParam(name = "programId", required = false) UUID programId,
+                                    @RequestParam(name = "promotionId", required = false) UUID promotionId,
+                                    @RequestParam(name = "accountId", required = false) UUID accountId,
+                                    @RequestParam(name = "promotion_state", required = false) String promotionState,
+                                    @RequestParam(name = "offset", required = false, defaultValue = "0") Integer offset,
+                                    @RequestParam(name = "limit", required = false, defaultValue = "25") Integer limit) {
         optInValidator.validateGetPromotions(rewardsCompanyId, programId, promotionId, accountId);
         try {
             log.info("Method : getActivePromotions, Message : Getting promotions");
