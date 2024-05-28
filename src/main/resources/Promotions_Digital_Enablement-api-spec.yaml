@@ -200,7 +200,7 @@ components:
         type: integer
         format: int32
         example: 0
-        default:
+        default: 0
     LimitParam:
       name: limit
       in: query
@@ -374,7 +374,7 @@ components:
             AUTHORIZATION_ERROR:
               $ref: '#/components/examples/Unauthorized'
     ResponseForbidden:
-      description: Forbidden
+      description: Client is forbidden from this resource
       content:
         application/json:
           schema:
@@ -383,19 +383,19 @@ components:
             FORBIDDEN:
               $ref: '#/components/examples/Forbidden'
     ResponseNotFound:
-      description: Not Found
+      description: Resource not found
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorsList'
     ActivePromotion:
-      description: OK
+      description: OK response including client reward programs
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/Promotions"
     PromotionDetail:
-      description: OK
+      description: OK response including details on a client reward program
       content:
         application/json:
           schema:
@@ -492,7 +492,7 @@ components:
           maxLength: 50
           minLength: 20
           type: string
-          description: Program Id
+          description: Unique Program Identifier for a client promotion, available from promotion setup.
           example: 4f74f660-5793-4f33-a3bc-ffc7bee39238
     BankProduct:
       title: BankProduct
@@ -502,13 +502,13 @@ components:
           maxLength: 50
           minLength: 0
           type: string
-          description: Bank Product Code
+          description: The account’s associated reward product identifier as defined by the client and configured during the implementation of the program.
           example: 7274VCC
         id:
           maxLength: 50
           minLength: 20
           type: string
-          description: Bank Product Id
+          description: Unique Identifier for a bank product
           format: uuid
           example: ff34f660-5793-4f33-a3bc-ffc7bee39238
     Company:
@@ -530,12 +530,12 @@ components:
           maxLength: 50
           minLength: 20
           type: string
-          description: Reward Company Id
+          description: Unique identifier for this company and reward relation.
           format: uuid
           example: 5f74g660-5793-4f33-a3bc-ffc7bee39234
     Cap:
       type: object
-      description: "Contains reward capping information for a given promotion. Capping is the maximum amount of rewards that a user can get while the promotion is active. Capping can be applied on an account or transaction level and within a given time period."
+      description: Contains reward capping information for a given promotion. Capping is the maximum amount of rewards that a user can get while the promotion is active. Capping can be applied on an account or transaction level and within a given time period.
       properties:
         entityType:
           type: string
@@ -1237,12 +1237,12 @@ components:
       properties:
         accounts:
           type: array
-          description: List of Accounts
+          description: Contains the account details and most recent opt-in/out decision of the account for the promotion.
           items:
             $ref: "#/components/schemas/Account"
         externalTargetRecords:
           type: array
-          description: External Target Records
+          description: List of External Target Records sent by the customer.
           items:
             $ref: "#/components/schemas/ExternalTargetRecord"
         activationRequired:
@@ -1266,7 +1266,7 @@ components:
           example: "2020-05-05T15:19:31.823Z"
         description:
           type: string
-          description: Promotion description.
+          description: Human readable summary of a promotion
           example: "Promotion for digital rewards"
         endDateTime:
           type: string
@@ -1276,40 +1276,40 @@ components:
         scoringBeginDateTime:
           type: string
           format: date-time
-          description: Scoring begin date.
+          description: The first date the promotion will be scored
           example: "2023-02-01T15:15:31.827Z"
         scoringEndDateTime:
           type: string
           format: date-time
-          description: Scoring end date.
+          description: The last day the promotion will be scored.
           example: "2023-02-01T15:15:31.827Z"
         postingBeginDateTime:
           type: string
           format: date-time
-          description: posting begin date.
+          description: Only transactions that were posted to Global rewards platform on or after the begin date will be considered when qualifying the transaction for an award.
           example: "2023-02-01T15:15:31.827Z"
         postingEndDateTime:
           type: string
           format: date-time
-          description: posting end date.
+          description: Only transactions that were posted to Global rewards platform on or before the end date will be considered when qualifying the transaction for an award.
           example: "2023-02-01T15:15:31.827Z"
         transactionBeginDateTime:
           type: string
           format: date-time
-          description: transaction begin date.
+          description: Only transactions that occur on or after this date will be considered when qualifying the transaction for an award.
           example: "2023-02-01T15:15:31.827Z"
         transactionEndDateTime:
           type: string
           format: date-time
-          description: transaction end date.
+          description: Only transactions that occur on or before this date will be considered when qualifying the transaction for an award.
           example: "2023-02-01T15:15:31.827Z"
         frequency:
           type: string
-          description: Promotion frequency.
+          description: Indicator of the recurrence of a promotion
           example: "RECURRING"
         name:
           type: string
-          description: Promotion name.
+          description: Name of the promotion.
           example: "Digital Rewards"
         programId:
           type: string
@@ -1327,7 +1327,7 @@ components:
           example: "America/Chicago"
         statusCode:
           type: string
-          description: Promotion status.
+          description: Current status of the promotion. Can be "ACTIVE", "INACTIVE", "PAUSED", or "INVALID"
           example: "ACTIVE"
         statusChangedDateTime:
           type: string
