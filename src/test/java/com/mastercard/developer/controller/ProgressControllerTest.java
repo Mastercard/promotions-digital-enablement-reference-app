@@ -96,7 +96,7 @@ public class ProgressControllerTest {
 
         PromotionProgress promotion = new PromotionProgress();
 
-        progressSummaryBeanList.add(getProgress("HOUSEHOLD", "5283da1c-2bdf-40cc-a0e1-781fe30eab13", 5L, 5));
+        progressSummaryBeanList.add(getProgress("HOUSEHOLD", "5283da1c-2bdf-40cc-a0e1-781fe30eab13", 5));
 
         ruleList.add(getRule("HOUSEHOLD", "5283da1c-2bdf-40cc-a0e1-781fe30eab13", "6cef30ef-bcfc-429f-9aa5-b7bfc0a108f5", 5L, "COUNT", 4L, "M", "202006"));
 
@@ -111,11 +111,10 @@ public class ProgressControllerTest {
         return promotion;
     }
 
-    private ProgressSummary getProgress(String entityType, String entityId, Long rewardsReceivedCount, Integer totalRewardsReceived) {
+    private ProgressSummary getProgress(String entityType, String entityId, Integer totalRewardsReceived) {
         ProgressSummary progress = new ProgressSummary();
         progress.setEntityType(entityType);
         progress.setEntityId(entityId);
-        progress.setRewardsReceivedCount(rewardsReceivedCount);
         progress.setTotalRewardsReceived(totalRewardsReceived);
         return progress;
     }
