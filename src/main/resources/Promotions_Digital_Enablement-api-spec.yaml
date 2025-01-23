@@ -1143,12 +1143,6 @@ components:
           example: ad1e21a7-4c1c-4812-ae47-d2c4fae7c5a8
           maxLength: 50
           description: Unique identifier for the progress entity type - “ACCOUNT” or “HOUSEHOLD”.
-        rewardsReceivedCount:
-          type: integer
-          example: 5
-          maxLength: 15
-          description: Number of times the account has received a reward for this promotion, regardless of the reward type (points, miles, amount)
-          format: int64
         totalRewardsReceived:
           type: integer
           example: 5
