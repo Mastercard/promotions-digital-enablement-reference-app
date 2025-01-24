@@ -22,6 +22,8 @@ tags:
     description: Promotion Progress Controller
   - name: Transactions
     description: Transactions Controller
+  - name: Audiences
+    description: Provides clients with the ability to get the promotion details of a specific cardholder or enroll to a specific promotions for a specific time periods.
 paths:
   /accounts/searches:
     post:
@@ -157,6 +159,69 @@ paths:
           $ref: '#/components/responses/ResponseForbidden'
         '404':
           $ref: '#/components/responses/ResponseNotFound'
+  /audiences:
+    post:
+      tags:
+        - Audiences
+      description: Add an eligibility period (begin and end datetime) for the cardholder either account or household.
+      operationId: createAudience
+      summary: This API endpoint is used to create an audience entity
+      requestBody:
+        $ref: '#/components/requestBodies/Audience'
+      responses:
+        '201':
+          $ref: '#/components/responses/ResponseAudienceCreated'
+        '400':
+          $ref: '#/components/responses/ResponseBadRequest'
+        '401':
+          $ref: '#/components/responses/ResponseUnauthorizedError'
+        '404':
+          $ref: '#/components/responses/ResponseNotFound'
+    get:
+      tags:
+        - Audiences
+      description: Retrieve audiences by passing the entityType (A or H) and entityId (account id or household id) to get the history of eligibility periods for all the audiences (represented by the code). Only audiences that the entityId has been added to will be returned.
+      operationId: getAudiences
+      summary: This API endpoint is used to fetch the audiences
+      parameters:
+        - $ref: '#/components/parameters/entity_id'
+        - $ref: '#/components/parameters/entity_type'
+        - $ref: '#/components/parameters/code'
+        - $ref: '#/components/parameters/from_date_time'
+        - $ref: '#/components/parameters/to_date_time'
+        - $ref: '#/components/parameters/Offset'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          $ref: '#/components/responses/ResponsePagedResponseAudience'
+        '401':
+          $ref: '#/components/responses/ResponseUnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ResponseForbiddenError'
+        '404':
+          $ref: '#/components/responses/ResponseNotFound'
+  /audiences/{id}:
+    put:
+      tags:
+        - Audiences
+      description: End the eligibility period for a given id.
+      operationId: updateAudience
+      summary: This API endpoint is used to update the audience entity
+      parameters:
+        - $ref: '#/components/parameters/ref_id'
+      requestBody:
+        $ref: '#/components/requestBodies/AudienceUpdate'
+      responses:
+        '200':
+          $ref: '#/components/responses/ResponseAudience'
+        '400':
+          $ref: '#/components/responses/ResponseBadRequest'
+        '401':
+          $ref: '#/components/responses/ResponseUnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ResponseForbiddenError'
+        '404':
+          $ref: '#/components/responses/ResponseNotFound'
 
 components:
   requestBodies:
@@ -174,6 +239,19 @@ components:
             type: array
             items:
               $ref: "#/components/schemas/OptIn"
+    Audience:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Audience'
+
+    AudienceUpdate:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AudienceUpdate'
   parameters:
     FromDateParam:
       name: from_date
@@ -302,6 +380,60 @@ components:
         type: integer
         format: int32
         default: 25
+    ref_id:
+      description: Unique identifier for an audience
+      example: 1127d5a6-ed44-4148-aa08-da168016cd56
+      in: path
+      name: id
+      required: true
+      schema:
+        type: string
+      style: simple
+    entity_id:
+      description: Entity ID is the reference id for account and household
+      example: 12f5930a-ab8b-4a25-9774-6ba49a9bfd8c
+      in: query
+      name: entity_id
+      required: true
+      schema:
+        type: string
+      style: form
+    entity_type:
+      description: Entity Type is the type either Account or Household
+      example: A
+      in: query
+      name: entity_type
+      required: true
+      schema:
+        type: string
+      style: form
+    code:
+      description: It is the audience code
+      example: CODE_NY
+      in: query
+      name: code
+      required: false
+      schema:
+        type: string
+      style: form
+    from_date_time:
+      description: Begin date time of audience records
+      example: 2025-01-11T02:00:00Z
+      in: query
+      name: from_date_time
+      required: false
+      schema:
+        type: string
+      style: form
+    to_date_time:
+      description: End date time of audience records
+      example: 2025-01-18T02:00:00Z
+      in: query
+      name: to_date_time
+      required: false
+      schema:
+        type: string
+      style: form
   responses:
     ResponseOkSearchAccount:
       description: Successfully Retrieved Account(s)
@@ -380,6 +512,30 @@ components:
             $ref: "#/components/schemas/PromotionDetail"
     ResponseActivated:
       description: Successfully updated Opt-In choice
+    ResponseForbiddenError:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorsList'
+    ResponsePagedResponseAudience:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PagedResponseAudience'
+    ResponseAudience:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Audience'
+    ResponseAudienceCreated:
+      description: Created
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Audience'
   schemas:
     AccountSearch:
       type: object
@@ -1337,6 +1493,73 @@ components:
           description: The list of Accounts that are in the entire collection
           items:
             $ref: '#/components/schemas/AccountSearchItem'
+    AudienceUpdate:
+      type: object
+      properties:
+        beginDateTime:
+          description: Begin Date Time
+          example: 2025-01-11T02:00:00Z
+          type: string
+        endDateTime:
+          description: End Date Time
+          example: 2025-01-18T02:00:00Z
+          type: string
+    Audience:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 1127d5a6-ed44-4148-aa08-da168016cd56
+          description: It is the unique reference id for audience records
+        code:
+          type: string
+          example: CODE_NY
+          description: It is the audience code
+        beginDateTime:
+          type: string
+          example: 2025-01-11T02:00:00Z
+          description: Begin date time of audience records
+        endDateTime:
+          type: string
+          example: 2025-01-18T02:00:00Z
+          description: End date time of audience records
+        entityType:
+          type: string
+          example: A
+          description: Indicates at which level the audience record is associated - either 'A' for Account or 'H' for Household
+        entityId:
+          type: string
+          example: 12f5930a-ab8b-4a25-9774-6ba49a9bfd8c
+          description: Code for the associated audience record
+    PagedResponseAudience:
+      type: object
+      properties:
+        count:
+          description: The number of items that are in this offset batch
+          example: 1
+          format: int32
+          type: integer
+        offset:
+          description: The number of items to offset the start of the list from
+          example: 0
+          format: int32
+          type: integer
+        limit:
+          description: The number of items in the list to be limited to
+          example: 25
+          format: int32
+          type: integer
+        total:
+          description: The total number of items that are in the entire collection
+          example: 1
+          format: int64
+          type: integer
+        items:
+          type: array
+          description: List of Audience Data
+          items:
+            $ref: '#/components/schemas/Audience'
+
   examples:
     SearchAccountBadRequest:
       value:
@@ -1354,5 +1577,14 @@ components:
             - Source: Loyalty-Enrollment
               ReasonCode: AUTHORIZATION_ERROR
               Description: Client could not be authorized.
+              Recoverable: true
+              Details: null
+    Forbidden:
+      value:
+        Errors:
+          Error:
+            - Source: Loyalty-Enrollment
+              ReasonCode: FORBIDDEN
+              Description: Client does not have permission.
               Recoverable: true
               Details: null
