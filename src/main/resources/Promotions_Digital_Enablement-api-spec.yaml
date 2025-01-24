@@ -1356,3 +1356,12 @@ components:
               Description: Client could not be authorized.
               Recoverable: true
               Details: null
+    Forbidden:
+      value:
+        Errors:
+          Error:
+            - Source: Loyalty-Enrollment
+              ReasonCode: FORBIDDEN
+              Description: Client does not have permission.
+              Recoverable: true
+              Details: null
