@@ -29,11 +29,6 @@ public class AudienceValidatorTest {
     @Rule
     public ExpectedException expectedEx = ExpectedException.none();
 
-    @Before
-    public void setup() {
-        MockitoAnnotations.initMocks(this);
-    }
-
     @Test
     public void testValidateUpdateDataRequestForInvalidFormatOfBeginDate() {
         AudienceUpdate audienceUpdate = createAudienceUpdateObj();
