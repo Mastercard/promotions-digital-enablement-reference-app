@@ -141,15 +141,14 @@ public class AudienceValidator {
         }
     }
 
-    private void fromISOToLocalDateTime(String isoDateTime) {
-        if (isNotBlank(isoDateTime)) {
-            ZonedDateTime.parse(isoDateTime, DateTimeFormatter.ISO_DATE_TIME)
-                    .withZoneSameInstant(ZoneOffset.UTC);
-        }
+    private LocalDateTime fromISOToLocalDateTime(String isoDateTime) {
+        return isNotBlank(isoDateTime) ?
+                ZonedDateTime.parse(isoDateTime, DateTimeFormatter.ISO_DATE_TIME)
+                        .withZoneSameInstant(ZoneOffset.UTC).toLocalDateTime() : null;
     }
 
     private void collectAndThrowErrors(Map<String, String> errorMap) {
-        if (errorMap.size() > 0) {
+        if (!errorMap.isEmpty()) {
             final String[] mapKey = new String[1];
             errorMap.forEach((key, value) -> mapKey[0] = key);
             throw new InvalidRequest(mapKey[0], errorMap.get(mapKey[0]));

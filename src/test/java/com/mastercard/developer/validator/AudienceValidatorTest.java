@@ -19,10 +19,7 @@ import java.time.format.DateTimeFormatter;
 @RunWith(MockitoJUnitRunner.class)
 public class AudienceValidatorTest {
 
-    private static final LocalDateTime BEGIN_DATE = LocalDateTime.now();
     private static final LocalDateTime END_DATE = LocalDateTime.now().plusDays(5);
-    private static final String BEGIN_DATE_TIME = BEGIN_DATE.atZone(ZoneOffset.UTC)
-            .withZoneSameInstant(ZoneOffset.UTC).format(DateTimeFormatter.ISO_DATE_TIME);
     private static final String END_DATE_TIME = END_DATE.atZone(ZoneOffset.UTC)
             .withZoneSameInstant(ZoneOffset.UTC).format(DateTimeFormatter.ISO_DATE_TIME);
 
