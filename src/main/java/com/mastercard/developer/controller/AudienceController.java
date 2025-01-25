@@ -4,13 +4,12 @@ import com.mastercard.developer.exception.InvalidRequest;
 import com.mastercard.developer.service.AudienceService;
 import com.mastercard.developer.validator.AudienceValidator;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.openapitools.client.ApiException;
 import org.openapitools.client.model.Audience;
 import org.openapitools.client.model.AudienceUpdate;
 import org.openapitools.client.model.PagedResponseAudience;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,15 +23,19 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Audiences")
 @Slf4j
 @RestController
-@NoArgsConstructor
-@AllArgsConstructor
 @RequestMapping(
         value = "",
-        produces = {"application/json"}) //ToCheck
+        produces = {"application/json"})
 public class AudienceController {
 
-    private AudienceValidator audienceValidator;
-    private AudienceService audienceService;
+    private final AudienceValidator audienceValidator;
+    private final AudienceService audienceService;
+
+    @Autowired
+    public AudienceController(AudienceValidator audienceValidator, AudienceService audienceService) {
+        this.audienceValidator = audienceValidator;
+        this.audienceService = audienceService;
+    }
 
     /*---------------------------------------------------------------- GET Audience API -------------------------------------------------------*/
 

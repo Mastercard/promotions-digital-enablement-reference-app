@@ -4,29 +4,29 @@ import com.mastercard.developer.exception.InvalidRequest;
 import com.mastercard.developer.service.AudienceService;
 import com.mastercard.developer.validator.AudienceValidator;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.openapitools.client.ApiException;
 import org.openapitools.client.model.Audience;
 import org.openapitools.client.model.AudienceUpdate;
 import org.openapitools.client.model.PagedResponseAudience;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import static com.mastercard.developer.constants.ApplicationConstants.END_DATE_SHOULD_BE_AFTER_BEGIN_DATE;
+import static com.mastercard.developer.constants.ApplicationConstants.END_DATE_SHOULD_BE_AFTER_BEGIN_DATE_ERR_MSG;
+import static com.mastercard.developer.constants.ApplicationConstants.INVALID_FIELD_ENTITY_TYPE;
+import static com.mastercard.developer.constants.ApplicationConstants.INVALID_FIELD_ENTITY_TYPE_ERR_MSG;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -41,31 +41,20 @@ public class AudienceControllerTest {
     @Mock
     AudienceValidator audienceValidator;
 
-    @Autowired
-    private MockMvc mockMvc;
-
     private static final String EXTERNAL_TARGET_CODE = RandomStringUtils.randomAlphabetic(10);
     private static final String ENTITY_REFERENCE_ID = RandomStringUtils.randomAlphabetic(10);
     private static final String REFERENCE_ID = RandomStringUtils.randomAlphabetic(10);
 
-    @Before
-    public void setUp() {
-        controller = spy(new AudienceController(audienceValidator, audienceService));
-        MockitoAnnotations.openMocks(this);
-        mockMvc = MockMvcBuilders
-                .standaloneSetup(controller)
-                .setMessageConverters(new MappingJackson2HttpMessageConverter())
-                .build();
-    }
-
     @Test
     public void testGetAudience_Success() throws Exception {
-        when(audienceService.getAudiencePagedExternalTargetRecords(anyString(), anyString(), any(String.class), any(String.class),
-                anyString(), any(Integer.class), any(Integer.class)))
-                .thenReturn(new PagedResponseAudience());
+        PagedResponseAudience pagedResponseAudience = getPagedResponseOfAudience();
+        when(audienceService.getAudiencePagedExternalTargetRecords(anyString(), anyString(), anyString(), anyString(),
+                anyString(), anyInt(), anyInt()))
+                .thenReturn(pagedResponseAudience);
         PagedResponseAudience response = controller.getAudiences(UUID.randomUUID().toString(), "A", "AC31",
                 "2025-01-01T02:00:00Z", "2025-01-09T02:00:00Z", 0, 25);
         assertNotNull(response);
+        assertEquals(1, response.getCount().intValue());
     }
 
     @Test(expected = InvalidRequest.class)
@@ -75,6 +64,22 @@ public class AudienceControllerTest {
                 .thenThrow(new ApiException());
         controller.getAudiences(UUID.randomUUID().toString(), "A", "AC31",
                 "2025-01-01T02:00:00Z", "2025-01-09T02:00:00Z", 0, 25);
+    }
+
+    @Test
+    public void testGetTransactions_ExceptionForNullEntityType() {
+        String fromDate = "2024-10-21T08:08:08Z";
+        String entityId = "id31";
+        String code = "AC31";
+        String entityType = null;
+        String toDate = "2024-10-12T08:08:08Z";
+        doThrow(new InvalidRequest(INVALID_FIELD_ENTITY_TYPE, INVALID_FIELD_ENTITY_TYPE_ERR_MSG))
+                .when(audienceValidator).validateAudienceGetDataRequest(fromDate, toDate, entityType, entityId);
+        try {
+            controller.getAudiences(entityId, entityType, code, fromDate, toDate, 0, 25);
+        } catch (InvalidRequest ex) {
+            assertEquals(INVALID_FIELD_ENTITY_TYPE_ERR_MSG, ex.getMessage());
+        }
     }
 
     @Test
@@ -91,6 +96,19 @@ public class AudienceControllerTest {
         Audience request = getAudienceObject();
         when(audienceService.saveAudience(any())).thenThrow(new ApiException());
         controller.createAudience(request);
+    }
+
+    @Test
+    public void testCreateAudience_ExceptionForNullEntityType() {
+        Audience request = getAudienceObject();
+        request.setEntityType(null);
+        doThrow(new InvalidRequest(INVALID_FIELD_ENTITY_TYPE, INVALID_FIELD_ENTITY_TYPE_ERR_MSG))
+                .when(audienceValidator).validateAudienceCreate(request);
+        try {
+            controller.createAudience(request);
+        } catch (InvalidRequest ex) {
+            assertEquals(INVALID_FIELD_ENTITY_TYPE_ERR_MSG, ex.getMessage());
+        }
     }
 
     @Test
@@ -111,6 +129,20 @@ public class AudienceControllerTest {
         controller.updateAudience(referenceId, request);
     }
 
+    @Test
+    public void testUpdateAudience_ExceptionForIncorrectEndDateTime() {
+        String referenceId = "90eb6039-bd49-44ed-835f-62052253b00e";
+        AudienceUpdate request = getAudienceUpdateObject();
+        request.setEndDateTime(LocalDateTime.now().minusDays(10).toString());
+        doThrow(new InvalidRequest(END_DATE_SHOULD_BE_AFTER_BEGIN_DATE, END_DATE_SHOULD_BE_AFTER_BEGIN_DATE_ERR_MSG))
+                .when(audienceValidator).validateAudienceUpdateData(request);
+        try {
+            controller.updateAudience(referenceId, request);
+        } catch (InvalidRequest ex) {
+            assertEquals(END_DATE_SHOULD_BE_AFTER_BEGIN_DATE_ERR_MSG, ex.getMessage());
+        }
+    }
+
     private Audience getAudienceObject() {
         Audience audience = new Audience();
         audience.setCode(EXTERNAL_TARGET_CODE);
@@ -127,5 +159,12 @@ public class AudienceControllerTest {
         audienceUpdate.setBeginDateTime(LocalDateTime.now().toString());
         audienceUpdate.setEndDateTime(LocalDateTime.now().plusDays(10).toString());
         return audienceUpdate;
+    }
+
+    private PagedResponseAudience getPagedResponseOfAudience() {
+        PagedResponseAudience searchResponse = new PagedResponseAudience();
+        searchResponse.setCount(1);
+        searchResponse.addItemsItem(new Audience());
+        return searchResponse;
     }
 }
