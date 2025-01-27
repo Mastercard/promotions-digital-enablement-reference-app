@@ -9,10 +9,16 @@ import org.springframework.util.StringUtils;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Component
 public class TransactionValidator {
@@ -87,6 +93,12 @@ public class TransactionValidator {
         }
 
         return simpleDateFormat;
+    }
+
+    private LocalDateTime fromISOToLocalDateTime(String isoDateTime) {
+        return isNotBlank(isoDateTime) ?
+                ZonedDateTime.parse(isoDateTime, DateTimeFormatter.ISO_DATE_TIME)
+                        .withZoneSameInstant(ZoneOffset.UTC).toLocalDateTime() : null;
     }
 
 }
