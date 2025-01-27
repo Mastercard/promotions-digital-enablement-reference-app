@@ -1,4 +1,4 @@
-package com.mastercard.developer.constants;
+package com.mastercard.developer.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.openapitools.client.ApiClient;
