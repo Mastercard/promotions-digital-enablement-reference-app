@@ -3,7 +3,6 @@ package com.mastercard.developer.controller;
 import com.mastercard.developer.exception.InvalidRequest;
 import com.mastercard.developer.service.AudienceService;
 import com.mastercard.developer.validator.AudienceValidator;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.openapitools.client.ApiException;
 import org.openapitools.client.model.Audience;
