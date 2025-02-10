@@ -164,8 +164,8 @@ public class AudienceControllerTest {
     @Test
     public void testDeleteAudience_Exception() throws Exception {
         String referenceId = "abc123";
-        doThrow(new InvalidRequest("INVALID_FIELD_AUDIENCE_ID", "Invalid audienceId"))
-                .when(audiencesApi).deleteAudiences(anyString());
+        doThrow(new ApiException(400, null, "Invalid audienceId"))
+                .when(audienceService).deleteAudience(referenceId);
         try {
             controller.deleteAudience(referenceId);
         } catch (InvalidRequest ex) {
