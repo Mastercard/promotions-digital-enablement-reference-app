@@ -44,7 +44,7 @@ public class AudienceController {
             @RequestParam(name = "entity_id") String entityId,
             @RequestParam(name = "entity_type") String entityType,
             @RequestParam(name = "code", required = false) String audienceCode,
-            @RequestParam(name = "include_history", required = false) boolean includeHistory,
+            @RequestParam(name = "include_history", required = false) Boolean includeHistory,
             @RequestParam(name = "from_date_time", required = false) String fromDateTime,
             @RequestParam(name = "to_date_time", required = false) String toDateTime,
             @RequestParam(value = "offset", required = false, defaultValue = "0") int offset,
