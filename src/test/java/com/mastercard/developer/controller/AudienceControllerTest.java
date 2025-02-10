@@ -10,9 +10,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.openapitools.client.ApiException;
+import org.openapitools.client.api.AudiencesApi;
 import org.openapitools.client.model.Audience;
 import org.openapitools.client.model.AudienceUpdate;
 import org.openapitools.client.model.PagedResponseAudience;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -24,8 +27,10 @@ import static com.mastercard.developer.constants.ApplicationConstants.INVALID_FI
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
@@ -41,6 +46,9 @@ public class AudienceControllerTest {
     @Mock
     AudienceValidator audienceValidator;
 
+    @Mock
+    AudiencesApi audiencesApi;
+
     private static final String EXTERNAL_TARGET_CODE = RandomStringUtils.randomAlphabetic(10);
     private static final String ENTITY_REFERENCE_ID = RandomStringUtils.randomAlphabetic(10);
     private static final String REFERENCE_ID = RandomStringUtils.randomAlphabetic(10);
@@ -48,10 +56,10 @@ public class AudienceControllerTest {
     @Test
     public void testGetAudience_Success() throws Exception {
         PagedResponseAudience pagedResponseAudience = getPagedResponseOfAudience();
-        when(audienceService.getAudiencePagedExternalTargetRecords(anyString(), anyString(), anyString(), anyString(),
+        when(audienceService.getAudiencePagedExternalTargetRecords(anyString(), anyString(), anyString(), anyBoolean(), anyString(),
                 anyString(), anyInt(), anyInt()))
                 .thenReturn(pagedResponseAudience);
-        PagedResponseAudience response = controller.getAudiences(UUID.randomUUID().toString(), "A", "AC31",
+        PagedResponseAudience response = controller.getAudiences(UUID.randomUUID().toString(), "A", "AC31", true,
                 "2025-01-01T02:00:00Z", "2025-01-09T02:00:00Z", 0, 25);
         assertNotNull(response);
         assertEquals(1, response.getCount().intValue());
@@ -59,10 +67,10 @@ public class AudienceControllerTest {
 
     @Test(expected = InvalidRequest.class)
     public void testGetTransactions_Exception() throws Exception {
-        when(audienceService.getAudiencePagedExternalTargetRecords(anyString(), anyString(), any(String.class), any(String.class),
+        when(audienceService.getAudiencePagedExternalTargetRecords(anyString(), anyString(), any(String.class), anyBoolean(), any(String.class),
                 anyString(), any(Integer.class), any(Integer.class)))
                 .thenThrow(new ApiException());
-        controller.getAudiences(UUID.randomUUID().toString(), "A", "AC31",
+        controller.getAudiences(UUID.randomUUID().toString(), "A", "AC31", true,
                 "2025-01-01T02:00:00Z", "2025-01-09T02:00:00Z", 0, 25);
     }
 
@@ -71,12 +79,13 @@ public class AudienceControllerTest {
         String fromDate = "2024-10-21T08:08:08Z";
         String entityId = "id31";
         String code = "AC31";
+        boolean includeHistory = true;
         String entityType = null;
         String toDate = "2024-10-12T08:08:08Z";
         doThrow(new InvalidRequest(INVALID_FIELD_ENTITY_TYPE, INVALID_FIELD_ENTITY_TYPE_ERR_MSG))
                 .when(audienceValidator).validateAudienceGetDataRequest(fromDate, toDate, entityType, entityId);
         try {
-            controller.getAudiences(entityId, entityType, code, fromDate, toDate, 0, 25);
+            controller.getAudiences(entityId, entityType, code, includeHistory, fromDate, toDate, 0, 25);
         } catch (InvalidRequest ex) {
             assertEquals(INVALID_FIELD_ENTITY_TYPE_ERR_MSG, ex.getMessage());
         }
@@ -140,6 +149,27 @@ public class AudienceControllerTest {
             controller.updateAudience(referenceId, request);
         } catch (InvalidRequest ex) {
             assertEquals(END_DATE_SHOULD_BE_AFTER_BEGIN_DATE_ERR_MSG, ex.getMessage());
+        }
+    }
+
+    @Test
+    public void testSuccessDeleteAudience() throws Exception {
+        String referenceId = "90eb6039-bd49-44ed-835f-62052253b00e";
+        doNothing().when(audienceService).deleteAudience(referenceId);
+        ResponseEntity response = controller.deleteAudience(referenceId);
+        assertNotNull(response);
+        assertEquals(HttpStatus.NO_CONTENT.value(), response.getStatusCode().value());
+    }
+
+    @Test
+    public void testDeleteAudience_Exception() throws Exception {
+        String referenceId = "abc123";
+        doThrow(new InvalidRequest("INVALID_FIELD_AUDIENCE_ID", "Invalid audienceId"))
+                .when(audiencesApi).deleteAudiences(anyString());
+        try {
+            controller.deleteAudience(referenceId);
+        } catch (InvalidRequest ex) {
+            assertEquals("Invalid audienceId", ex.getMessage());
         }
     }
 

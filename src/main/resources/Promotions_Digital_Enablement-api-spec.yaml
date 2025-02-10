@@ -62,15 +62,15 @@ paths:
         - $ref: '#/components/parameters/Limit'
       responses:
         '200':
-          $ref: '#/components/responses/ResponseOKActivePromotion'
+          $ref: '#/components/responses/ActivePromotion'
         '400':
-          $ref: '#/components/responses/ResponseBadRequest'
+          $ref: '#/components/responses/ResponsePromotionsBadRequest'
         '401':
-          $ref: '#/components/responses/ResponseUnauthorizedError'
+          $ref: '#/components/responses/ResponsePromotionsUnauthorized'
         '403':
-          $ref: '#/components/responses/ResponseForbidden'
+          $ref: '#/components/responses/ResponsePromotionsForbidden'
         '404':
-          $ref: '#/components/responses/ResponseNotFound'
+          $ref: '#/components/responses/ResponsePromotionsNotFound'
   /promotions/{promotion_id}/details:
     get:
       tags:
@@ -163,30 +163,31 @@ paths:
     post:
       tags:
         - Audiences
-      description: Add an eligibility period (begin and end datetime) for the cardholder either account or household.
-      operationId: createAudience
-      summary: This API endpoint is used to create an audience entity
+      description: This API endpoint is used to add an eligibility period (begin and end datetime) for the cardholder either account or household (A/H - represented by the entityId) into the audience (represented by the code). It will return the unique id associated with the code, entityId and beginDateTime.
+      operationId: createAudiences
+      summary: Provides clients the ability to create an audience entity
       requestBody:
         $ref: '#/components/requestBodies/Audience'
       responses:
         '201':
           $ref: '#/components/responses/ResponseAudienceCreated'
         '400':
-          $ref: '#/components/responses/ResponseBadRequest'
+          $ref: '#/components/responses/ResponseAudienceBadRequest'
         '401':
-          $ref: '#/components/responses/ResponseUnauthorizedError'
-        '404':
-          $ref: '#/components/responses/ResponseNotFound'
+          $ref: '#/components/responses/ResponseAudienceUnauthorized'
+        '403':
+          $ref: '#/components/responses/ResponseAudienceForbidden'
     get:
       tags:
         - Audiences
       description: Retrieve audiences by passing the entityType (A or H) and entityId (account id or household id) to get the history of eligibility periods for all the audiences (represented by the code). Only audiences that the entityId has been added to will be returned.
       operationId: getAudiences
-      summary: This API endpoint is used to fetch the audiences
+      summary: Provides clients the ability to fetch the audiences
       parameters:
         - $ref: '#/components/parameters/entity_id'
         - $ref: '#/components/parameters/entity_type'
         - $ref: '#/components/parameters/code'
+        - $ref: '#/components/parameters/include_history'
         - $ref: '#/components/parameters/from_date_time'
         - $ref: '#/components/parameters/to_date_time'
         - $ref: '#/components/parameters/Offset'
@@ -194,19 +195,19 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/ResponsePagedResponseAudience'
+        '400':
+          $ref: '#/components/responses/ResponseAudienceBadRequest'
         '401':
-          $ref: '#/components/responses/ResponseUnauthorizedError'
+          $ref: '#/components/responses/ResponseAudienceUnauthorized'
         '403':
-          $ref: '#/components/responses/ResponseForbiddenError'
-        '404':
-          $ref: '#/components/responses/ResponseNotFound'
+          $ref: '#/components/responses/ResponseAudienceForbidden'
   /audiences/{id}:
     put:
       tags:
         - Audiences
-      description: End the eligibility period for a given id.
-      operationId: updateAudience
-      summary: This API endpoint is used to update the audience entity
+      description: This API endpoint is used to end the eligibility period for a given audienceId ( represents a code, entityType, entityId combination) by passing the new endDateTime.
+      operationId: updateAudiences
+      summary: Provides clients the ability to update the audience entity
       parameters:
         - $ref: '#/components/parameters/ref_id'
       requestBody:
@@ -215,17 +216,35 @@ paths:
         '200':
           $ref: '#/components/responses/ResponseAudience'
         '400':
-          $ref: '#/components/responses/ResponseBadRequest'
+          $ref: '#/components/responses/ResponseAudienceBadRequest'
         '401':
-          $ref: '#/components/responses/ResponseUnauthorizedError'
+          $ref: '#/components/responses/ResponseAudienceUnauthorized'
         '403':
-          $ref: '#/components/responses/ResponseForbiddenError'
+          $ref: '#/components/responses/ResponseAudienceForbidden'
         '404':
-          $ref: '#/components/responses/ResponseNotFound'
+          $ref: '#/components/responses/ResponseAudienceIdNotFound'
+    delete:
+      tags:
+        - Audiences
+      description: This API endpoint is used to delete the audience record.
+      operationId: deleteAudiences
+      summary: Provides clients the ability to delete the audience entity
+      parameters:
+        - $ref: '#/components/parameters/ref_id'
+      responses:
+        '204':
+          $ref: '#/components/responses/ResponseAudienceDeleted'
+        '401':
+          $ref: '#/components/responses/ResponseAudienceUnauthorized'
+        '403':
+          $ref: '#/components/responses/ResponseAudienceForbidden'
+        '404':
+          $ref: '#/components/responses/ResponseAudienceIdNotFound'
 
 components:
   requestBodies:
     AccountSearchRequest:
+      required: true
       content:
         application/json:
           schema:
@@ -275,7 +294,7 @@ components:
         type: integer
         format: int32
         example: 0
-        default:
+        default: 0
     LimitParam:
       name: limit
       in: query
@@ -349,7 +368,7 @@ components:
       name: account_id
       in: query
       description: Account Identifier
-      example: "Gd3pnH3bQh"
+      example: "f35e51fe-bc77-432f-b412-3800e3c04e5c"
       schema:
         type: string
     PromotionState:
@@ -416,6 +435,15 @@ components:
       schema:
         type: string
       style: form
+    include_history:
+      description: Do you need latest eligibility or full history(True - Full History, False - Latest Eligibility)
+      example: true
+      in: query
+      name: include_history
+      required: false
+      schema:
+        type: boolean
+      style: form
     from_date_time:
       description: Begin date time of audience records
       example: 2025-01-11T02:00:00Z
@@ -468,6 +496,42 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorsList'
+    ResponsePromotionsUnauthorized:
+      description: Authorization Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorsList'
+          examples:
+            UNAUTHORIZED:
+              $ref: '#/components/examples/PromotionsUnauthorized'
+    ResponsePromotionsForbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorsList'
+          examples:
+            FORBIDDEN:
+              $ref: '#/components/examples/PromotionsForbidden'
+    ResponsePromotionsBadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorsList'
+          examples:
+            BAD_REQUEST:
+              $ref: '#/components/examples/PromotionsBadRequest'
+    ResponsePromotionsNotFound:
+      description: Promotion Id Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorsList'
+          examples:
+            NOT_FOUND:
+              $ref: '#/components/examples/PromotionsNotFound'
     ResponseUnauthorizedError:
       description: Unauthorized error
       content:
@@ -498,7 +562,7 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorsList'
-    ResponseOKActivePromotion:
+    ActivePromotion:
       description: OK
       content:
         application/json:
@@ -512,12 +576,6 @@ components:
             $ref: "#/components/schemas/PromotionDetail"
     ResponseActivated:
       description: Successfully updated Opt-In choice
-    ResponseForbiddenError:
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorsList'
     ResponsePagedResponseAudience:
       description: OK
       content:
@@ -536,6 +594,44 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Audience'
+    ResponseAudienceDeleted:
+      description: Audience record is deleted successfully
+    ResponseAudienceUnauthorized:
+      description: Authorization Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorsList'
+          examples:
+            UNAUTHORIZED:
+              $ref: '#/components/examples/AudienceUnauthorized'
+    ResponseAudienceForbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorsList'
+          examples:
+            FORBIDDEN:
+              $ref: '#/components/examples/AudienceForbidden'
+    ResponseAudienceBadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorsList'
+          examples:
+            BAD_REQUEST:
+              $ref: '#/components/examples/AudienceBadRequest'
+    ResponseAudienceIdNotFound:
+      description: Audience id not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorsList'
+          examples:
+            NOT_FOUND:
+              $ref: '#/components/examples/AudienceIdNotFound'
   schemas:
     AccountSearch:
       type: object
@@ -1209,7 +1305,7 @@ components:
         accountId:
           type: string
           description: Unique Account identifier assigned by Mastercard and provided in the Account enrollment response.
-          example: "Gd3pnH3bQh"
+          example: "f35e51fe-bc77-432f-b412-3800e3c04e5c"
         activation:
           type: boolean
           description: Specifies if the account is opted-in or out for this promotion.
@@ -1218,6 +1314,65 @@ components:
           type: string
           description: Specifies the date when user has optedin or opted out of a promotion.
           example: "2020-06-04T15:19:31.827Z"
+    AudienceArray:
+      type: object
+      properties:
+        entityType:
+          type: string
+          description: A for Account, H for Household
+          example: "A"
+        code:
+          type: string
+          description: Code for the associated audience
+          example: "pYtYI3Otdn"
+    ExternalTargetRecord:
+      type: object
+      properties:
+        externalTargetCode:
+          type: string
+          description: Code for the associated external target
+          example: "pYtYI3Otdn"
+        externalBeginDateTime:
+          type: string
+          format: date-time
+          description: Begin date of external target record
+          example: "2020-06-17T20:19:55.763Z"
+        beginDateTime:
+          type: string
+          format: date-time
+          description: Begin date of promotion association to external target
+          example: "2020-05-18T20:19:55.763Z"
+        endDateTime:
+          type: string
+          format: date-time
+          description: End date of promotion association to external target
+          example: "2020-07-18T20:19:55.765Z"
+        entityType:
+          type: string
+          description: Indicates at which level the external target is associated - either 'A' for Account or 'H' for Household
+          example: "A"
+        entityId:
+          type: string
+          format: uuid
+          description: Code for the associated external target
+          example: "7e747d4a-b585-4990-8756-53996b222804"
+        source:
+          type: string
+          description: Unique entity identifier for external target type which can be the primary account id or just an associated account id
+          example: "GRP"
+        statusCode:
+          type: string
+          description: Status code for the associated external target - 'Q', 'P', 'D'
+          example: "Q"
+        eventDateTime:
+          type: string
+          format: date-time
+          description: Event date time of record sync with the specific source - 'MRS' or 'GRP'
+          example: "2020-07-18T20:19:55.765Z"
+        externalReferenceId:
+          type: string
+          description: Identifier for company the external target is associated with
+          example: "90909090"
     Promotion:
       type: object
       properties:
@@ -1226,6 +1381,16 @@ components:
           description: List of Accounts
           items:
             $ref: "#/components/schemas/Account"
+        audiences:
+          type: array
+          description: List of Audience Codes
+          items:
+            $ref: "#/components/schemas/AudienceArray"
+        externalTargetRecords:
+          type: array
+          description: External Target Records
+          items:
+            $ref: "#/components/schemas/ExternalTargetRecord"
         activationRequired:
           type: boolean
           example: true
@@ -1240,6 +1405,7 @@ components:
             false = Targetting not enabled, all accounts are eligible into promotion by default.
         beginDateTime:
           type: string
+          format: date-time
           description: Promotion start date.
           example: "2020-05-05T15:19:31.823Z"
         description:
@@ -1250,9 +1416,43 @@ components:
           type: string
           description: Promotion end date.
           example: "2020-07-05T15:19:31.827Z"
+        scoringBeginDateTime:
+          type: string
+          format: date-time
+          description: Scoring begin date.
+          example: "2023-02-01T15:15:31.827Z"
+        scoringEndDateTime:
+          type: string
+          format: date-time
+          description: Scoring end date.
+          example: "2023-02-01T15:15:31.827Z"
+        postingBeginDateTime:
+          type: string
+          format: date-time
+          description: posting begin date.
+          example: "2023-02-01T15:15:31.827Z"
+        postingEndDateTime:
+          type: string
+          format: date-time
+          description: posting end date.
+          example: "2023-02-01T15:15:31.827Z"
+        transactionBeginDateTime:
+          type: string
+          format: date-time
+          description: transaction begin date.
+          example: "2023-02-01T15:15:31.827Z"
+        transactionEndDateTime:
+          type: string
+          format: date-time
+          description: transaction end date.
+          example: "2023-02-01T15:15:31.827Z"
+        frequency:
+          type: string
+          description: Frequency of the promotion.
+          example: "RECURRING"
         name:
           type: string
-          description: Promotion name.
+          description: Name of the promotion.
           example: "Digital Rewards"
         programId:
           type: string
@@ -1268,7 +1468,7 @@ components:
           example: "America/Chicago"
         statusCode:
           type: string
-          description: Promotion status.
+          description: Status of the promotion.
           example: "ACTIVE"
         statusChangedDateTime:
           type: string
@@ -1280,7 +1480,7 @@ components:
         accountId:
           type: string
           description: Unique Account identifier assigned by Mastercard and provided in the Account enrollment response.
-          example: "Gd3pnH3bQh"
+          example: "f35e51fe-bc77-432f-b412-3800e3c04e5c"
         activation:
           type: boolean
           description: Specifies if the consumer is opting in or opting out of a promotion.<br/>
@@ -1587,4 +1787,76 @@ components:
               ReasonCode: FORBIDDEN
               Description: Client does not have permission.
               Recoverable: true
+              Details: null
+    PromotionsUnauthorized:
+      value:
+        Errors:
+          Error:
+            - Source: POINTS_ENGINE_CONSUMER_DATA
+              ReasonCode: AUTHORIZATION_ERROR
+              Description: Unable to authorize user due to error in authentication.
+              Recoverable: true
+              Details: "null"
+    PromotionsForbidden:
+      value:
+        Errors:
+          Error:
+            - Source: POINTS_ENGINE_CONSUMER_DATA
+              ReasonCode: FORBIDDEN
+              Description: User does not have required permissions to perform this operation.
+              Recoverable: true
+              Details: "null"
+    PromotionsBadRequest:
+      value:
+        Errors:
+          Error:
+            - Source: INVALID_INPUT
+              ReasonCode: INVALID_FIELD_PROMOTION_STATE
+              Description: Invalid promotion_state provided. Valid values for promotion_state are all, future, current, expired, future+current.
+              Recoverable: false
+              Details: "null"
+    PromotionsNotFound:
+      value:
+        Errors:
+          Error:
+            - Source: POINTS_ENGINE_CONSUMER_DATA
+              ReasonCode: ENTITY_NOT_FOUND
+              Description: No records found for the provided promotionId
+              Recoverable: false
+              Details: "null"
+    AudienceUnauthorized:
+      value:
+        Errors:
+          Error:
+            - Source: POINTS_ENGINE_CONSUMER_DATA
+              ReasonCode: AUTHORIZATION_ERROR
+              Description: Unable to authorize user due to error in authentication.
+              Recoverable: true
+              Details: null
+    AudienceForbidden:
+      value:
+        Errors:
+          Error:
+            - Source: POINTS_ENGINE_CONSUMER_DATA
+              ReasonCode: FORBIDDEN
+              Description: User does not have required permissions to perform this operation.
+              Recoverable: true
+              Details: null
+    AudienceBadRequest:
+      value:
+        Errors:
+          Error:
+            - Source: INVALID_INPUT
+              ReasonCode: INVALID_BEGIN_DATE_TIME_FORMAT
+              Description: Invalid Begin Date Time Format
+              Recoverable: false
+              Details: null
+    AudienceIdNotFound:
+      value:
+        Errors:
+          Error:
+            - Source: POINTS_ENGINE_CONSUMER_DATA
+              ReasonCode: ENTITY_NOT_FOUND_FOR_AUDIENCE_ID
+              Description: No audience record found for the given audience id
+              Recoverable: false
               Details: null

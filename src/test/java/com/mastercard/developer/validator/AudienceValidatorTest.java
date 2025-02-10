@@ -1,5 +1,6 @@
 package com.mastercard.developer.validator;
 
+import com.mastercard.developer.constants.ApplicationConstants;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -32,7 +33,7 @@ public class AudienceValidatorTest {
         Exception exception = assertThrows(Exception.class, () -> {
             validator.validateAudienceUpdateData(audienceUpdate);
         });
-        assertEquals("Invalid Begin Date Time Format", exception.getMessage());
+        assertEquals(ApplicationConstants.INVALID_BEGIN_DATE_TIME_FORMAT_ERR_MSG, exception.getMessage());
     }
 
     @Test
@@ -43,7 +44,7 @@ public class AudienceValidatorTest {
         Exception exception = assertThrows(Exception.class, () -> {
             validator.validateAudienceCreate(audience);
         });
-        assertEquals("The End Date Time should be after the Begin Date Time", exception.getMessage());
+        assertEquals(ApplicationConstants.END_DATE_SHOULD_BE_AFTER_BEGIN_DATE_ERR_MSG, exception.getMessage());
     }
 
     @Test
@@ -53,7 +54,7 @@ public class AudienceValidatorTest {
         Exception exception = assertThrows(Exception.class, () -> {
             validator.validateAudienceCreate(audience);
         });
-        assertEquals("External Target Code cannot be null", exception.getMessage());
+        assertEquals(ApplicationConstants.INVALID_FIELD_AUDIENCE_CODE_ERR_MSG, exception.getMessage());
     }
 
     @Test
@@ -63,7 +64,7 @@ public class AudienceValidatorTest {
         Exception exception = assertThrows(Exception.class, () -> {
             validator.validateAudienceCreate(audience);
         });
-        assertEquals("External Target Record Begin Date cannot be null", exception.getMessage());
+        assertEquals(ApplicationConstants.INVALID_FIELD_BEGIN_DATE_ERR_MSG, exception.getMessage());
     }
 
     @Test
@@ -73,7 +74,7 @@ public class AudienceValidatorTest {
         Exception exception = assertThrows(Exception.class, () -> {
             validator.validateAudienceCreate(audience);
         });
-        assertEquals("External Target Record Entity Type cannot be null", exception.getMessage());
+        assertEquals(ApplicationConstants.INVALID_FIELD_ENTITY_TYPE_ERR_MSG, exception.getMessage());
     }
 
     @Test
@@ -83,7 +84,7 @@ public class AudienceValidatorTest {
         Exception exception = assertThrows(Exception.class, () -> {
             validator.validateAudienceCreate(audience);
         });
-        assertEquals("External Target Record Entity Type must be either A or H", exception.getMessage());
+        assertEquals(ApplicationConstants.INVALID_FIELD_ENTITY_TYPE_VALUE_ERR_MSG, exception.getMessage());
     }
 
     @Test
@@ -93,7 +94,7 @@ public class AudienceValidatorTest {
         Exception exception = assertThrows(Exception.class, () -> {
             validator.validateAudienceCreate(audience);
         });
-        assertEquals("External Target Record Entity Reference Id cannot be null", exception.getMessage());
+        assertEquals(ApplicationConstants.INVALID_FIELD_ENTITY_REFERENCE_ID_ERR_MSG, exception.getMessage());
     }
 
     private Audience createAudienceObj() {
@@ -122,7 +123,7 @@ public class AudienceValidatorTest {
         Exception exception = assertThrows(Exception.class, () -> {
             validator.validateAudienceGetDataRequest(fromDate, toDate, entityType, entityId);
         });
-        assertEquals("External Target Record Entity Reference Id cannot be null", exception.getMessage());
+        assertEquals(ApplicationConstants.INVALID_FIELD_ENTITY_REFERENCE_ID_ERR_MSG, exception.getMessage());
     }
 
     @Test
@@ -134,6 +135,6 @@ public class AudienceValidatorTest {
         Exception exception = assertThrows(Exception.class, () -> {
             validator.validateAudienceGetDataRequest(fromDate, toDate, entityType, entityId);
         });
-        assertEquals("External Target Record Entity Type cannot be null", exception.getMessage());
+        assertEquals(ApplicationConstants.INVALID_FIELD_ENTITY_TYPE_ERR_MSG, exception.getMessage());
     }
 }

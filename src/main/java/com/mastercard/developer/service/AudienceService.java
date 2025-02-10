@@ -19,16 +19,20 @@ public class AudienceService {
         this.audiencesApi = new AudiencesApi(apiClient);
     }
 
-    public PagedResponseAudience getAudiencePagedExternalTargetRecords(String audienceCode, String entityId, String entityType,
+    public PagedResponseAudience getAudiencePagedExternalTargetRecords(String audienceCode, String entityId, String entityType, Boolean includeHistory,
                                                                        String fromDateTime, String toDateTime, Integer offset, Integer limit) throws ApiException {
-        return audiencesApi.getAudiences(entityId, entityType, audienceCode, fromDateTime, toDateTime, offset, limit);
+        return audiencesApi.getAudiences(entityId, entityType, audienceCode, includeHistory, fromDateTime, toDateTime, offset, limit);
     }
 
     public Audience saveAudience(Audience audience) throws ApiException {
-        return audiencesApi.createAudience(audience);
+        return audiencesApi.createAudiences(audience);
     }
 
     public Audience updateAudience(String referenceId, AudienceUpdate audienceUpdate) throws ApiException {
-        return audiencesApi.updateAudience(referenceId, audienceUpdate);
+        return audiencesApi.updateAudiences(referenceId, audienceUpdate);
+    }
+
+    public void deleteAudience(String referenceId) throws ApiException {
+        audiencesApi.deleteAudiences(referenceId);
     }
 }

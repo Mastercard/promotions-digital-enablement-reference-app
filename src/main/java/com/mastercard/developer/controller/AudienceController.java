@@ -10,6 +10,8 @@ import org.openapitools.client.model.AudienceUpdate;
 import org.openapitools.client.model.PagedResponseAudience;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,6 +44,7 @@ public class AudienceController {
             @RequestParam(name = "entity_id") String entityId,
             @RequestParam(name = "entity_type") String entityType,
             @RequestParam(name = "code", required = false) String audienceCode,
+            @RequestParam(name = "include_history", required = false) boolean includeHistory,
             @RequestParam(name = "from_date_time", required = false) String fromDateTime,
             @RequestParam(name = "to_date_time", required = false) String toDateTime,
             @RequestParam(value = "offset", required = false, defaultValue = "0") int offset,
@@ -49,7 +52,7 @@ public class AudienceController {
         audienceValidator.validateAudienceGetDataRequest(fromDateTime, toDateTime, entityType, entityId);
         try {
             log.info("Method : getAudiences, Message : Getting Audiences");
-            PagedResponseAudience response = audienceService.getAudiencePagedExternalTargetRecords(audienceCode, entityId, entityType, fromDateTime, toDateTime, offset, limit);
+            PagedResponseAudience response = audienceService.getAudiencePagedExternalTargetRecords(audienceCode, entityId, entityType, includeHistory, fromDateTime, toDateTime, offset, limit);
             if (response != null) {
                 log.debug("Method : getAudiences, Message :Successfully got the Audiences" + response);
                 return response;
@@ -101,5 +104,18 @@ public class AudienceController {
             throw new InvalidRequest(ex.getResponseBody());
         }
         throw new InvalidRequest(HttpStatus.BAD_REQUEST);
+    }
+
+    /*---------------------------------------------------------------- DELETE Audience API -------------------------------------------------------*/
+
+    @DeleteMapping(path = "/audiences/{id}")
+    public ResponseEntity deleteAudience(@PathVariable(value = "id") String referenceId) {
+        try {
+            audienceService.deleteAudience(referenceId);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (ApiException ex) {
+            log.error("Method : deleteAudience, Message : Failed to delete the audience");
+            throw new InvalidRequest(ex.getResponseBody());
+        }
     }
 }
