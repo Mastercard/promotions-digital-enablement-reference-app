@@ -29,8 +29,8 @@ public class AudienceValidator {
     private static void validateRequestFields(Audience audience, Map<String, String> errorMap) {
         if (isBlank(audience.getCode())) {
             errorMap.put(
-                    ApplicationConstants.INVALID_FIELD_EXTERNAL_TARGET_CODE,
-                    ApplicationConstants.INVALID_FIELD_EXTERNAL_TARGET_CODE_ERR_MSG);
+                    ApplicationConstants.INVALID_FIELD_AUDIENCE_CODE,
+                    ApplicationConstants.INVALID_FIELD_AUDIENCE_CODE_ERR_MSG);
         }
         if (isBlank(audience.getBeginDateTime())) {
             errorMap.put(

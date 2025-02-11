@@ -21,6 +21,6 @@ public class AccountService {
     }
 
     public PagedResponseOfAccountSearch searchAccount(Integer offset, Integer limit, AccountSearch accountSearch) throws ApiException {
-        return this.accountManagementApi.searchAccount(offset, limit, accountSearch);
+        return this.accountManagementApi.searchAccount(accountSearch, offset, limit);
     }
 }
