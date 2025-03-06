@@ -199,7 +199,7 @@ paths:
     put:
       tags:
         - Audiences
-      description: This API endpoint is used to end the eligibility period for a given audienceId ( represents a code, entityType, entityId combination) by passing the new endDateTime.
+      description: This API endpoint is used to end the eligibility period for a given audienceId (represents a code, entityType, entityId, beginDateTime combination) by passing the new endDateTime.
       operationId: updateAudiences
       summary: Provides clients the ability to update the audience entity
       parameters:
@@ -218,7 +218,7 @@ paths:
     delete:
       tags:
         - Audiences
-      description: This API endpoint is used to delete the audience record.
+      description: This API endpoint is used to delete the audience entity.
       operationId: deleteAudiences
       summary: Provides clients the ability to delete the audience entity
       parameters:
@@ -256,7 +256,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Audience'
-
     AudienceUpdate:
       required: true
       content:
@@ -606,7 +605,6 @@ components:
           examples:
             BAD_REQUEST:
               $ref: '#/components/examples/AudienceIdNotFound'
-
   schemas:
     AccountSearch:
       type: object
