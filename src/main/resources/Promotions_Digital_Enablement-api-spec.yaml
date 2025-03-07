@@ -424,7 +424,7 @@ components:
       required: false
       schema:
         type: boolean
-        default: false
+        default: true
       style: form
     from_date_time:
       description: Begin date time of audience records
