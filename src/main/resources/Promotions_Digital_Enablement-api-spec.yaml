@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Promotions Digital Enablement API
-  description: Promotions Digital Enablement API Specification
+  description: Mastercard Promotions Digital Enablement APIs provide issuers, merchants and loyalty program operators the ability to enhance their digital consumer experience when driving usage and engagement with Mastercard Loyalty Promotions.
   termsOfService: https://developer.mastercard.com/terms-of-use
   contact:
     name: API Support
@@ -17,11 +17,11 @@ tags:
   - name: Account Management
     description: Allow to retrieve an account's information using account number.
   - name: Promotion Management
-    description: Promotion Management API
+    description: The API will return the list of promotions based on the request parameters provided.
   - name: Promotion Progress
-    description: Promotion Progress Controller
+    description: The API returns information that represents key data points necessary to track the progression towards promotion goals for earnings rewards.
   - name: Transactions
-    description: Transactions Controller
+    description: Provides clients with the ability to get transaction data related to a specific promotion so that the client can show the cardholders transactions that made up the rewards they have earned. The identifiers for a given promotion would be account identifiers.
   - name: Audiences
     description: Provides clients with the ability to get the promotion details of a specific cardholder or enroll to a specific promotions for a specific time periods.
 paths:
@@ -34,8 +34,8 @@ paths:
       operationId: searchAccount
       x-mastercard-api-encrypted: true
       parameters:
-        - $ref: '#/components/parameters/Offset'
-        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/OffsetParam'
+        - $ref: '#/components/parameters/LimitParam'
       requestBody:
         $ref: '#/components/requestBodies/AccountSearchRequest'
       responses:
@@ -49,17 +49,17 @@ paths:
     get:
       tags:
         - Promotion Management
-      summary: getPromotions
-      description: Retrieve Promotions
-      operationId: getPromotionsUsingGET
+      summary: Provides clients the ability to retrieve list of promotions based on the request parameters provided.
+      description: This endpoint provides clients with the ability to retrieve all active promotions using the company id, program id, and/or account id.
+      operationId: getPromotions
       parameters:
         - $ref: '#/components/parameters/RewardsCompanyId'
         - $ref: '#/components/parameters/ProgramId'
-        - $ref: '#/components/parameters/PromotionIdQueryParam'
+        - $ref: '#/components/parameters/PromotionId'
         - $ref: '#/components/parameters/AccountId'
         - $ref: '#/components/parameters/PromotionState'
-        - $ref: '#/components/parameters/Offset'
-        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/OffsetParam'
+        - $ref: '#/components/parameters/LimitParam'
       responses:
         '200':
           $ref: '#/components/responses/ActivePromotion'
@@ -69,55 +69,49 @@ paths:
           $ref: '#/components/responses/ResponsePromotionsUnauthorized'
         '403':
           $ref: '#/components/responses/ResponsePromotionsForbidden'
-        '404':
-          $ref: '#/components/responses/ResponsePromotionsNotFound'
   /promotions/{promotion_id}/details:
     get:
       tags:
         - Promotion Management
-      summary: getPromotionDetails
-      description: Retrieve Promotion Details
-      operationId: getPromotionDetailsUsingGET
+      summary: Provides clients the ability to retrieve promotion details of particular promotion id.
+      description: This endpoint provides clients with the ability to retrieve promotion details using the promotion id.
+      operationId: getPromotionDetails
       parameters:
-        - $ref: '#/components/parameters/PromotionId'
+        - $ref: '#/components/parameters/PromotionIdPathParam'
       responses:
         '200':
-          $ref: '#/components/responses/ResponseOKPromotionDetail'
+          $ref: '#/components/responses/PromotionDetail'
         '400':
-          $ref: '#/components/responses/ResponseBadRequest'
+          $ref: '#/components/responses/ResponsePromotionsBadRequest'
         '401':
-          $ref: '#/components/responses/ResponseUnauthorizedError'
+          $ref: '#/components/responses/ResponsePromotionsUnauthorized'
         '403':
-          $ref: '#/components/responses/ResponseForbidden'
-        '404':
-          $ref: '#/components/responses/ResponseNotFound'
+          $ref: '#/components/responses/ResponsePromotionsForbidden'
   /promotion-activations:
     post:
       tags:
         - Promotion Management
-      summary: promotionOptIn
-      description: Promotions OptIn/OptOut
-      operationId: promotionOptInUsingPOST
+      summary: Provides clients the ability to opt accounts in to and out of a specific promotion.
+      description: This endpoint provides clients with the ability to opt accounts in to and out of a specific promotion using the unique identifier of the account and promotion.
+      operationId: postPromotionOptIn
       requestBody:
         $ref: "#/components/requestBodies/PromotionOptInRequest"
       responses:
         '201':
-          $ref: '#/components/responses/ResponseActivated'
+          $ref: '#/components/responses/Activated'
         '400':
-          $ref: '#/components/responses/ResponseBadRequest'
+          $ref: '#/components/responses/ResponsePromotionsBadRequest'
         '401':
-          $ref: '#/components/responses/ResponseUnauthorizedError'
+          $ref: '#/components/responses/ResponsePromotionsUnauthorized'
         '403':
-          $ref: '#/components/responses/ResponseForbidden'
-        '404':
-          $ref: '#/components/responses/ResponseNotFound'
+          $ref: '#/components/responses/ResponsePromotionsForbidden'
   /promotion-progresses:
     get:
       tags:
         - Promotion Progress
-      summary: retrieve
-      description: Retrieve Promotion Progress Information
-      operationId: retrieveUsingGET
+      summary: Provides clients the ability to retrieve promotion progress data.
+      description: This endpoint provides clients with the ability to retrieve reward progress data using household id, account_id and/or promotion id.
+      operationId: getPromotionProgress
       parameters:
         - $ref: '#/components/parameters/HouseholdIdParam'
         - $ref: '#/components/parameters/AccountIdParam'
@@ -138,9 +132,9 @@ paths:
     get:
       tags:
         - Transactions
-      summary: Get Transactions
-      description: Fetches data from transaction table
-      operationId: getTransactionsUsingGET
+      summary: Provides clients the ability to retrieve transaction data.
+      description: This endpoint provides clients with the ability to retrieve transaction data related to a specific promotion.
+      operationId: getTransactions
       parameters:
         - $ref: '#/components/parameters/AccountIdParam'
         - $ref: '#/components/parameters/FromDateParam'
@@ -190,8 +184,8 @@ paths:
         - $ref: '#/components/parameters/include_history'
         - $ref: '#/components/parameters/from_date_time'
         - $ref: '#/components/parameters/to_date_time'
-        - $ref: '#/components/parameters/Offset'
-        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/OffsetParam'
+        - $ref: '#/components/parameters/LimitParam'
       responses:
         '200':
           $ref: '#/components/responses/ResponsePagedResponseAudience'
@@ -205,7 +199,7 @@ paths:
     put:
       tags:
         - Audiences
-      description: This API endpoint is used to end the eligibility period for a given audienceId ( represents a code, entityType, entityId combination) by passing the new endDateTime.
+      description: This API endpoint is used to end the eligibility period for a given audienceId (represents a code, entityType, entityId, beginDateTime combination) by passing the new endDateTime.
       operationId: updateAudiences
       summary: Provides clients the ability to update the audience entity
       parameters:
@@ -221,12 +215,10 @@ paths:
           $ref: '#/components/responses/ResponseAudienceUnauthorized'
         '403':
           $ref: '#/components/responses/ResponseAudienceForbidden'
-        '404':
-          $ref: '#/components/responses/ResponseAudienceIdNotFound'
     delete:
       tags:
         - Audiences
-      description: This API endpoint is used to delete the audience record.
+      description: This API endpoint is used to delete the audience entity.
       operationId: deleteAudiences
       summary: Provides clients the ability to delete the audience entity
       parameters:
@@ -234,12 +226,12 @@ paths:
       responses:
         '204':
           $ref: '#/components/responses/ResponseAudienceDeleted'
+        '400':
+          $ref: '#/components/responses/ResponseAudienceIdNotFound'
         '401':
           $ref: '#/components/responses/ResponseAudienceUnauthorized'
         '403':
           $ref: '#/components/responses/ResponseAudienceForbidden'
-        '404':
-          $ref: '#/components/responses/ResponseAudienceIdNotFound'
 
 components:
   requestBodies:
@@ -250,7 +242,7 @@ components:
           schema:
             $ref: '#/components/schemas/AccountSearch'
     PromotionOptInRequest:
-      description: optInList
+      description: Provides clients with the ability to opt accounts in to and out of a specific promotion using the unique identifier of the account and promotion
       required: true
       content:
         application/json:
@@ -264,7 +256,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Audience'
-
     AudienceUpdate:
       required: true
       content:
@@ -275,21 +266,23 @@ components:
     FromDateParam:
       name: from_date
       in: query
-      description: from_date
+      description: Start date from which the client want to view the transactions
       schema:
         type: string
-        example:
+        example: 2023-01-01
+        format: date
     ToDateParam:
       name: to_date
       in: query
-      description: to_date
+      description: End date till which the client want to view the transactions
       schema:
         type: string
-        example:
+        example: 2024-01-01
+        format: date
     OffsetParam:
       name: offset
       in: query
-      description: offset
+      description: The number of items to offset the start of the list from (Pagination)
       schema:
         type: integer
         format: int32
@@ -298,7 +291,7 @@ components:
     LimitParam:
       name: limit
       in: query
-      description: limit
+      description: Can be used to limit the amount of results returned from a query (Pagination)
       schema:
         type: integer
         format: int32
@@ -307,98 +300,86 @@ components:
     HouseholdIdParam:
       name: household_id
       in: query
-      description: household_id
+      description: Unique Household identifier assigned by Mastercard and provided during the account enrollment and household creation process.
       required: false
       schema:
         type: string
+        format: uuid
         example: "ad1e21a7-4c1c-4812-ae47-d2c4fae7c5a8"
     AccountIdParam:
       name: account_id
       in: query
-      description: account_id
+      description: Unique Account identifier assigned by Mastercard and provided in the Account enrollment response
       required: false
       schema:
         type: string
-        example: "f35e51fe-bc77-432f-b412-3800e3c04e5c"
+        format: uuid
+      example: "f35e51fe-bc77-432f-b412-3800e3c04e5c"
     PromotionIdParam:
       name: promotion_id
       in: query
-      description: promotion_id
+      description: The unique identifier of the Promotion created and assigned by Mastercard during promotion creation process
       schema:
         type: string
-        example: "2aee0729-3a1a-451a-affa-84f3a6bc5acc"
+        format: uuid
+      example: "2aee0729-3a1a-451a-affa-84f3a6bc5acc"
     IncludeHistoryParam:
       name: include_history
       in: query
-      description: include_history
+      description: Boolean value which provides history of reward progress data
       schema:
         type: boolean
-        example: false
+        example: true
         default: false
     RewardsCompanyId:
       name: rewards_company_id
       in: query
-      description: Company Identifier
+      description: Mastercard assigned unique identifier for a client. Created and assigned during company creation process
       example: "383a74b4-38b3-4f2a-a85d-6b2e26ad665"
       schema:
         type: string
+        format: uuid
     ProgramId:
       name: program_id
       in: query
-      description: Program Identifier
+      description: Unique Program Identifier for a client promotion, available from promotion setup
       example: "aae5ce99-58d1-47f4-8b6a-43b427be9d74"
       schema:
         type: string
-    PromotionIdQueryParam:
+        format: uuid
+    PromotionId:
       name: promotion_id
       in: query
-      description: Promotion Identifier
+      description: Unique Promotion Identifier for a client reward program, available from promotion setup
       example: "de0e1456-e678-4270-b027-fc9950b8aba5"
       schema:
         type: string
-    PromotionId:
+        format: uuid
+    PromotionIdPathParam:
       name: promotion_id
       in: path
-      description: Promotion Identifier
+      description: Unique Promotion Identifier for a client reward program, available from promotion setup
       example: "de0e1456-e678-4270-b027-fc9950b8aba5"
       required: true
       schema:
         type: string
+        format: uuid
     AccountId:
       name: account_id
       in: query
-      description: Account Identifier
+      description: Unique Account identifier assigned by Mastercard and provided in the Account enrollment response
       example: "f35e51fe-bc77-432f-b412-3800e3c04e5c"
       schema:
         type: string
+        format: uuid
     PromotionState:
       name: promotion_state
       in: query
-      description: Promotion State such as all, current, future, expired, future+current
+      description: Valid promotion states are all, current, future, expired, future+current
       example: "all"
       schema:
         type: string
         default: all
-    Offset:
-      name: offset
-      in: query
-      description: The number of items to offset the start of the list from (Pagination)
-      required: false
-      example: 0
-      schema:
-        type: integer
-        format: int32
-        default: 0
-    Limit:
-      name: limit
-      in: query
-      description: Can be used to limit the amount of results returned from a query (Pagination)
-      required: false
-      example: 25
-      schema:
-        type: integer
-        format: int32
-        default: 25
     ref_id:
       description: Unique identifier for an audience
       example: 1127d5a6-ed44-4148-aa08-da168016cd56
@@ -409,7 +390,7 @@ components:
         type: string
       style: simple
     entity_id:
-      description: Entity ID is the reference id for account and household
+      description: Entity ID is the unique id for the entity type account or household
       example: 12f5930a-ab8b-4a25-9774-6ba49a9bfd8c
       in: query
       name: entity_id
@@ -443,6 +424,7 @@ components:
       required: false
       schema:
         type: boolean
+        default: true
       style: form
     from_date_time:
       description: Begin date time of audience records
@@ -468,7 +450,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/PagedResponseOfAccountSearch'
+            $ref: '#/components/schemas/PagedAccountSearchItem'
     ResponseSearchAccountBadRequest:
       description: Search Account Bad Request.
       content:
@@ -479,23 +461,11 @@ components:
             BAD_REQUEST:
               $ref: '#/components/examples/SearchAccountBadRequest'
     ResponseOkPromotion:
-      description: OK
+      description: OK response including promotion progress data.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/PromotionProgressList'
-    ResponseOkTransaction:
-      description: OK
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/PagedResponseGetTransactionDto'
-    ResponseBadRequest:
-      description: Bad Request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorsList'
     ResponsePromotionsUnauthorized:
       description: Authorization Error
       content:
@@ -523,17 +493,20 @@ components:
           examples:
             BAD_REQUEST:
               $ref: '#/components/examples/PromotionsBadRequest'
-    ResponsePromotionsNotFound:
-      description: Promotion Id Not Found
+    ResponseOkTransaction:
+      description: OK response including paged transaction data
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PagedTransaction'
+    ResponseBadRequest:
+      description: Bad Request with errors
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorsList'
-          examples:
-            NOT_FOUND:
-              $ref: '#/components/examples/PromotionsNotFound'
     ResponseUnauthorizedError:
-      description: Unauthorized error
+      description: Unauthorized error with errors
       content:
         application/json:
           schema:
@@ -568,13 +541,13 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/Promotions"
-    ResponseOKPromotionDetail:
+    PromotionDetail:
       description: OK
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/PromotionDetail"
-    ResponseActivated:
+    Activated:
       description: Successfully updated Opt-In choice
     ResponsePagedResponseAudience:
       description: OK
@@ -624,13 +597,13 @@ components:
             BAD_REQUEST:
               $ref: '#/components/examples/AudienceBadRequest'
     ResponseAudienceIdNotFound:
-      description: Audience id not found
+      description: Bad Request
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorsList'
           examples:
-            NOT_FOUND:
+            BAD_REQUEST:
               $ref: '#/components/examples/AudienceIdNotFound'
   schemas:
     AccountSearch:
@@ -646,47 +619,60 @@ components:
           description: Interbank Card Association number assigned by Mastercard to the client.
           format: int64
           example: 611532
+        accountNumberType:
+          maxLength: 5
+          type: string
+          description: |
+            The Field to identify type of value provided in accountNumber.
+            - BAN – Bank Account Number. This is a unique Account Identifier which is a 16 digit card number with 3 trailing zeros and space filled
+            - RANAC – Random Account Number. This is a unique account identifier.
+            - AREF – Account Reference Number. This is a unique account identifier.
+            - RANCU – Random Customer Number. This is a unique customer identifier.
+            If accountNumberType is not provided then default value will be BAN
+          example: 'BAN'
         accountNumber:
           maxLength: 19
           type: string
           description: The unique account identifier defined and provided by the client.
           example: '5330333671236516'
-        accountNumberType:
-          maxLength: 5
-          type: string
-          description: The filed to identify accountNumber type BAN/RANAC/AREF.
-          example: 'BAN'
-        userNumber:
-          maxLength: 19
-          type: string
-          description: The unique user identifier defined and provided by the client.
-          example: '5330333671236516'
         userNumberType:
           maxLength: 5
           type: string
-          description: The filed to identify userNumber type BCN/RANCU/AREF.
+          description: The Field to identify type of value provided in userNumber. If userNumberType is not provided then default value will be BCN.
+          enum:
+            - BCN
+            - RANCU
+            - AREF
           example: 'BCN'
+        userNumber:
+          maxLength: 30
+          type: string
+          description: The unique identifier of a user assigned by the client.
+          example: 'C02333333325'
     AccountSearchItem:
       type: object
       properties:
-        userId:
-          maxLength: 50
-          minLength: 0
-          type: string
-          description: Unique User identifier assigned by Mastercard.
-          example: 87ht3780-62d1-4775-9549-8ed92c48c290
         id:
           maxLength: 50
           minLength: 0
           type: string
-          description: Unique reward account identifier assigned by Mastercard.
-          example: 87ht3780-62d1-4775-9549-8ed92c48c290
+          format: uuid
+          description: The unique reward account identifier assigned by the Mastercard.
+          example: '308a1596-f42e-4569-bd12-c8f0827eed48'
+        userId:
+          maxLength: 50
+          minLength: 0
+          type: string
+          format: uuid
+          description: The unique User identifier assigned by the Mastercard.
+          example: 'aee00b64-f320-4579-a87f-782a3c0b9722'
         householdId:
           maxLength: 50
           minLength: 0
           type: string
+          format: uuid
           description: Unique Household identifier assigned by Mastercard.
-          example: 87ht3780-62d1-4775-9549-8ed92c48c290
+          example: '87ht3780-62d1-4775-9549-8ed92c48c290'
         program:
           $ref: '#/components/schemas/Program'
         company:
@@ -698,36 +684,17 @@ components:
       type: object
       properties:
         enrollmentCode:
-          maxLength: 18
+          maxLength: 50
+          minLength: 0
           type: string
-          description: 'The unique identifier for a client''s reward program, defined by the client and configured during implementation.'
+          description: The unique identifier for a client’s reward program, defined by the client and configured during implementation. A single program can have more than one code assigned as long as the identifiers are unique.
           example: ZXSzM
         id:
           maxLength: 50
           minLength: 20
           type: string
-          description: Unique Program identifier assigned by Mastercard and provided to client in the account enrollment response.
-          example: c8753780-62d1-4775-9549-8ed92c48c278
-    Company:
-      title: Company
-      type: object
-      properties:
-        memberICA:
-          type: integer
-          description: Interbank Card Association number assigned by Mastercard to the client.
-          format: int64
-          example: 898923
-        companyId:
-          maxLength: 11
-          type: string
-          description: Mastercard assigned unique identifier for a client.
-          example: '611532'
-        id:
-          maxLength: 50
-          minLength: 20
-          type: string
-          description: Unique Reward Company identifier assigned by Mastercard and provided to client in the account enrollment response.
-          example: 98753780-62d1-4775-9549-8ed92c48c245
+          description: Unique Program Id
+          example: 4f74f660-5793-4f33-a3bc-ffc7bee39238
     BankProduct:
       title: BankProduct
       type: object
@@ -743,40 +710,72 @@ components:
           minLength: 20
           type: string
           description: Bank Product Id
+          format: uuid
           example: ff34f660-5793-4f33-a3bc-ffc7bee39238
+    Company:
+      title: Company
+      type: object
+      properties:
+        memberICA:
+          type: integer
+          description: Interbank Card Association number assigned by Mastercard to the client.
+          format: int64
+          example: 898923
+        companyId:
+          maxLength: 11
+          minLength: 0
+          type: string
+          description: Mastercard assigned unique identifier for a client.
+          example: '611532'
+        id:
+          maxLength: 50
+          minLength: 20
+          type: string
+          description: Reward Company Id
+          format: uuid
+          example: 5f74g660-5793-4f33-a3bc-ffc7bee39234
     Cap:
       type: object
+      description: "Contains reward capping information for a given promotion. Capping is the maximum amount of rewards that a user can get while the promotion is active. Capping can be applied on an account or transaction level and within a given time period."
       properties:
         entityType:
           type: string
-          example: ACCOUNT
+          example: 'ACCOUNT'
           maxLength: 15
           description: Type at which the promotion cap is applied –  "ACCOUNT", "HOUSEHOLD"
         entityId:
           type: string
-          example: f35e51fe-bc77-432f-b412-3800e3c04e5c
+          format: uuid
+          example: 'f35e51fe-bc77-432f-b412-3800e3c04e5c'
           maxLength: 50
           description: Unique identifier for the caps entity type - “ACCOUNT” or “HOUSEHOLD”.
         capId:
           type: string
-          example: d963516d-1fc0-47e7-acc2-3468b1f81473
+          format: uuid
+          example: 'd963516d-1fc0-47e7-acc2-3468b1f81473'
           maxLength: 50
           description: CapId is a unique identifier for the promotion capping rule.
         capPeriod:
           type: string
-          example: M
+          example: 'M'
           maxLength: 10
-          description: The promotion period for which the cap will reset. For example, M (Month), indicates that the cap resets monthly. <br/> Eg. "<null | M (Month) | Y (Year) | L (Lifetime)>"
+          description: |
+            The promotion period for which the cap will reset. 
+            - For example, M (Month), indicates that the cap resets monthly. 
+            - Eg. "<null | M (Month) | Y (Year) | L (Lifetime)>"
         capType:
           type: string
-          example: group-cap
+          example: 'group-cap'
           maxLength: 15
           description: Type of cap = "promotion-cap" or "group-cap".
         capPeriodValue:
           type: string
-          example: "202108"
+          example: '202108'
           maxLength: 15
-          description: Period value corresponding to cap Period. <br/> Eg. "YYYYMM" when capPeriod is "MONTH" <br/> Eg. "YYYY" when capPeriod is "YEAR"
+          description: |
+            Period value corresponding to cap Period. 
+            - Eg. "YYYYMM" when capPeriod is "MONTH" and capPeriodMode is "CALENDAR"
+            - Eg. "YYYYMMDD" when capPeriod is "MONTH/YEAR" and capPeriodMode is "ENROLLMENT_DATE/PRIMARY_ENROLLMENT_DATE"
         capThreshold:
           type: integer
           example: 5
@@ -791,9 +790,44 @@ components:
           format: int64
         capCurrencyCode:
           type: string
-          example: USD
+          example: 'USD'
           maxLength: 5
           description: ISO currency code for Caps configured for the given Promotion. Ex. US Dollar ISO code is USD.
+        capPeriodMode:
+          type: string
+          example: 'CALENDAR'
+          maxLength: 25
+          description: CapPeriodMode is the mode on which the CapPeriod is based on. Ex. CALENDAR/ENROLLMENT_DATE/PRIMARY_ENROLLMENT_DATE.
+        capPeriodFrequency:
+          type: integer
+          example: 2
+          maxLength: 2
+          description: This value modifies the Cap Period. Instead of resetting the cap every day/month/quarter/year, the cap is reset every X days/months/quarters/years.
+        capPeriodStartDate:
+          type: string
+          example: '2024-07-15T00:00:00Z'
+          maxLength: 25
+          description: The period start date gives a starting point to determine what the range is for each cap period.
+    DelayedAwardDetails:
+      type: object
+      description: "Contains rewards that have been awarded by not yet received."
+      properties:
+        entityType:
+          type: string
+          example: 'ACCOUNT'
+          maxLength: 15
+          description: Type at which the promotion cap is applied –  "ACCOUNT", "HOUSEHOLD"
+        entityId:
+          type: string
+          format: uuid
+          example: 'f35e51fe-bc77-432f-b412-3800e3c04e5c'
+          maxLength: 50
+          description: Unique identifier for the caps entity type - “ACCOUNT” or “HOUSEHOLD”.
+        totalRewardsAwarded:
+          type: integer
+          example: 5
+          maxLength: 15
+          description: Total rewards (points, miles, rebate amount) awarded for this promotion.
     ErrorItem:
       type: object
       properties:
@@ -812,7 +846,7 @@ components:
         Recoverable:
           type: boolean
           description: Indicates if the Error Type is Recoverable
-          example: "false"
+          example: false
         Source:
           type: string
           description: Indicates Source of Error Type
@@ -834,7 +868,7 @@ components:
       properties:
         Errors:
           $ref: '#/components/schemas/Errors'
-    PagedResponseGetTransactionDto:
+    PagedTransaction:
       type: object
       properties:
         count:
@@ -861,8 +895,8 @@ components:
           type: array
           description: Items in transaction response
           items:
-            $ref: '#/components/schemas/GetTransactionDto'
-    CurrencyDto:
+            $ref: '#/components/schemas/GetTransaction'
+    Currency:
       type: object
       properties:
         issuerAmountSettlementCurrency:
@@ -873,16 +907,16 @@ components:
         issuerCurrencyCode:
           type: string
           description: Currency code that defines the currency type, the country of origin, and the implied decimal point location for the related amount of the transaction.
-          example: USD
+          example: 'USD'
         issuerCurrencyExponent:
           type: integer
-          description: CardHolder billing currency exponent.
+          description: Cardholder billing currency exponent.
           format: int32
           example: 2
         settlementCurrencyCode:
           type: string
           description: Issuer settlement currency code.
-          example: USD
+          example: 'USD'
         settlementCurrencyExponent:
           type: integer
           description: Issuer settlement currency exponent.
@@ -901,19 +935,29 @@ components:
         transactionCurrencyCode:
           type: string
           description: Currency code that defines the currency type, the country of origin, and the implied decimal point location for the related amount of the transaction.
-          example: USD
+          example: 'USD'
         transactionCurrencyExponent:
           type: integer
           description: Currency exponent for transaction amount.
           format: int32
           example: 2
-    MerchantDto:
+        usdEquivalent:
+          type: integer
+          description: Currency amount in USD
+          format: int64
+          example: 12000
+        euroEquivalent:
+          type: integer
+          description: Currency amount in Euro
+          format: int64
+          example: 11102
+    Merchant:
       type: object
       properties:
         acquirerIca:
           type: string
           description: Merchant acquirer Ica for the transaction.
-          example: 12345
+          example: '12345'
         aggregateMerchantId:
           type: string
           description: The aggregate merchant ID of the merchant location matched to the transaction (or as assigned based on scrubbed transaction data if no location was matched and aggregate merchant assignment was requested). 99999 if not assigned.
@@ -921,11 +965,11 @@ components:
         city:
           type: string
           description: City of the merchant.
-          example: BULGAKOVO
+          example: 'BULGAKOVO'
         country:
           type: string
           description: Merchant country code of the transaction.
-          example: USA
+          example: 'USA'
         countryCode:
           type: string
           description: Country code of the merchant.
@@ -936,8 +980,8 @@ components:
           example: true
         dbaName:
           type: string
-          description: DBA name of merchant.
-          example: AAA
+          description: Provided by Merchant or Acquirer. This is the Trade Name of the establishment, captured in the GCMS message.
+          example: 'SHORTDBANAME'
         locationId:
           type: string
           description: Location ID of the merchant location matched to the transaction. If no location can be determined the value 999999999 will be assigned.
@@ -945,10 +989,10 @@ components:
         mccClassificationCode:
           type: string
           description: Mastercard defined classification of Merchant Category Code.
-          example: 4K
+          example: '4K'
         mccGroup:
           type: string
-          description: MCC Group
+          description: Merchant Category Group assigned to MCC code in Merchant_Category_Hierarchy.
           example: '78'
         merchantCategoryCode:
           type: string
@@ -961,7 +1005,7 @@ components:
         name:
           type: string
           description: Merchant name of the transaction
-          example: AAA
+          example: 'AAA'
         postalCode:
           type: string
           description: Postal code of the merchant.
@@ -973,11 +1017,11 @@ components:
         shortDbaName:
           type: string
           description: The short DBA name derived from the scrubbed merchant DBA name for the transaction.
-          example: OOOTERMSERV
+          example: 'OOOTERMSERV'
         state:
           type: string
           description: The state/province code of the merchant location matched to the transaction (or the scrubbed state/province code of the transaction if no location was matched. This will be spaces except for USA, CAN, and AUS. If the state/province code cannot be determined, values of 'XX', 'XP' or 'UNK" will be assigned for USA, CAN and AUS respectively.
-          example: MO
+          example: 'MO'
         storeDivision:
           type: string
           description: Merchant store division.
@@ -990,21 +1034,22 @@ components:
           type: string
           description: Street address of the merchant.
           example: 'B-N M-N AEROPORT STR BLD PAR'
-    TransactionScoreDto:
+    TransactionScore:
       type: object
       properties:
         pointType:
           type: string
           description: Specifies the point type which is either Base Points or Bonus Points.
-          example: BONUS
+          example: 'BONUS'
         promotionId:
           type: string
           description: Unique promotion identifier.
+          format: uuid
           example: '2aee0729-3a1a-451a-affa-84f3a6bc5acc'
         promotionName:
           type: string
           description: Name of the promotion.
-          example: Rewards Promo
+          example: 'Rewards Promo'
         rawScore:
           type: string
           description: Raw score (pre-capped score).
@@ -1012,10 +1057,10 @@ components:
         reason:
           type: string
           description: Reason code if there is any change in pre-capping or threshold score.
-          example: cap
+          example: 'cap'
         rewardType:
           type: string
-          description: Specifies the reward type which is either Points or Rebate.
+          description: Specifies the reward type which is either Points or Rebate or Reward Item or Benefit.
           example: 'CASHBACK'
         score:
           type: string
@@ -1024,41 +1069,62 @@ components:
         postingAccountReferenceId:
           type: string
           description: Posting Account ReferenceId
+          format: uuid
           example: '751678c0-079b-11eb-adc1-0242ac12aaaa'
-    GetTransactionDto:
+    GetTransaction:
       type: object
       properties:
         accountInfo:
           type: boolean
           description: Indicates if an account number is present.
-          example: 'true'
+          example: true
         accountNumber:
           type: string
           description: Unique account identifier defined and provided by the client.
-          example: '**8345'
+          example: '"1234-56**-****-7890-000" for 19 digit account numbers or "************1234" for 16 digit account numbers'
         acquirerCountryCode:
           type: string
           description: Identifies the geographic country of the Acquirer.
-          example: USA
+          example: 'USA'
         acquirerId:
           type: string
           description: Acquiring Institution ID Code identifies a transaction acquirer.
           example: '5037'
         acquirerReferenceNumber:
           type: string
-          description: Acquirer Reference Number.
+          description: this reference number uniquely identifies the acquiring bank for the merchant
           example: '3080528744'
         authCode:
           type: string
-          description: Auth Code
+          description: This is an alphanumeric code provided by Mastercard if applicable
           example: '050913'
         cardDataInputModeCode:
           type: string
-          description: Indicates the method used for entry to initiate a transaction (example:0,1,2,C,M,R,7,6,B,S,T,B,A,C,F).
+          description: "Indicates the method used for entry to initiate a transaction with possible values
+            - 0 - PAN entry mode unknown
+            - 1 - PAN manual entry; no terminal used 
+            - 2 - PAN auto-entry via magnetic strip: track data is not required within transaction
+            - 6 - PAN manual entry using a terminal, or through voice transaction after chip card read error or chip fallback transaction failure
+            - 7 - Credential on File (effective June 12, 2018)
+            - A - PAN auto-entry via contactless magnetic stripe: track data provided unaltered within transaction
+            - B - PAN auto-entry via magnetic stripe: track data provided unaltered within transaction (magnetic stripe entry may also be chip fallback transaction).
+            - C - PAN auto-entry via chip (online authorized transaction)
+            - F - PAN auto-entry via chip (offline chip-approved transaction)
+            - M - PAN auto-entry via contactless M/Chip
+            - R - PAN entry via electronic commerce containing Digital Secure Remote Payment (DSRP) cryptogram within DE 55 (Integrated Circuit Card [ICC])
+            - S - PAN entry via electronic commerce
+            - T - PAN auto-entry via server (issuer, acquirer, or third party vendor system)"
           example: 'M'
         cardHolderPresentCode:
           type: string
-          description: Indicates whether the cardholder is present at the point of service and explains the condition if the cardholder is not present (example:0,1).
+          description: "Indicates whether the cardholder is present at the point of service and explains the condition if the cardholder is not present with possible values
+            - 0 - Cardholder present
+            - 1 - Cardholder not present (unspecified)
+            - 2 - Cardholder not present (mail/facsimile transaction)
+            - 3 - Cardholder not present (phone order or from automated response unit [ARU])
+            - 4 - Cardholder not present (standing order/recurring transactions)
+            - 5 - Cardholder not present (electronic order [PC, Internet, mobile phone, or PDA]) 
+            - 9 - Unknown; data unavailable"
           example: '0'
         cardPresentCode:
           type: string
@@ -1066,41 +1132,41 @@ components:
           example: '1'
         clientTransactionCode:
           type: string
-          description: Client Transaction Code
-          example: DVWPO
+          description: This code can be used for noting specific bank transactions. For example, 10001 - Bill pay, 10002 = loan payment.
+          example: 'DVWPO'
         companyIca:
           type: string
-          description: Company Ica
+          description: Mastercard assigned unique identifier for the company. This is a numeric ID with leading zeros to make up the 6 digits.
           example: '611532'
         companyId:
           type: string
-          description: Company Id
-          example: 4K
+          description: Mastercard assigned unique identifier for the company.
+          example: '4K'
         companyPromotionField:
           type: string
-          description: Company Promotion Field
+          description: This is an arbitrary field that can be used by issuers to provide data to be used in promotions
           example: '72882990'
         currency:
-          $ref: '#/components/schemas/CurrencyDto'
+          $ref: '#/components/schemas/Currency'
         debitSwitch:
           type: string
-          description: Debit Switch
-          example: N
+          description: "This switch is used to identify submitted transactions that might require specialized scoring needs. Valid values are: Y = debit transaction, N = anything"
+          example: 'N'
         exceptionId:
           type: string
-          description: Exception Id
+          description: Numeric ID assigned by Mastercard scoring system to indicate an exception on the scored transaction. This is a numeric ID.
           example: '208058744'
         interchangeRateDesignator:
           type: string
           description: Interchange rate designator for the transaction.
-          example: 2A
+          example: '2A'
         issuerCountryCode:
           type: string
           description: Identifies the geographic country of the Issuer.
-          example: USA
+          example: 'USA'
         issuerId:
           type: string
-          description: Unique identifier of Issuer.
+          description: unique identifier for the issuer, generated by Mastercard during issuer enrolment.
           example: '10455'
         issuerRegion:
           type: string
@@ -1109,44 +1175,45 @@ components:
         itemCode:
           type: string
           description: Unique code number for item in transaction.
-          example: Orbit
+          example: 'Orbit'
         itemDescription:
           type: string
           description: Description of item in transaction.
-          example: Sony Walkman
+          example: 'Sony Walkman'
         itemSku:
           type: string
           description: Unique SKU number associated with item in transaction.
           example: '21043332'
         merchant:
-          $ref: '#/components/schemas/MerchantDto'
+          $ref: '#/components/schemas/Merchant'
         offerType:
           type: string
-          description: Offer Type
+          description: This is an alphanumeric code. Only used for SKU level promotions. Generally not provided by merchant/ acquirer.
           example: '00101'
         productCode:
           type: string
-          description: Product code of the transaction.
-          example: MCB
+          description: The account’s associated reward product identifier as defined by the client and configured during the implementation of the program.
+          example: 'MCB'
         productLine:
           type: string
-          description: Product Line
+          description: The account’s associated reward product identifier as defined by the client and configured during the implementation of the program. Only used for SKU level promotions. Generally not provided by merchant/ acquirer.
           example: '30003'
         rewardPostingDateTime:
           type: string
+          format: date-time
           description: Date when the transaction posted.
-          example: 2020-01-12T05:00:00+0000
+          example: '2020-01-12T05:00:00+0000'
         routeNumber:
           type: string
-          description: Route Number
+          description: this is a numeric value that indicates the route used for the transaction that travels through the payment network from point of sale to Mastercard.
           example: '29920212'
         sellingChannel:
           type: string
-          description: Selling Channel
+          description: Channel through which the given transaction occurred. Only used for SKU level promotions. Generally not provided by merchant/ acquirer.
           example: '2524635'
         sequenceNumber:
           type: string
-          description: Unique sequence number.
+          description: Numerical sequence number of the original Transaction
           example: '10000124564'
         tokenRequestorId:
           type: string
@@ -1160,32 +1227,49 @@ components:
         transactionAmountFormatted:
           type: string
           description: Formatted transaction amount.
-          example: $120.00
+          example: '$120.00'
         transactionDateTime:
           type: string
+          format: date-time
           description: Date and time of the transaction.
-          example: 2020-01-12T05:00:00+0000
+          example: '2020-01-12T05:00:00+0000'
         transactionId:
           type: string
-          description: Unique transaction identifier.
+          description: unique identifier of the transaction generated by Mastercard system when transaction is received.
+          format: uuid
           example: 'f66e7af3-3a09-451a-9331-e0baa8f97acd'
         transactionScores:
           type: array
-          description: Transaction Scores
+          description: scores assigned to transaction after capping. There are two scores, raw score (pre-capped score), score (final score after capping has been applied)
           items:
-            $ref: '#/components/schemas/TransactionScoreDto'
+            $ref: '#/components/schemas/TransactionScore'
         transactionSourceCode:
           type: string
           description: Source of Transaction (example:GCMS).
-          example: GCMS
+          example: 'GCMS'
         transactionType:
           type: string
           description: Unique transaction type code in Data Warehouse; maps to DE3s1 value.
-          example: 5
+          example: '5'
         walletProgramCode:
           type: string
           description: Provides information about how transactions initiated through the user of a digital wallet.
           example: '146'
+        installmentPurchaseAmt:
+          type: integer
+          description: This field represents the Total Purchase Amount example 128000.
+          format: int64
+          example: 128000
+        installmentNum:
+          type: integer
+          description: This field represents how many installments the Total Purchase Amount has been broken into is example 5.
+          format: int32
+          example: 5
+        installmentPaymentNum:
+          type: integer
+          description: This field represents what installment number the transaction is example 1 of 5.
+          format: int32
+          example: 1
     PromotionProgressList:
       type: object
       properties:
@@ -1199,12 +1283,14 @@ components:
       properties:
         promotionId:
           type: string
-          example: 2aee0729-3a1a-451a-affa-84f3a6bc5acc
+          format: uuid
+          example: '2aee0729-3a1a-451a-affa-84f3a6bc5acc'
           maxLength: 50
           description: Unique Identifier for the promotion for which reward progress is retrieved.
         programId:
           type: string
-          example: f06b850a-1943-420a-bb15-c8de8f101d5e
+          format: uuid
+          example: 'f06b850a-1943-420a-bb15-c8de8f101d5e'
           maxLength: 50
           description:  Unique Program Id for the business partner program to which this promotion belongs to.
         active:
@@ -1226,17 +1312,29 @@ components:
           description: List of Caps
           items:
             $ref: '#/components/schemas/Cap'
+        delayedAwardDetails:
+          type: array
+          description: List of delayed reward details
+          items:
+            $ref: '#/components/schemas/DelayedAwardDetails'
+        rankedTiers:
+          type: array
+          description: List
+          items:
+            $ref: '#/components/schemas/RankedTier'
     ProgressSummary:
       type: object
       properties:
         entityType:
           type: string
-          example: HOUSEHOLD
+          example: 'HOUSEHOLD'
           maxLength: 15
-          description: Unique Household identifier assigned by Mastercard and provided during the account enrollment and household creation process. <br/> or <br/> Unique Account identifier assigned by Mastercard and provided in the Account enrollment response.
+          description: |
+            Unique Household identifier assigned by Mastercard and provided during the account enrollment and household creation process. or Unique Account identifier assigned by Mastercard and provided in the Account enrollment response.
         entityId:
           type: string
-          example: ad1e21a7-4c1c-4812-ae47-d2c4fae7c5a8
+          format: uuid
+          example: 'ad1e21a7-4c1c-4812-ae47-d2c4fae7c5a8'
           maxLength: 50
           description: Unique identifier for the progress entity type - “ACCOUNT” or “HOUSEHOLD”.
         totalRewardsReceived:
@@ -1246,64 +1344,81 @@ components:
           description: Total rewards (points, miles, rebate amount) received for this promotion.
         rewardsCurrencyCode:
           type: string
-          example: USD
+          example: 'USD'
           maxLength: 5
           description: ISO currency code for the promotion award currency selected by the client during the Promotion Setup. Ex. US Dollar ISO code is USD.
+        rankValue:
+          type: integer
+          example: 5
+          maxLength: 15
+          description: This is a daily rank generated for the cardholder account enrolled in a rank based promotion. It is either based on total transaction count or cumulative spend. Lower number depicts higher rank.
     Rule:
       type: object
       properties:
         entityType:
           type: string
-          example: HOUSEHOLD
+          example: 'HOUSEHOLD'
           maxLength: 15
           description: Indicates level at which the promotion rule is applied. “ACCOUNT” or “HOUSEHOLD”.
         entityId:
           type: string
-          example: ad1e21a7-4c1c-4812-ae47-d2c4fae7c5a8
+          format: uuid
+          example: 'ad1e21a7-4c1c-4812-ae47-d2c4fae7c5a8'
           maxLength: 50
           description: Unique identifier for the rules entity type - “ACCOUNT” or “HOUSEHOLD”.
         ruleId:
           type: string
-          example: da06a951-0237-4f32-affb-16502ae7dc9a
+          format: uuid
+          example: 'da06a951-0237-4f32-affb-16502ae7dc9a'
           maxLength: 50
           description: Rule Id is a unique identifier for the promotion rule.
         ruleThreshold:
           type: integer
           example: 5
           maxLength: 15
-          description: This is the minimum amount of cumulative spend or count of transactions that needs to be met in order to receive reward.
+          description: This is the minimum amount of cumulative spend, count or rate of transactions that needs to be met in order to receive reward.
           format: int64
         ruleType:
           type: string
-          example: COUNT
+          example: 'COUNT'
           maxLength: 10
-          description: Threshold Type for ruleValue and ruleThreshold. <br/> COUNT = Cumulative number of times a qualifying transaction or behavior needs to be made in order to receive a reward <br/> SPEND = Cumulative amount of spend across qualifying transactions that needs to be made in order to receive a reward
+          description: |
+            Threshold Type for ruleValue and ruleThreshold. 
+            - COUNT = Cumulative number of times a qualifying transaction or behavior needs to be made in order to receive a reward 
+            - SPEND = Cumulative amount of spend across qualifying transactions that needs to be made in order to receive a reward
+            - RATE = Accumulated tiering value across qualifying transactions that needs to be made in order to receive a reward
         ruleValue:
           type: integer
           example: 4
           maxLength: 15
-          description: The account’s progress towards a rule threshold. A threshold could be the cumulative spend or count of transactions made.
+          description: The account’s progress towards a rule threshold. A threshold could be the cumulative spend, count or rate of transactions made.
           format: int64
         rulePeriod:
           type: string
-          example: M
+          example: 'M'
           maxLength: 10
           description: Period for which promotion rule is applied – “MONTH”, “YEAR”, “LIFETIME”.
         rulePeriodValue:
           type: string
-          example: "202108"
+          example: '202108'
           maxLength: 15
           description: Period value corresponding to rule Period - "YYYYMM” when rulePeriod is “MONTH”.
         ruleCurrencyCode:
           type: string
-          example: USD
+          example: 'USD'
           maxLength: 5
           description: ISO currency code for threshold Rules configured for the given Promotion. Ex. US Dollar ISO code is USD.
+        ruleMode:
+          type: string
+          example: 'RANKED'
+          maxLength: 15
+          description: Mode of the threshold, which when ‘null’, functions as a lower-bound of minimum spend required to receive an award, and when ‘RANKED’, functions as a ranking configuration with tiers.
     Account:
       type: object
       properties:
         accountId:
           type: string
+          format: uuid
           description: Unique Account identifier assigned by Mastercard and provided in the Account enrollment response.
           example: "f35e51fe-bc77-432f-b412-3800e3c04e5c"
         activation:
@@ -1312,6 +1427,7 @@ components:
           example: true
         activationDateTime:
           type: string
+          format: date-time
           description: Specifies the date when user has optedin or opted out of a promotion.
           example: "2020-06-04T15:19:31.827Z"
     AudienceArray:
@@ -1394,15 +1510,17 @@ components:
         activationRequired:
           type: boolean
           example: true
-          description: Specifies if a promotion is enabled for Opt-In/Opt-Out.<br/>
-            true = Opt-in/out enabled<br/>
-            false = Opt-in/out not enabled, account is opted into promotion by default if targeted.
+          description: |
+            Specifies if a promotion is enabled for Opt-In/Opt-Out.
+            - true = Opt-in/out enabled
+            - false = Opt-in/out not enabled, account is opted into promotion by default if targeted.
         targetingEnabled:
           type: boolean
           example: false
-          description: Specifies if a promotion is enabled for targetting.<br/>
-            true = Targetting enabled, account has to be targetted for transactions to qualify <br/>
-            false = Targetting not enabled, all accounts are eligible into promotion by default.
+          description: |
+            Specifies if a promotion is enabled for targeting.
+            - true = Targeting enabled, account has to be targeted for transactions to qualify.
+            - false = Targeting not enabled, all accounts are eligible into promotion by default.
         beginDateTime:
           type: string
           format: date-time
@@ -1410,10 +1528,11 @@ components:
           example: "2020-05-05T15:19:31.823Z"
         description:
           type: string
-          description: Promotion description.
+          description: Description of the promotion
           example: "Promotion for digital rewards"
         endDateTime:
           type: string
+          format: date-time
           description: Promotion end date.
           example: "2020-07-05T15:19:31.827Z"
         scoringBeginDateTime:
@@ -1456,10 +1575,12 @@ components:
           example: "Digital Rewards"
         programId:
           type: string
+          format: uuid
           description: Unique program identifier.
           example: "aae5ce99-58d1-47f4-8b6a-43b427be9d74"
         promotionId:
           type: string
+          format: uuid
           description: Unique promotion identifier.
           example: "de0e1456-e678-4270-b027-fc9950b8aba5"
         timeZoneId:
@@ -1472,6 +1593,7 @@ components:
           example: "ACTIVE"
         statusChangedDateTime:
           type: string
+          format: date-time
           description: The time when the status was updated.
           example: "2020-06-05T15:19:31.827Z"
     OptIn:
@@ -1479,16 +1601,19 @@ components:
       properties:
         accountId:
           type: string
+          format: uuid
           description: Unique Account identifier assigned by Mastercard and provided in the Account enrollment response.
           example: "f35e51fe-bc77-432f-b412-3800e3c04e5c"
         activation:
           type: boolean
-          description: Specifies if the consumer is opting in or opting out of a promotion.<br/>
-            true = Opt-In<br/>
-            false = Opt-Out
+          description: |
+            Specifies if the consumer is opting in or opting out of a promotion.
+            - true = Opt-In
+            - false = Opt-Out
           example: true
         promotionId:
           type: string
+          format: uuid
           description: The unique identifier of the Promotion.
           example: "de0e1456-e678-4270-b027-fc9950b8aba5"
     Promotions:
@@ -1537,55 +1662,119 @@ components:
           properties:
             promotionId:
               type: string
+              format: uuid
               description: Unique promotion identifier
               example: "de0e1456-e678-4270-b027-fc9950b8aba5"
             referenceId:
               type: string
+              format: uuid
               description: Unique reward config identifier
               example: "de89f43c-8fbe-45ae-b5d2-ab965ecaa956"
             rebateText:
               type: string
               description: Specifies the text that shows up on cardholders billing statement for a purchase (Only applicable for a rebate)
               example: "REBATE"
-            negativeRebateText:
+            rebateTextNegative:
               type: string
               description: Specifies the text that shows up on cardholders billing statement for a return (Only applicable for a rebate)
               example: "RETURN"
             rewardType:
               type: string
-              description: Specifies the type of reward.<br/>
-                CASHBACK - Cashback<br/>
-                POINTS - Points
+              description: |
+                Specifies the type of reward.
+                - CASHBACK - Cashback
+                - POINTS - Points
+                - REWARD_ITEM - Reward Item
+                - BENEFIT - Benefit
               example: "CASHBACK"
             pointType:
               type: string
-              description: Specifies how the points are awarded (Only applicable is rewardType is POINTS).<br/>
-                BASE_POINTS - Base points<br/>
-                BONUS_POINTS - Bonus points
+              description: |
+                Specifies how the points are awarded (Only applicable if rewardType is POINTS).
+                - BASE_POINTS - Base points
+                - BONUS_POINTS - Bonus points
               example: "BASE_POINTS"
             awardType:
               type: string
-              description: Specifies if the award is going to be a fixed amount or if its going to be based on transaction amount.<br/>
-                FIXED - Fixed amount<br/>
-                PERCENTAGE - Percentage of transaction amount
+              description: |
+                Specifies if the award is going to be a fixed amount or if its going to be based on transaction amount.
+                - FIXED - Fixed amount
+                - PERCENTAGE - Percentage of transaction amount
               example: "FIXED"
             applyAwardTo:
               type: string
-              description: Specifies if the award is applied to trasacting account or the household primary account.<br/>
-                TRANSACTING_ACCOUNT - Transacting account<br/>
-                PRIMARY_ACCOUNT - Household primary account
+              description: |
+                Specifies if the award is applied to transacting account or the household primary account.
+                - TRANSACTING_ACCOUNT - Transacting account
+                - PRIMARY_ACCOUNT - Household primary account
               example: "TRANSACTING_ACCOUNT"
             scoreBasedOn:
               type: string
-              description: Specifies how the transactions are scored.<br/>
-                DE4_TRANSACTION_AMOUNT - Transaction amount<br/>
-                DE5_SETTLEMENT_AMOUNT - Settlement amount<br/>
-                DE6_CARDHOLDER_BILLING_AMOUNT - Cardholder billing amount
+              description: |
+                Specifies how the transactions are scored.
+                - DE4_TRANSACTION_AMOUNT - Transaction amount
+                - DE5_SETTLEMENT_AMOUNT - Settlement amount
+                - DE6_CARDHOLDER_BILLING_AMOUNT - Cardholder billing amount
               example: "DE4_TRANSACTION_AMOUNT"
             rewardRate:
               type: string
-              description: If the awardType is FIXED, this field specifies the amount that is awarded. And if the awardType is not fixed then it specifies the percentage of transaction amount
+              description: If the awardType is FIXED, this field specifies the amount that is awarded. And if the awardType is not fixed then it specifies the percentage of transaction amount.
               example: "10"
+            delayedAward:
+              type: object
+              description: Delayed Award
+              properties:
+                mode:
+                  type: string
+                  description: Specifies type of Delayed Award
+                  enum:
+                    - AWARD_AMOUNT_BASED
+                    - AWARD_TIME_BASED
+                  example: "AWARD_AMOUNT_BASED"
+                resetAmount:
+                  type: number
+                  format: double
+                  description: |
+                    If Delayed Award is amount based, this field specifies the reset amount.
+                  example: 10.00
+                periodFrequency:
+                  type: integer
+                  format: int32
+                  description: |
+                    If Delayed Award is time based, this field specifies frequency.
+                  example: 10
+                periodCode:
+                  type: string
+                  description: If Delayed Award is time based, this field specifies time period time.
+                  enum:
+                    - DAY
+                    - WEEK
+                    - MONTH
+                    - QUARTER
+                    - YEAR
+                  example: "MONTH"
+                periodBeginDateTime:
+                  type: string
+                  format: date-time
+                  description: |
+                    If Delayed Award is time based, this field specified begin date time.
+                  example: "2020-10-24T00:00:00Z"
+                periodMode:
+                  type: string
+                  description: If Delayed Award is time based, this field specifies of how cardholder will be awarded.
+                  enum:
+                    - ACCOUNT_ENROLLMENT_DATE
+                    - PRIMARY_ENROLLMENT_DATE
+                    - ACTIVE_DATE
+                  example: "ACCOUNT_ENROLLMENT_DATE"
+                negativeBalanceHandling:
+                  type: string
+                  description: Specifies how the negative balance should be handled.
+                  enum:
+                    - NEVER_TAKE_BACK
+                    - TAKE_IT_BACK_AT_THE_END
+                    - TAKE_IT_BACK_IMMEDIATELY
+                  example: "NEVER_TAKE_BACK"
         thresholds:
           type: array
           description: List of Thresholds applied to the Promotion
@@ -1596,19 +1785,23 @@ components:
       properties:
         id:
           type: string
+          format: uuid
           description: Unique threshold identifier
           example: "fbbbba72-141d-41f5-9ace-69129f971010"
         type:
           type: string
-          description: Specifies if the threshold is based on transaction count or transaction spend amount.<br/>
-            COUNT - Transaction count<br/>
-            SPEND - Transaction spend amount
+          description: |
+            Specifies if the threshold is based on transaction count, transaction spend amount or accumulated tiering value.
+            - COUNT - Transaction count
+            - SPEND - Transaction spend amount
+            - RATE -  Accumulated tiering value
           example: "AMOUNT"
         fieldType:
           type: string
-          description: If the type selected is SPEND, then this field specifies which amount value is used to accumulate toward the threshold.<br/>
-            DE04 - Transaction Amount<br/>
-            DE06 - Cardholder Billing Amount
+          description: |
+            If the type selected is SPEND, then this field specifies which amount value is used to accumulate toward the threshold.
+            - DE04 - Transaction Amount
+            - DE06 - Cardholder Billing Amount
           example: "DE04"
         value:
           type: number
@@ -1617,9 +1810,10 @@ components:
           example: 1000.00
         level:
           type: string
-          description: Specifies the level at which the threshold is applied.<br/>
-            A - Account level (All accounts have their own threshold)<br/>
-            H - Household level (Each account contributes toward reaching the threshold)
+          description: |
+            Specifies the level at which the threshold is applied.
+            - A - Account level (All accounts have their own threshold)
+            - H - Household level (Each account contributes toward reaching the threshold)
           example: "A"
         periodInDaysAfterDate:
           type: integer
@@ -1628,12 +1822,87 @@ components:
           example: 10
         dateFieldType:
           type: string
-          description: Specifies the date type used for starting the count on how long the account has for meeting the threshold.<br/>
-            ENROLLMENT_DATE - The date on which the cardholder has enrolled to the program<br/>
-            TARGET_BEGIN_DATE - The date on which the account is set to be targetted into a promotion<br/>
-            ACTIVE_DATE - The date on which enrollment record was added to the system<br/>
-            OPTIN_DATE - The date on which the account has opted into the promotion<br/>
+          description: |
+            Specifies the date type used for starting the count on how long the account has for meeting the threshold.
+            - ENROLLMENT_DATE - The date on which the cardholder has enrolled to the program
+            - TARGET_BEGIN_DATE - The date on which the account is set to be targeted into a promotion
+            - ACTIVE_DATE - The date on which enrollment record was added to the system
+            - OPTIN_DATE - The date on which the account has opted into the promotion
           example: "ENROLLMENT_DATE"
+        rankedTiers:
+          type: array
+          description: Tiers of awards that can be found on this promotion
+          items:
+            $ref: '#/components/schemas/AwardTier'
+        scoreBasedOn:
+          type: string
+          description: How the score for the promotion will be calculated
+          example: "DE4_TRANSACTION_AMOUNT|DE5_SETTLEMENT_AMOUNT|DE6_CARDHOLDER_BILLING_AMOUNT|USD_EQUIVALENT|EUR_EQUIVALENT|TRANSACTION_AMOUNT"
+        applyAwardTo:
+          type: string
+          description: How the awards for the promotion will be paid out to the recipient
+          example: "TRANSACTING_ACCOUNT"
+    AwardTier:
+      type: object
+      properties:
+        from:
+          type: number
+          description: Lower bound of this award tier
+          example: 100
+        to:
+          type: number
+          description: Upper bound of this award tier
+          example: 200
+        value:
+          type: number
+          description: Award value of this award tier
+          example: 150
+    RankedTier:
+      type: object
+      properties:
+        entityType:
+          type: string
+          example: 'HOUSEHOLD'
+          maxLength: 15
+          description: Indicates level at which the promotion rule is applied. “ACCOUNT” or “HOUSEHOLD”.
+        entityId:
+          type: string
+          format: uuid
+          example: 'ad1e21a7-4c1c-4812-ae47-d2c4fae7c5a8'
+          maxLength: 50
+          description: Unique identifier for the rules entity type - “ACCOUNT” or “HOUSEHOLD”.
+        ruleId:
+          type: string
+          format: uuid
+          example: 'da06a951-0237-4f32-affb-16502ae7dc9a'
+          maxLength: 50
+          description: Rule Id is a unique identifier for the promotion rule.
+        ruleValue:
+          type: integer
+          example: 4
+          maxLength: 15
+          description: The account’s progress towards a rule threshold. A threshold could be the cumulative spend or count of transactions made.
+          format: int64
+        code:
+          type: string
+          description: Award tier code
+          example: code1
+        fromValue:
+          type: number
+          description: Lower bound of this award tier
+          example: 100
+        toValue:
+          type: number
+          description: Upper bound of this award tier
+          example: 200
+        awardRate:
+          type: number
+          description: If awardRate is whole number(no decimal) then value should be interpreted as percent otherwise awardRate is the amount awarded for that tier
+          example: 5
+        minAmount:
+          type: number
+          description: Spend amount required to hit tier or transaction count required to hit tier
+          example: 700
     PromotionCap:
       type: object
       properties:
@@ -1648,23 +1917,36 @@ components:
           example: TRUE
         id:
           type: string
+          format: uuid
           description: Unique cap identifier
           example: "59266873-45c9-418f-a9dc-1b0f00d0bc16"
         level:
           type: string
-          description: Specifies the level at which cap is applied.<br/>
-            A - Account level<br/>
-            P - Household level<br/>
-            T - Transaction level
+          description: |
+            Specifies the level at which cap is applied.
+            - A - Account level
+            - P - Household level
+            - T - Transaction level
           example: "A"
         period:
           type: string
-          description: Specifies the period for which cap is applied.<br/>
-            M - Monthly<br/>
-            Y - Yearly<br/>
+          description: |
+            Specifies the period for which cap is applied.
+            D - Daily
+            M - Monthly
+            Q - Quarterly
+            Y - Yearly
             L - Lifetime
           example: "M"
-    PagedResponseOfAccountSearch:
+        periodFrequency:
+          type: integer
+          description: Specifies the frequency of cap period for reset.
+          example: 2
+        periodStartDateTime:
+          type: string
+          description: Specifies the start date of cap period reset
+          example: "2024-06-15T00:00:00Z"
+    PagedAccountSearchItem:
       type: object
       properties:
         count:
@@ -1730,7 +2012,7 @@ components:
         entityId:
           type: string
           example: 12f5930a-ab8b-4a25-9774-6ba49a9bfd8c
-          description: Code for the associated audience record
+          description: Entity ID is the unique id for the entity type account or household
     PagedResponseAudience:
       type: object
       properties:
@@ -1759,7 +2041,6 @@ components:
           description: List of Audience Data
           items:
             $ref: '#/components/schemas/Audience'
-
   examples:
     SearchAccountBadRequest:
       value:
@@ -1795,7 +2076,7 @@ components:
             - Source: POINTS_ENGINE_CONSUMER_DATA
               ReasonCode: AUTHORIZATION_ERROR
               Description: Unable to authorize user due to error in authentication.
-              Recoverable: true
+              Recoverable: false
               Details: "null"
     PromotionsForbidden:
       value:
@@ -1804,24 +2085,15 @@ components:
             - Source: POINTS_ENGINE_CONSUMER_DATA
               ReasonCode: FORBIDDEN
               Description: User does not have required permissions to perform this operation.
-              Recoverable: true
+              Recoverable: false
               Details: "null"
     PromotionsBadRequest:
       value:
         Errors:
           Error:
-            - Source: INVALID_INPUT
-              ReasonCode: INVALID_FIELD_PROMOTION_STATE
-              Description: Invalid promotion_state provided. Valid values for promotion_state are all, future, current, expired, future+current.
-              Recoverable: false
-              Details: "null"
-    PromotionsNotFound:
-      value:
-        Errors:
-          Error:
             - Source: POINTS_ENGINE_CONSUMER_DATA
-              ReasonCode: ENTITY_NOT_FOUND
-              Description: No records found for the provided promotionId
+              ReasonCode: INVALID_FIELD_PROMOTION_ID
+              Description: Invalid promotionId
               Recoverable: false
               Details: "null"
     AudienceUnauthorized:
@@ -1831,7 +2103,7 @@ components:
             - Source: POINTS_ENGINE_CONSUMER_DATA
               ReasonCode: AUTHORIZATION_ERROR
               Description: Unable to authorize user due to error in authentication.
-              Recoverable: true
+              Recoverable: false
               Details: null
     AudienceForbidden:
       value:
@@ -1840,13 +2112,13 @@ components:
             - Source: POINTS_ENGINE_CONSUMER_DATA
               ReasonCode: FORBIDDEN
               Description: User does not have required permissions to perform this operation.
-              Recoverable: true
+              Recoverable: false
               Details: null
     AudienceBadRequest:
       value:
         Errors:
           Error:
-            - Source: INVALID_INPUT
+            - Source: POINTS_ENGINE_CONSUMER_DATA
               ReasonCode: INVALID_BEGIN_DATE_TIME_FORMAT
               Description: Invalid Begin Date Time Format
               Recoverable: false
@@ -1856,7 +2128,7 @@ components:
         Errors:
           Error:
             - Source: POINTS_ENGINE_CONSUMER_DATA
-              ReasonCode: ENTITY_NOT_FOUND_FOR_AUDIENCE_ID
-              Description: No audience record found for the given audience id
+              ReasonCode: INVALID_FIELD_AUDIENCE_ID
+              Description: Invalid audienceId
               Recoverable: false
               Details: null
