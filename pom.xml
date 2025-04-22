@@ -29,6 +29,8 @@
         <commons-lang3.version>3.12.0</commons-lang3.version>
         <gson.version>2.8.9</gson.version>
         <gson-fire.version>1.8.5</gson-fire.version>
+        <tomcat.version>9.0.102</tomcat.version>
+
     </properties>
 
     <dependencies>
@@ -140,6 +142,23 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+
+         <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-core</artifactId>
+            <version>${tomcat.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-el</artifactId>
+            <version>${tomcat.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-websocket</artifactId>
+            <version>${tomcat.version}</version>
+        </dependency>
+        <!-- Add any other tomcat-embed modules you need the same way -->
 
     </dependencies>
 
