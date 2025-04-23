@@ -450,7 +450,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/PagedAccountSearchItem'
+            $ref: '#/components/schemas/PagedResponseOfAccountSearch'
     ResponseSearchAccountBadRequest:
       description: Search Account Bad Request.
       content:
@@ -1946,7 +1946,7 @@ components:
           type: string
           description: Specifies the start date of cap period reset
           example: "2024-06-15T00:00:00Z"
-    PagedAccountSearchItem:
+    PagedResponseOfAccountSearch:
       type: object
       properties:
         count:
