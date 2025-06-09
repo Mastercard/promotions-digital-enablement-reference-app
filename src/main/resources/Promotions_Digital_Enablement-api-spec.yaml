@@ -819,6 +819,7 @@ components:
           description: Type at which the promotion cap is applied –  "ACCOUNT", "HOUSEHOLD"
         entityId:
           type: string
+          
           format: uuid
           example: 'f35e51fe-bc77-432f-b412-3800e3c04e5c'
           maxLength: 50
@@ -1775,6 +1776,59 @@ components:
                     - TAKE_IT_BACK_AT_THE_END
                     - TAKE_IT_BACK_IMMEDIATELY
                   example: "NEVER_TAKE_BACK"
+            accumulatedTierPeriodCode:
+              type: string
+              description: This field specifies time period of the accumulated tier.
+              enum:
+                - MONTH
+                - CYCLE
+                - LIFETIME
+                - YEAR
+              example: "MONTH"
+            scoreRounding:
+              type: string
+              description: This field specifies the rounding choice for the score.
+              enum:
+                - TRUNCATE_MINOR
+                - TRUNCATE_MAJOR
+                - ROUND_MINOR 
+                - ROUND_MAJOR 
+                - CEILING_MINOR
+                - CEILING_MAJOR 
+                - null                                                                     
+              example: "ROUND_MAJOR"
+            accumulatedTiers:
+              type: object
+              description: List of tiers for accumulated tiers
+              properties:
+                from:
+                  type: number
+                  description: Lower bound of this tier
+                  example: 100
+                to:
+                  type: number
+                  description: Upper bound of this tier
+                  example: 200
+                code:
+                  type: string
+                  description: Unique ID for Tier
+                  example: "de0e1456-e678-4270-b027-fc9950b8aba5"
+                rates:
+                  type: object
+                  description: List of rates for each tier within the accumulated tiers object
+                  properties:
+                    rate:
+                      type: number
+                      description: Percent or Amount rate applied to this tier rate
+                      example: 1
+                    label:
+                      type: string
+                      description: Label for this tier rate
+                      example: "Tier1Rate1"
+                    code:
+                      type: string
+                      description: Unique ID for Rate
+                      example: "de0e1456-e678-4270-b027-fc9950b8aba5"
         thresholds:
           type: array
           description: List of Thresholds applied to the Promotion
