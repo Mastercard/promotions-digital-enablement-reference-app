@@ -51,7 +51,7 @@ paths:
         - Promotion Management
       summary: Provides clients the ability to retrieve list of promotions based on the request parameters provided.
       description: This endpoint provides clients with the ability to retrieve all active promotions using the company id, program id, and/or account id.
-      operationId: getPromotions
+      operationId: getPromotionsUsingGET
       parameters:
         - $ref: '#/components/parameters/RewardsCompanyId'
         - $ref: '#/components/parameters/ProgramId'
@@ -75,7 +75,7 @@ paths:
         - Promotion Management
       summary: Provides clients the ability to retrieve promotion details of particular promotion id.
       description: This endpoint provides clients with the ability to retrieve promotion details using the promotion id.
-      operationId: getPromotionDetails
+      operationId: getPromotionDetailsUsingGET
       parameters:
         - $ref: '#/components/parameters/PromotionIdPathParam'
       responses:
@@ -93,7 +93,7 @@ paths:
         - Promotion Management
       summary: Provides clients the ability to opt accounts in to and out of a specific promotion.
       description: This endpoint provides clients with the ability to opt accounts in to and out of a specific promotion using the unique identifier of the account and promotion.
-      operationId: postPromotionOptIn
+      operationId: promotionOptInUsingPOST
       requestBody:
         $ref: "#/components/requestBodies/PromotionOptInRequest"
       responses:
@@ -111,7 +111,7 @@ paths:
         - Promotion Progress
       summary: Provides clients the ability to retrieve promotion progress data.
       description: This endpoint provides clients with the ability to retrieve reward progress data using household id, account_id and/or promotion id.
-      operationId: getPromotionProgress
+      operationId: retrieveUsingGET
       parameters:
         - $ref: '#/components/parameters/HouseholdIdParam'
         - $ref: '#/components/parameters/AccountIdParam'
@@ -134,7 +134,7 @@ paths:
         - Transactions
       summary: Provides clients the ability to retrieve transaction data.
       description: This endpoint provides clients with the ability to retrieve transaction data related to a specific promotion.
-      operationId: getTransactions
+      operationId: getTransactionsUsingGET
       parameters:
         - $ref: '#/components/parameters/AccountIdParam'
         - $ref: '#/components/parameters/FromDateParam'
@@ -270,7 +270,6 @@ components:
       schema:
         type: string
         example: 2023-01-01
-        format: date
     ToDateParam:
       name: to_date
       in: query
@@ -278,7 +277,6 @@ components:
       schema:
         type: string
         example: 2024-01-01
-        format: date
     OffsetParam:
       name: offset
       in: query
@@ -304,7 +302,6 @@ components:
       required: false
       schema:
         type: string
-        format: uuid
         example: "ad1e21a7-4c1c-4812-ae47-d2c4fae7c5a8"
     AccountIdParam:
       name: account_id
@@ -313,16 +310,14 @@ components:
       required: false
       schema:
         type: string
-        format: uuid
-      example: "f35e51fe-bc77-432f-b412-3800e3c04e5c"
+        example: "f35e51fe-bc77-432f-b412-3800e3c04e5c"
     PromotionIdParam:
       name: promotion_id
       in: query
       description: The unique identifier of the Promotion created and assigned by Mastercard during promotion creation process
       schema:
         type: string
-        format: uuid
-      example: "2aee0729-3a1a-451a-affa-84f3a6bc5acc"
+        example: "2aee0729-3a1a-451a-affa-84f3a6bc5acc"
     IncludeHistoryParam:
       name: include_history
       in: query
@@ -338,7 +333,6 @@ components:
       example: "383a74b4-38b3-4f2a-a85d-6b2e26ad665"
       schema:
         type: string
-        format: uuid
     ProgramId:
       name: program_id
       in: query
@@ -346,7 +340,6 @@ components:
       example: "aae5ce99-58d1-47f4-8b6a-43b427be9d74"
       schema:
         type: string
-        format: uuid
     PromotionId:
       name: promotion_id
       in: query
@@ -354,7 +347,6 @@ components:
       example: "de0e1456-e678-4270-b027-fc9950b8aba5"
       schema:
         type: string
-        format: uuid
     PromotionIdPathParam:
       name: promotion_id
       in: path
@@ -363,7 +355,6 @@ components:
       required: true
       schema:
         type: string
-        format: uuid
     AccountId:
       name: account_id
       in: query
@@ -371,7 +362,6 @@ components:
       example: "f35e51fe-bc77-432f-b412-3800e3c04e5c"
       schema:
         type: string
-        format: uuid
     PromotionState:
       name: promotion_state
       in: query
@@ -498,7 +488,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/PagedTransaction'
+            $ref: '#/components/schemas/PagedResponseGetTransactionDto'
     ResponseBadRequest:
       description: Bad Request with errors
       content:
@@ -638,11 +628,7 @@ components:
         userNumberType:
           maxLength: 5
           type: string
-          description: The Field to identify type of value provided in userNumber. If userNumberType is not provided then default value will be BCN.
-          enum:
-            - BCN
-            - RANCU
-            - AREF
+          description: The field to identify type of value provided in userNumber, for example BCN/RANCU/AREF. If userNumberType is not provided then default value will be BCN.
           example: 'BCN'
         userNumber:
           maxLength: 30
@@ -745,13 +731,11 @@ components:
           description: Type at which the promotion cap is applied –  "ACCOUNT", "HOUSEHOLD"
         entityId:
           type: string
-          format: uuid
           example: 'f35e51fe-bc77-432f-b412-3800e3c04e5c'
           maxLength: 50
           description: Unique identifier for the caps entity type - “ACCOUNT” or “HOUSEHOLD”.
         capId:
           type: string
-          format: uuid
           example: 'd963516d-1fc0-47e7-acc2-3468b1f81473'
           maxLength: 50
           description: CapId is a unique identifier for the promotion capping rule.
@@ -868,7 +852,7 @@ components:
       properties:
         Errors:
           $ref: '#/components/schemas/Errors'
-    PagedTransaction:
+    PagedResponseGetTransactionDto:
       type: object
       properties:
         count:
@@ -1283,13 +1267,11 @@ components:
       properties:
         promotionId:
           type: string
-          format: uuid
           example: '2aee0729-3a1a-451a-affa-84f3a6bc5acc'
           maxLength: 50
           description: Unique Identifier for the promotion for which reward progress is retrieved.
         programId:
           type: string
-          format: uuid
           example: 'f06b850a-1943-420a-bb15-c8de8f101d5e'
           maxLength: 50
           description:  Unique Program Id for the business partner program to which this promotion belongs to.
@@ -1333,7 +1315,6 @@ components:
             Unique Household identifier assigned by Mastercard and provided during the account enrollment and household creation process. or Unique Account identifier assigned by Mastercard and provided in the Account enrollment response.
         entityId:
           type: string
-          format: uuid
           example: 'ad1e21a7-4c1c-4812-ae47-d2c4fae7c5a8'
           maxLength: 50
           description: Unique identifier for the progress entity type - “ACCOUNT” or “HOUSEHOLD”.
@@ -1362,13 +1343,11 @@ components:
           description: Indicates level at which the promotion rule is applied. “ACCOUNT” or “HOUSEHOLD”.
         entityId:
           type: string
-          format: uuid
           example: 'ad1e21a7-4c1c-4812-ae47-d2c4fae7c5a8'
           maxLength: 50
           description: Unique identifier for the rules entity type - “ACCOUNT” or “HOUSEHOLD”.
         ruleId:
           type: string
-          format: uuid
           example: 'da06a951-0237-4f32-affb-16502ae7dc9a'
           maxLength: 50
           description: Rule Id is a unique identifier for the promotion rule.
@@ -1575,12 +1554,10 @@ components:
           example: "Digital Rewards"
         programId:
           type: string
-          format: uuid
           description: Unique program identifier.
           example: "aae5ce99-58d1-47f4-8b6a-43b427be9d74"
         promotionId:
           type: string
-          format: uuid
           description: Unique promotion identifier.
           example: "de0e1456-e678-4270-b027-fc9950b8aba5"
         timeZoneId:
@@ -1601,7 +1578,6 @@ components:
       properties:
         accountId:
           type: string
-          format: uuid
           description: Unique Account identifier assigned by Mastercard and provided in the Account enrollment response.
           example: "f35e51fe-bc77-432f-b412-3800e3c04e5c"
         activation:
@@ -1613,7 +1589,6 @@ components:
           example: true
         promotionId:
           type: string
-          format: uuid
           description: The unique identifier of the Promotion.
           example: "de0e1456-e678-4270-b027-fc9950b8aba5"
     Promotions:
@@ -1662,12 +1637,10 @@ components:
           properties:
             promotionId:
               type: string
-              format: uuid
               description: Unique promotion identifier
               example: "de0e1456-e678-4270-b027-fc9950b8aba5"
             referenceId:
               type: string
-              format: uuid
               description: Unique reward config identifier
               example: "de89f43c-8fbe-45ae-b5d2-ab965ecaa956"
             rebateText:
