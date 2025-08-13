@@ -26,6 +26,17 @@ public class ApplicationConstants {
     public static final String INVALID_BEGIN_DATE_TIME_FORMAT_ERR_MSG = "Invalid Begin Date Time Format";
     public static final String INVALID_END_DATE_TIME_FORMAT = "INVALID_END_DATE_TIME_FORMAT";
     public static final String INVALID_END_DATE_TIME_FORMAT_ERR_MSG = "Invalid End Date Time Format";
+    public static final String EVENT_CREATED = "{\"success\": \"Event is successfully posted for scoring\"}";
+    public static final String EVENT_HEADER_NAME = "ENTITY_DETAIL";
+    public static final String ENTITY_ID_REQUIRED = "EntityId is required";
+    public static final String ENTITY_TYPE_IS_REQUIRED = "EntityType is required";
+    public static final String EVENT_TYPE_IS_REQUIRED = "EventType is required";
+    public static final String EVENT_TOTAL_INVALID = "Invalid event total";
+    public static final String EVENT_DATETIME_INVALID = "EventDateTime is required and should have valid date format";
+    public static final String INVALID_PAYLOAD_RECEIVED_FOR = "Invalid payload : ";
+    public static final String INVALID_REQUEST = "INVALID_REQUEST";
+    public static final String REWARDS_BANK_SOURCE = "REWARDS_BANK";
+
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class ErrorMessages {

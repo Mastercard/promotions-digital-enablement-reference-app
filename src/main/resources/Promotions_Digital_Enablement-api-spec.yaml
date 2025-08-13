@@ -153,6 +153,47 @@ paths:
           $ref: '#/components/responses/ResponseForbidden'
         '404':
           $ref: '#/components/responses/ResponseNotFound'
+  /events:
+    post:
+      tags:
+        - Events
+      description: This API endpoint is used to add an eligibility period (begin and end datetime) for the cardholder either account or household (A/H - represented by the entityId) into the audience (represented by the code). It will return the unique id associated with the code, entityId and beginDateTime.
+      operationId: createEvents
+      summary: Provides clients the ability to create an events entity
+      requestBody:
+        $ref: '#/components/requestBodies/Event'
+      responses:
+        '200':
+          $ref: '#/components/responses/ResponseEventCreated'
+        '400':
+          $ref: '#/components/responses/ResponseEventBadRequest'
+        '403':
+          $ref: '#/components/responses/ResponseEventForbidden'
+    get:
+      tags:
+        - Events
+      summary: Provides clients the ability to retrieve events data.
+      description: This endpoint provides clients with the ability to retrieve events data related to a specific promotion.
+      operationId: getEvents
+      parameters:
+        - $ref: '#/components/parameters/HouseholdIdParam'
+        - $ref: '#/components/parameters/AccountIdParam'
+        - $ref: '#/components/parameters/FromDateParam'
+        - $ref: '#/components/parameters/ToDateParam'
+        - $ref: '#/components/parameters/PromotionIdParam'
+        - $ref: '#/components/parameters/OffsetParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          $ref: '#/components/responses/ResponseOkEvent'
+        '400':
+          $ref: '#/components/responses/ResponseBadRequest'
+        '401':
+          $ref: '#/components/responses/ResponseUnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ResponseForbidden'
+        '404':
+          $ref: '#/components/responses/ResponseNotFound'
   /audiences:
     post:
       tags:
@@ -250,6 +291,12 @@ components:
             type: array
             items:
               $ref: "#/components/schemas/OptIn"
+    Event:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Event'
     Audience:
       required: true
       content:
@@ -519,6 +566,12 @@ components:
           examples:
             FORBIDDEN:
               $ref: '#/components/examples/Forbidden'
+    ResponseOkEvent:
+      description: OK response including paged events data
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PagedEvent'
     ResponseNotFound:
       description: Not Found
       content:
@@ -595,6 +648,30 @@ components:
           examples:
             BAD_REQUEST:
               $ref: '#/components/examples/AudienceIdNotFound'
+    ResponseEventCreated:
+      description: Created
+      content:
+        application/json:
+          example:
+            success: Event is successfully posted for scoring
+    ResponseEventBadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorsList'
+          examples:
+            BAD_REQUEST:
+              $ref: '#/components/examples/EventBadRequest'
+    ResponseEventForbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorsList'
+          examples:
+            FORBIDDEN:
+              $ref: '#/components/examples/EventForbidden'
   schemas:
     AccountSearch:
       type: object
@@ -1254,6 +1331,127 @@ components:
           description: This field represents what installment number the transaction is example 1 of 5.
           format: int32
           example: 1
+    EventItem:
+      type: object
+      properties:
+        accountInfo:
+          type: boolean
+          description: Indicates if account info is present
+          example: true
+        accountNumber:
+          type: string
+          description: Account number (masked)
+          example: "**8345"
+        eventId:
+          type: string
+          format: uuid
+          description: Event identifier
+          example: EVENT-UUID
+        rewardsCompanyId:
+          type: string
+          format: uuid
+          description: Rewards company identifier
+          example: COMPANY-UUID
+        programId:
+          type: string
+          format: uuid
+          description: Program identifier
+          example: PROGRAM-UUID
+        householdId:
+          type: string
+          format: uuid
+          description: Household identifier
+          example: UUID
+        eventScores:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventScore'
+    EventScore:
+      type: object
+      properties:
+        scoreId:
+          type: string
+          format: uuid
+          description: Unique score identifier
+          example: dd7839c3-b20a-48a8-9c75-800bd2de5b6a
+        promotionId:
+          type: string
+          format: uuid
+          description: Unique promotion identifier
+          example: 47e39dd0-9c8a-4e4f-8e4d-de374a8277dd
+        promotionName:
+          type: string
+          description: Name of the promotion
+          example: Rewards Promo
+        rawScore:
+          type: number
+          description: Raw score before capping
+          example: 120
+        score:
+          type: number
+          description: Final score after capping
+          example: 100
+        reason:
+          type: string
+          description: Reason for score adjustment
+          example: cap
+        rewardType:
+          type: string
+          description: Type of reward
+          example: CASHBACK
+        postingAccountReferenceId:
+          type: string
+          format: uuid
+          description: Posting account reference id
+          example: 751678c0-079b-11eb-adc1-0242ac12aaaa
+        currencyCode:
+          type: string
+          description: Currency code
+          example: USD
+    PagedEvent:
+      type: object
+      properties:
+        limit:
+          type: integer
+          format: int32
+          example: 25
+        offset:
+          type: integer
+          format: int32
+          example: 0
+        total:
+          type: integer
+          format: int64
+          example: 1
+        count:
+          type: integer
+          format: int32
+          example: 1
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventItem'
+        eventDateTime:
+          type: string
+          format: date-time
+          description: Event date and time
+          example: 2024-02-02T00:00:00+0000
+        eventType:
+          type: string
+          description: Event type (TARGETED or REDEMPTION)
+          example: TARGETED
+        eventClass:
+          type: string
+          description: Event class
+          example: email_added
+        eventValue:
+          type: string
+          description: Value associated with the event
+          example: abc@gmail.com
+        eventTotal:
+          type: integer
+          description: Optional field for event total
+          example: 525
     PromotionProgressList:
       type: object
       properties:
@@ -1959,6 +2157,59 @@ components:
           description: End Date Time
           example: 2025-01-18T02:00:00Z
           type: string
+    Event:
+      type: object
+      properties:
+        entityId:
+          type: string
+          description: Unique reference id for account or household
+          example: ACCT_REF_ID
+        entityType:
+          type: string
+          description: Type of entity, ACCOUNT or HOUSEHOLD
+          example: ACCOUNT
+        eventDateTime:
+          type: string
+          description: Date and time of the event
+          example: 12-Nov-2024 01:33:00 AM
+        eventType:
+          type: string
+          description: Event type, e\.g\. TARGETED, REDEMPTION
+          example: TARGETED
+        eventClass:
+          type: string
+          description: Event class, e\.g\. email_added
+          example: email_added
+        eventValue:
+          type: string
+          description: Value associated with the event
+          example: abc@gmail.com
+        eventTotal:
+          type: integer
+          description: Optional field used in redemption events or other scenarios
+          example: 525
+          nullable: true
+        eventDetails:
+          type: object
+          additionalProperties:
+            type: string
+          description: Map of additional event details
+          example:
+            key1: value1
+            key2: value2
+        source:
+          type: string
+          description: Source of the event
+          example: event
+      required:
+        - entityId
+        - entityType
+        - eventDateTime
+        - eventType
+        - eventClass
+        - eventValue
+        - eventDetails
+        - source
     Audience:
       type: object
       properties:
@@ -2094,6 +2345,24 @@ components:
             - Source: POINTS_ENGINE_CONSUMER_DATA
               ReasonCode: INVALID_BEGIN_DATE_TIME_FORMAT
               Description: Invalid Begin Date Time Format
+              Recoverable: false
+              Details: null
+    EventBadRequest:
+      value:
+        Errors:
+          Error:
+            - Source: REWARDS_BANK
+              ReasonCode: ENTITY_ID_REQUIRED
+              Description: EntityId is required
+              Recoverable: false
+              Details: null
+    EventForbidden:
+      value:
+        Errors:
+          Error:
+            - Source: REWARDS_BANK
+              ReasonCode: FORBIDDEN
+              Description: User does not have required permissions to perform this operation.
               Recoverable: false
               Details: null
     AudienceIdNotFound:
