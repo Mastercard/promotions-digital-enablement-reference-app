@@ -1132,6 +1132,46 @@ components:
           description: Posting Account ReferenceId
           format: uuid
           example: '751678c0-079b-11eb-adc1-0242ac12aaaa'
+        accumulatedTiers:
+          type: array
+          description: List
+          items:
+            $ref: '#/components/schemas/TransactionScoreAccumulatedTier'
+    TransactionScoreAccumulatedTier:
+      type: object
+      properties:
+        code:
+          type: string
+          format: uuid
+          example: 'ad1e21a7-4c1c-4812-ae47-d2c4fae7c5a8'
+          maxLength: 50
+          description: A unique identifier for each tier that was configured.
+        rates:
+          type: array
+          description: List
+          items:
+            $ref: '#/components/schemas/TransactionScoreAccumulatedTierRate'
+    TransactionScoreAccumulatedTierRate:
+      type: object
+      properties:
+        code:
+          type: string
+          format: uuid
+          example: 'ad1e21a7-4c1c-4812-ae47-d2c4fae7c5a8'
+          maxLength: 50
+          description: A unique identifier for each rate that was configured.
+        amount:
+          type: integer
+          example: 5
+          maxLength: 15
+          description: The accumulated amount spent that hit this rate within this tier.
+          format: int64
+        score:
+          type: integer
+          example: 5
+          maxLength: 15
+          description: The accumulated amount awarded from this rate within this tier.
+          format: int64
     GetTransaction:
       type: object
       properties:
@@ -1590,6 +1630,53 @@ components:
           example: 'RANKED'
           maxLength: 15
           description: Mode of the threshold, which when ‘null’, functions as a lower-bound of minimum spend required to receive an award, and when ‘RANKED’, functions as a ranking configuration with tiers.
+        periodTotalRewardsReceived:
+          type: integer
+          example: 4
+          maxLength: 15
+          description: The accumulated amount awarded for this promotion during this period across all tiers and rates.
+          format: int64
+        accumulatedTiers:
+          type: array
+          description: List
+          items:
+            $ref: '#/components/schemas/PromotionProgressAccumulatedTier'
+    PromotionProgressAccumulatedTier:
+      type: object
+      properties:
+        code:
+          type: string
+          format: uuid
+          example: 'ad1e21a7-4c1c-4812-ae47-d2c4fae7c5a8'
+          maxLength: 50
+          description: A unique identifier for each tier that was configured.
+        rates:
+          type: array
+          description: List
+          items:
+            $ref: '#/components/schemas/PromotionProgressAccumulatedTierRate'
+    PromotionProgressAccumulatedTierRate:
+      type: object
+      properties:
+        code:
+          type: string
+          format: uuid
+          example: 'ad1e21a7-4c1c-4812-ae47-d2c4fae7c5a8'
+          maxLength: 50
+          description: A unique identifier for each rate that was configured.
+        amount:
+          type: integer
+          example: 5
+          maxLength: 15
+          description: The accumulated amount spent that hit this rate within this tier.
+          format: int64
+        score:
+          type: integer
+          example: 5
+          maxLength: 15
+          description: The accumulated amount awarded from this rate within this tier.
+          format: int64
+        
     Account:
       type: object
       properties:
@@ -1946,11 +2033,76 @@ components:
                     - TAKE_IT_BACK_AT_THE_END
                     - TAKE_IT_BACK_IMMEDIATELY
                   example: "NEVER_TAKE_BACK"
+            accumulatedTierPeriodCode:
+              type: string
+              description: This field specifies time period of the accumulated tier.
+              enum:
+                - MONTH
+                - CYCLE
+                - LIFETIME
+                - YEAR
+              example: "MONTH"
+            scoreRounding:
+              type: string
+              description: This field specifies the rounding choice for the score.
+              enum:
+                - TRUNCATE_MINOR
+                - TRUNCATE_MAJOR
+                - ROUND_MINOR 
+                - ROUND_MAJOR 
+                - CEILING_MINOR
+                - CEILING_MAJOR 
+                - null                                                                     
+              example: "ROUND_MAJOR"
+            accumulatedTiers:
+              type: array
+              description: List
+              items:
+                $ref: '#/components/schemas/RewardConfigAccumulatedTier'
         thresholds:
           type: array
           description: List of Thresholds applied to the Promotion
           items:
             $ref: '#/components/schemas/PromotionThreshold'
+    RewardConfigAccumulatedTier:
+      type: array
+      description: List of tiers for accumulated tiers
+      properties:
+        from:
+          type: number
+          description: Lower bound of this tier
+          example: 100
+        to:
+          type: number
+          description: Upper bound of this tier
+          example: 200
+        code:
+          type: string
+          description: Unique ID for Tier
+          example: "de0e1456-e678-4270-b027-fc9950b8aba5"
+        rates:
+          type: array
+          description: List
+          items:
+            $ref: '#/components/schemas/RewardConfigAccumulatedTierRate'
+
+    RewardConfigAccumulatedTierRate:
+      type: array
+      description: List of rates for each tier within the accumulated tiers object
+      properties:
+        rate:
+          type: number
+          description: Percent or Amount rate applied to this tier rate
+          example: 1
+        label:
+          type: string
+          description: Label for this tier rate
+          example: "Tier1Rate1"
+        code:
+          type: string
+          description: Unique ID for Rate
+          example: "de0e1456-e678-4270-b027-fc9950b8aba5"
+    
     PromotionThreshold:
       type: object
       properties:
