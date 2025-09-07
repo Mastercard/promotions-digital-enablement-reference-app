@@ -78,6 +78,7 @@ paths:
       operationId: getPromotionDetailsUsingGET
       parameters:
         - $ref: '#/components/parameters/PromotionIdPathParam'
+        - $ref: '#/components/parameters/include_audience'
       responses:
         '200':
           $ref: '#/components/responses/PromotionDetail'
@@ -402,6 +403,16 @@ components:
       required: true
       schema:
         type: string
+    include_audience:
+      description: This is to include or exclude the audience data from the promotion details.
+      example: true
+      in: query
+      name: include_audience
+      required: true
+      schema:
+        type: boolean
+        default: false
+      style: form
     AccountId:
       name: account_id
       in: query
@@ -1951,6 +1962,11 @@ components:
           description: List of Thresholds applied to the Promotion
           items:
             $ref: '#/components/schemas/PromotionThreshold'
+        audiences:
+          type: array
+          description: List of Audiences associated with the Promotion
+          items:
+            $ref: '#/components/schemas/audiences'
     PromotionThreshold:
       type: object
       properties:
@@ -2117,6 +2133,30 @@ components:
           type: string
           description: Specifies the start date of cap period reset
           example: "2024-06-15T00:00:00Z"
+    audiences:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Code for the associated audience
+          example: "ABFILTERTest202"
+        entityType:
+          type: string
+          description: It indicates at which level the audience is associated - either 'A' for Account or 'H' for Household
+          example: "H"
+        targetType:
+          type: string
+          description: It specify the target type of the audience either Rules or External
+          example: "RULES"
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for an audience
+          example: "af1dca8b-84f9-46e5-8bc7-4ae65ca03c69"
+        operator:
+          type: string
+          description: It indicates whether the promotion includes or excludes the audience
+          example: "includes"
     PagedResponseOfAccountSearch:
       type: object
       properties:
