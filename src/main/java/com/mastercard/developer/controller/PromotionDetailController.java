@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -35,10 +36,11 @@ public class PromotionDetailController {
     * @throws InvalidRequest If fail to validate input values and serialize the request body object
     */
     @GetMapping(value = "/promotions/{id}/details")
-    public PromotionDetail getPromotionDetails(@PathVariable(value = "id") String promotionId)  {
+    public PromotionDetail getPromotionDetails(@PathVariable(value = "id") String promotionId,
+                                               @RequestParam(name = "include_audience", defaultValue = "false") boolean includeAudience) {
         try {
             log.info("Method : getPromotionDetails, Message : Getting promotions");
-            PromotionDetail response = optInService.getPromotionDetail(promotionId);
+            PromotionDetail response = optInService.getPromotionDetail(promotionId, includeAudience);
             if (response != null) {
                 log.debug("Method : getPromotionDetails, Message :Successfully got the promotion details" + response);
                 return response;

@@ -31,8 +31,8 @@ public class OptInService {
         return promotionManagementApi.getPromotionsUsingGET(businessPartnerReferenceId, programReferenceId, promotionId, accountId, promotionState, offset, limit);
     }
 
-    public PromotionDetail getPromotionDetail(String promotionId) throws ApiException {
-        return promotionManagementApi.getPromotionDetailsUsingGET(promotionId);
+    public PromotionDetail getPromotionDetail(String promotionId, boolean includeAudience) throws ApiException {
+        return promotionManagementApi.getPromotionDetailsUsingGET(promotionId, includeAudience);
     }
 }
 
