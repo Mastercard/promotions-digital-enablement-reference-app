@@ -7,6 +7,11 @@ is changed or removed.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [25.4.2 - 1.0.0] 2025-10-29 - 2025-11-11
+### Added
+### Updated
+1. [Wyvern][S5770207]: Updated description of Audience Begin and End Date Time
+
 ## [25.3.4 - 1.0.0] 2025-08-27 - 2025-09-09
 ### Added
 ### Updated
