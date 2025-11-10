@@ -30,6 +30,7 @@ public class ProgressController {
     /**
      * @param householdId
      * @param accountId
+     * @param userId
      * @param promotionID
      * @param includeHistory
      * @return
@@ -37,12 +38,13 @@ public class ProgressController {
     @GetMapping(value = "/promotion-progresses")
     public PromotionProgressList getProgress(@RequestParam(value = "household_id", required = false) String householdId,
                                              @RequestParam(value = "account_id", required = false) String accountId,
+                                             @RequestParam(value = "user_id", required = false) String userId,
                                              @RequestParam(value = "promotion_id", required = false) String promotionID,
                                              @RequestParam(value = "include_history", required = false, defaultValue = "false") boolean includeHistory) {
         progressValidator.validateGetProgress(householdId, accountId);
         try {
             log.info("Method : getProgress, Message : Getting progress towards rewards");
-            PromotionProgressList response = progressService.getProgress(householdId, accountId, promotionID, includeHistory);
+            PromotionProgressList response = progressService.getProgress(householdId, accountId, userId, promotionID, includeHistory);
             if (response != null) {
                 log.debug("Method : getProgress, Message :Successfully got the progress" + response);
                 return response;
