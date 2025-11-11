@@ -41,7 +41,7 @@ public class ProgressController {
                                              @RequestParam(value = "user_id", required = false) String userId,
                                              @RequestParam(value = "promotion_id", required = false) String promotionID,
                                              @RequestParam(value = "include_history", required = false, defaultValue = "false") boolean includeHistory) {
-        progressValidator.validateGetProgress(householdId, accountId);
+        progressValidator.validateGetProgress(householdId, accountId, userId);
         try {
             log.info("Method : getProgress, Message : Getting progress towards rewards");
             PromotionProgressList response = progressService.getProgress(householdId, accountId, userId, promotionID, includeHistory);
