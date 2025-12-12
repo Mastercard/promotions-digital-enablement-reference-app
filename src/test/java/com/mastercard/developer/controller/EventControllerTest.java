@@ -47,7 +47,7 @@ public class EventControllerTest {
     }
 
     @Test(expected = InvalidRequest.class)
-    public void testGetEvents_Exception() throws Exception {
+    public void testGetEvents_Exception() throws ApiException {
         when(eventService.getEvents(anyString(), anyString(), anyString(), anyString(), anyString(), anyInt(), anyInt()))
                 .thenThrow(new ApiException());
         controller.getEvents(UUID.randomUUID().toString(), UUID.randomUUID().toString(),
@@ -55,7 +55,7 @@ public class EventControllerTest {
     }
 
     @Test(expected = InvalidRequest.class)
-    public void testGetEvents_NullResponse() throws Exception {
+    public void testGetEvents_NullResponse() throws ApiException {
         when(eventService.getEvents(anyString(), anyString(), anyString(), anyString(), anyString(), anyInt(), anyInt()))
                 .thenReturn(null);
         controller.getEvents(UUID.randomUUID().toString(), UUID.randomUUID().toString(),
@@ -63,7 +63,7 @@ public class EventControllerTest {
     }
 
     @Test(expected = InvalidRequest.class)
-    public void testGetEvents_ValidatorException() throws Exception {
+    public void testGetEvents_ValidatorException() throws ApiException {
         doThrow(new InvalidRequest("INVALID_PARAM", "Invalid parameter"))
                 .when(eventValidator).validateEvents(anyString(), anyString(), anyString());
         controller.getEvents(UUID.randomUUID().toString(), UUID.randomUUID().toString(),
@@ -71,7 +71,7 @@ public class EventControllerTest {
     }
 
     @Test
-    public void testCreateEvent_Success() throws Exception {
+    public void testCreateEvent_Success() throws ApiException {
         Event event = getEventObject();
         doNothing().when(eventService).saveEvent(event);
         ResponseEntity<String> response = controller.createEvent(event);
@@ -80,14 +80,14 @@ public class EventControllerTest {
     }
 
     @Test(expected = InvalidRequest.class)
-    public void testCreateEvent_Exception() throws Exception {
+    public void testCreateEvent_Exception() throws ApiException {
         Event event = getEventObject();
         doThrow(new ApiException()).when(eventService).saveEvent(event);
         controller.createEvent(event);
     }
 
     @Test(expected = InvalidRequest.class)
-    public void testCreateEvent_ApiExceptionWithBody() throws Exception {
+    public void testCreateEvent_ApiExceptionWithBody() throws ApiException {
         Event event = getEventObject();
         doThrow(new ApiException(400, null, "Invalid event data"))
                 .when(eventService).saveEvent(event);
@@ -95,7 +95,7 @@ public class EventControllerTest {
     }
 
     @Test
-    public void testGetEvents_WithPagination() throws Exception {
+    public void testGetEvents_WithPagination() throws ApiException {
         PagedEvent pagedEvent = getPagedEvent();
         when(eventService.getEvents(anyString(), anyString(), anyString(), anyString(), anyString(), anyInt(), anyInt()))
                 .thenReturn(pagedEvent);

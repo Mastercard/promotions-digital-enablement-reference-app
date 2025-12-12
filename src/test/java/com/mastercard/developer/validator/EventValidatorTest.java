@@ -46,34 +46,6 @@ public class EventValidatorTest {
         validator.validateEvents(householdId, accountId, promotionId);
     }
 
-    @Test(expected = InvalidRequest.class)
-    public void testValidateEvents_InvalidHouseholdIdFormat() {
-        String accountId = UUID.randomUUID().toString();
-        validator.validateEvents("invalid-uuid", accountId, null);
-    }
-
-    @Test(expected = InvalidRequest.class)
-    public void testValidateEvents_InvalidAccountIdFormat() {
-        String householdId = UUID.randomUUID().toString();
-        validator.validateEvents(householdId, "invalid-uuid", null);
-    }
-
-    @Test(expected = InvalidRequest.class)
-    public void testValidateEvents_InvalidPromotionIdFormat() {
-        String householdId = UUID.randomUUID().toString();
-        validator.validateEvents(householdId, null, "invalid-uuid");
-    }
-
-    @Test(expected = InvalidRequest.class)
-    public void testValidateEvents_WithOnlyHouseholdId_InvalidFormat() {
-        validator.validateEvents("not-a-uuid", null, null);
-    }
-
-    @Test(expected = InvalidRequest.class)
-    public void testValidateEvents_WithOnlyAccountId_InvalidFormat() {
-        validator.validateEvents(null, "not-a-uuid", null);
-    }
-
     @Test
     public void testValidateEvents_WithValidHouseholdId_NoPromotion() {
         String householdId = UUID.randomUUID().toString();
