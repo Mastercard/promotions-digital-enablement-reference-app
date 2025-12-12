@@ -5,7 +5,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -24,13 +23,11 @@ public class InvalidUUIDFormatParameterizedTest {
     private final String householdId;
     private final String accountId;
     private final String promotionId;
-    private final String testDescription;
 
     public InvalidUUIDFormatParameterizedTest(String householdId, String accountId, String promotionId, String testDescription) {
         this.householdId = householdId;
         this.accountId = accountId;
         this.promotionId = promotionId;
-        this.testDescription = testDescription;
     }
 
     @Parameterized.Parameters(name = "{3}")
