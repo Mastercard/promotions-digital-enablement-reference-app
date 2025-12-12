@@ -34,11 +34,25 @@ jobs:
           github.event_name != 'pull_request_target') }}
         run: echo "Unsecure PR, must be labelled with the 'safe' label, then run the workflow again" && exit 1
 
-      - name: Build with Maven
+      - name: Build with Maven and Generate Coverage
         run: >-
-          mvn clean install -Dgpg.signature.skip=true --file pom.xml
+          mvn clean verify 
+          -Dgpg.signature.skip=true 
+          -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+          --file pom.xml
       
-      - name: Sonar Scan with Coverage
+      - name: Check JaCoCo Report Generation
+        run: |
+          if [ -f target/site/jacoco/jacoco.xml ]; then
+            echo "✓ JaCoCo report found at target/site/jacoco/jacoco.xml"
+            wc -l target/site/jacoco/jacoco.xml
+          else
+            echo "✗ JaCoCo report NOT found at target/site/jacoco/jacoco.xml"
+            echo "Contents of target/site/jacoco/:"
+            ls -la target/site/jacoco/ || echo "Directory does not exist"
+          fi
+      
+      - name: Upload coverage to SonarCloud
         env:
           GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
           SONAR_TOKEN: '${{ secrets.SONAR_TOKEN }}'
@@ -46,7 +60,10 @@ jobs:
           mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
           -Dsonar.projectName=promotions-digital-enablement-reference-app
           -Dsonar.projectKey=Mastercard_promotions-digital-enablement-reference-app
-          -Dsonar.organization=mastercard -Dsonar.host.url=https://sonarcloud.io
-          -Dsonar.login=$SONAR_TOKEN -Dsonar.cpd.exclusions=**/OkHttp*.java
-          -Dsonar.exclusions=**/*.xml -Dgpg.signature.skip=true
+          -Dsonar.organization=mastercard 
+          -Dsonar.host.url=https://sonarcloud.io
+          -Dsonar.login=$SONAR_TOKEN 
+          -Dsonar.cpd.exclusions=**/OkHttp*.java
+          -Dsonar.exclusions=**/*.xml 
+          -Dgpg.signature.skip=true
           -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
