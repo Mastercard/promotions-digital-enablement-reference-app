@@ -63,7 +63,7 @@ public class EventControllerTest {
     }
 
     @Test(expected = InvalidRequest.class)
-    public void testGetEvents_ValidatorException() throws ApiException {
+    public void testGetEvents_ValidatorException() {
         doThrow(new InvalidRequest("INVALID_PARAM", "Invalid parameter"))
                 .when(eventValidator).validateEvents(anyString(), anyString(), anyString());
         controller.getEvents(UUID.randomUUID().toString(), UUID.randomUUID().toString(),
