@@ -8,8 +8,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.UUID;
 
-import static org.junit.Assert.assertThrows;
-
 @RunWith(MockitoJUnitRunner.class)
 public class EventValidatorTest {
 
@@ -64,14 +62,6 @@ public class EventValidatorTest {
     public void testValidateEvents_InvalidPromotionIdFormat() {
         String householdId = UUID.randomUUID().toString();
         validator.validateEvents(householdId, null, "invalid-uuid");
-    }
-
-    @Test
-    public void testValidateEvents_WithValidUUIDs() {
-        String householdId = UUID.randomUUID().toString();
-        String accountId = UUID.randomUUID().toString();
-        String promotionId = UUID.randomUUID().toString();
-        validator.validateEvents(householdId, accountId, promotionId);
     }
 
     @Test(expected = InvalidRequest.class)

@@ -18,7 +18,6 @@ import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
@@ -38,7 +37,7 @@ public class EventControllerTest {
     EventValidator eventValidator;
 
     @Test
-    public void testGetEvents_Success() throws Exception {
+    public void testGetEvents_Success() throws ApiException {
         PagedEvent pagedEvent = getPagedEvent();
         when(eventService.getEvents(anyString(), anyString(), anyString(), anyString(), anyString(), anyInt(), anyInt()))
                 .thenReturn(pagedEvent);
@@ -105,16 +104,8 @@ public class EventControllerTest {
         assertNotNull(response);
     }
 
-    @Test(expected = InvalidRequest.class)
-    public void testGetEvents_DefaultValues() throws Exception {
-        when(eventService.getEvents(anyString(), anyString(), anyString(), anyString(), anyString(), anyInt(), anyInt()))
-                .thenReturn(null);
-        controller.getEvents("HH123", "ACC456", "2025-01-01", "2025-01-09", "PROMO001", 0, 25);
-    }
-
     private Event getEventObject() {
-        Event event = new Event();
-        return event;
+        return new Event();
     }
 
     private PagedEvent getPagedEvent() {

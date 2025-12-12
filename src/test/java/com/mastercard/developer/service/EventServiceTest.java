@@ -6,7 +6,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.openapitools.client.ApiClient;
-import org.openapitools.client.ApiException;
 import org.openapitools.client.model.Event;
 
 import static org.junit.Assert.assertNotNull;
