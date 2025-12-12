@@ -72,7 +72,7 @@ public class AudienceServiceTest {
     }
 
     @Test
-    public void testSaveAudience_WithNullAudience() throws ApiException {
+    public void testSaveAudience_WithNullAudience() {
         // Testing service is properly instantiated
         assertNotNull(audienceService);
     }

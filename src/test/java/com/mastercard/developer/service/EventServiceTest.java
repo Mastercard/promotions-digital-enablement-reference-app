@@ -32,7 +32,7 @@ public class EventServiceTest {
     }
 
     @Test
-    public void testGetEvents_ServiceExists() throws ApiException {
+    public void testGetEvents_ServiceExists() {
         assertNotNull(eventService);
     }
 
@@ -53,7 +53,7 @@ public class EventServiceTest {
     }
 
     @Test
-    public void testSaveEventWithNullEvent() throws ApiException {
+    public void testSaveEventWithNullEvent() {
         // Calling with null will fail as expected
         assertNotNull(eventService);
     }

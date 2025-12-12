@@ -68,7 +68,7 @@ public class OptInServiceTest {
     }
 
     @Test
-    public void testGetPromotionDetail_WithValidPromoId() throws ApiException {
+    public void testGetPromotionDetail_WithValidPromoId() {
         assertNotNull(optInService);
     }
 
