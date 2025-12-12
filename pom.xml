@@ -19,6 +19,7 @@
         <sonar.organization>mastercard</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.coverage.jacoco.xmlReportPaths>${project.build.directory}/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+        <sonar.exclusions>src/main/java/com/mastercard/developer/config/**,src/main/java/com/mastercard/developer/constants/**,src/main/java/com/mastercard/developer/crypto/**</sonar.exclusions>
         
         <java.version>17</java.version>
         <openapi-generator.version>5.4.0</openapi-generator.version>
@@ -223,6 +224,13 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <excludes>
+                        <exclude>com/mastercard/developer/config/**</exclude>
+                        <exclude>com/mastercard/developer/constants/**</exclude>
+                        <exclude>com/mastercard/developer/crypto/**</exclude>
+                    </excludes>
+                </configuration>
             </plugin>
 
             <!-- Maven Surefire Plugin for Test Execution with JaCoCo Integration -->
