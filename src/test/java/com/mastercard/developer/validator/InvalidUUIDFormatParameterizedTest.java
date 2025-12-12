@@ -24,18 +24,18 @@ public class InvalidUUIDFormatParameterizedTest {
     private final String accountId;
     private final String promotionId;
 
-    public InvalidUUIDFormatParameterizedTest(String householdId, String accountId, String promotionId, String testDescription) {
+    public InvalidUUIDFormatParameterizedTest(String householdId, String accountId, String promotionId) {
         this.householdId = householdId;
         this.accountId = accountId;
         this.promotionId = promotionId;
     }
 
-    @Parameterized.Parameters(name = "{3}")
+    @Parameterized.Parameters(name = "{2}")
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-                { "invalid-uuid", UUID.randomUUID().toString(), null, "InvalidHouseholdIdFormat" },
-                { UUID.randomUUID().toString(), "invalid-uuid", null, "InvalidAccountIdFormat" },
-                { UUID.randomUUID().toString(), null, "invalid-uuid", "InvalidPromotionIdFormat" }
+                { "invalid-uuid", UUID.randomUUID().toString(), null },
+                { UUID.randomUUID().toString(), "invalid-uuid", null },
+                { UUID.randomUUID().toString(), null, "invalid-uuid" }
         });
     }
 
