@@ -23,11 +23,13 @@ public class InvalidUUIDFormatParameterizedTest {
     private final String householdId;
     private final String accountId;
     private final String promotionId;
+    private final String testDescription;
 
     public InvalidUUIDFormatParameterizedTest(String householdId, String accountId, String promotionId, String testDescription) {
         this.householdId = householdId;
         this.accountId = accountId;
         this.promotionId = promotionId;
+        this.testDescription = testDescription;
     }
 
     @Parameterized.Parameters(name = "{3}")
