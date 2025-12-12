@@ -3,19 +3,12 @@ package com.mastercard.developer.service;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.openapitools.client.ApiClient;
-import org.openapitools.client.ApiException;
 import org.openapitools.client.model.AccountSearch;
-import org.openapitools.client.model.PagedResponseOfAccountSearch;
 
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AccountServiceTest {
@@ -38,13 +31,13 @@ public class AccountServiceTest {
     }
 
     @Test
-    public void testSearchAccount_ServiceExists() throws ApiException {
+    public void testSearchAccount_ServiceExists() {
         assertNotNull(accountService);
         // Service instantiated with ApiClient
     }
 
     @Test
-    public void testSearchAccount_ValidParameters() throws ApiException {
+    public void testSearchAccount_ValidParameters() {
         assertNotNull(accountSearch);
         // Can be called with valid account search
     }

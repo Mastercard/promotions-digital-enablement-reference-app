@@ -6,7 +6,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.openapitools.client.ApiClient;
-import org.openapitools.client.ApiException;
 import org.openapitools.client.model.Event;
 
 import static org.junit.Assert.assertNotNull;
@@ -32,7 +31,7 @@ public class EventServiceTest {
     }
 
     @Test
-    public void testGetEvents_ServiceExists() throws ApiException {
+    public void testGetEvents_ServiceExists() {
         assertNotNull(eventService);
     }
 
@@ -53,7 +52,7 @@ public class EventServiceTest {
     }
 
     @Test
-    public void testSaveEventWithNullEvent() throws ApiException {
+    public void testSaveEventWithNullEvent() {
         // Calling with null will fail as expected
         assertNotNull(eventService);
     }

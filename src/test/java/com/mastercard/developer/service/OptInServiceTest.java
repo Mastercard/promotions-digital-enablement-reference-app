@@ -6,7 +6,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.openapitools.client.ApiClient;
-import org.openapitools.client.ApiException;
 import org.openapitools.client.model.OptIn;
 
 import java.util.ArrayList;
@@ -68,7 +67,7 @@ public class OptInServiceTest {
     }
 
     @Test
-    public void testGetPromotionDetail_WithValidPromoId() throws ApiException {
+    public void testGetPromotionDetail_WithValidPromoId() {
         assertNotNull(optInService);
     }
 

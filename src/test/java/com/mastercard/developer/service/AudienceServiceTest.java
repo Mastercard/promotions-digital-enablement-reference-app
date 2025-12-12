@@ -6,7 +6,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.openapitools.client.ApiClient;
-import org.openapitools.client.ApiException;
 import org.openapitools.client.model.Audience;
 import org.openapitools.client.model.AudienceUpdate;
 
@@ -72,7 +71,7 @@ public class AudienceServiceTest {
     }
 
     @Test
-    public void testSaveAudience_WithNullAudience() throws ApiException {
+    public void testSaveAudience_WithNullAudience() {
         // Testing service is properly instantiated
         assertNotNull(audienceService);
     }
