@@ -22,11 +22,23 @@ public class EventService {
     }
 
     public PagedEvent getEvents(String houseHoldId, String accountId, String fromDate, String toDate, String promotionId, Integer offset, Integer limit) throws ApiException {
-        LocalDate localFromDate = (fromDate != null) ? LocalDate.parse(fromDate) : null;
-        LocalDate localToDate = (toDate != null) ? LocalDate.parse(toDate) : null;
-        UUID houseHoldUUID = (houseHoldId != null) ? UUID.fromString(houseHoldId) : null;
-        UUID accountUUID = (accountId != null) ? UUID.fromString(accountId) : null;
-        UUID promotionUUID = (promotionId != null) ? UUID.fromString(promotionId) : null;
+        // Validate date formats if provided
+        if (fromDate != null) {
+            LocalDate.parse(fromDate);
+        }
+        if (toDate != null) {
+            LocalDate.parse(toDate);
+        }
+        // Validate UUID formats if provided
+        if (houseHoldId != null) {
+            UUID.fromString(houseHoldId);
+        }
+        if (accountId != null) {
+            UUID.fromString(accountId);
+        }
+        if (promotionId != null) {
+            UUID.fromString(promotionId);
+        }
         return eventsApi.getEvents(houseHoldId, accountId, fromDate, toDate, promotionId, offset, limit);
     }
 
