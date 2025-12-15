@@ -72,14 +72,32 @@ public class EventServiceTest {
 
     @Test(expected = Exception.class)
     public void testGetEvents_InvalidDateFormatThrows() throws Exception {
-        // Tests date validation
+        // Tests date validation - triggers LocalDate.parse() exception path
         eventService.getEvents(null, null, "INVALID", null, null, 0, 10);
     }
 
     @Test(expected = Exception.class)
     public void testGetEvents_InvalidUUIDFormatThrows() throws Exception {
-        // Tests UUID validation
+        // Tests UUID validation - triggers UUID.fromString() exception path
         eventService.getEvents("NOT_UUID", null, null, null, null, 0, 10);
+    }
+
+    @Test(expected = Exception.class)
+    public void testGetEvents_InvalidToDateFormat() throws Exception {
+        // Tests toDate validation
+        eventService.getEvents(null, null, "2024-01-01", "BADDATE", null, 0, 10);
+    }
+
+    @Test(expected = Exception.class)
+    public void testGetEvents_InvalidAccountUUID() throws Exception {
+        // Tests accountId UUID validation
+        eventService.getEvents(null, "INVALID_UUID", "2024-01-01", "2024-12-31", null, 0, 10);
+    }
+
+    @Test(expected = Exception.class)
+    public void testGetEvents_InvalidPromotionUUID() throws Exception {
+        // Tests promotionId UUID validation
+        eventService.getEvents(null, null, "2024-01-01", "2024-12-31", "BAD_UUID", 0, 10);
     }
 
     @Test
