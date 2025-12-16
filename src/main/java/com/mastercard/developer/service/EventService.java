@@ -24,10 +24,12 @@ public class EventService {
     public PagedEvent getEvents(String houseHoldId, String accountId, String fromDate, String toDate, String promotionId, Integer offset, Integer limit) throws ApiException {
         // Validate date formats if provided
         if (fromDate != null) {
-            LocalDate.parse(fromDate); // Validation: will throw DateTimeParseException if invalid
+            @SuppressWarnings("unused")
+            LocalDate fromLocalDate = LocalDate.parse(fromDate);
         }
         if (toDate != null) {
-            LocalDate.parse(toDate); // Validation: will throw DateTimeParseException if invalid
+            @SuppressWarnings("unused")
+            LocalDate toLocalDate = LocalDate.parse(toDate);
         }
         // Validate UUID formats if provided
         if (houseHoldId != null) {
