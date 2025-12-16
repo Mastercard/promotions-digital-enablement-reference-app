@@ -52,7 +52,8 @@ public class ProgressServiceTest {
         String accountId = "550e8400-e29b-41d4-a716-446655440001";
         String promotionId = "550e8400-e29b-41d4-a716-446655440002";
         try {
-            progressService.getProgress(householdId, accountId, promotionId, true);
+            PromotionProgressList response = progressService.getProgress(householdId, accountId, promotionId, true);
+            assertNotNull(response);
         } catch (Exception e) {
             // Expected with mock setup
         }
@@ -61,7 +62,8 @@ public class ProgressServiceTest {
     @Test
     public void testGetProgress_WithNullValues() throws Exception {
         try {
-            progressService.getProgress(null, null, null, null);
+            PromotionProgressList response = progressService.getProgress(null, null, null, null);
+            assertNotNull(response);
         } catch (Exception e) {
             // Expected with mock setup
         }
@@ -71,7 +73,8 @@ public class ProgressServiceTest {
     public void testGetProgress_WithPartialParameters() throws Exception {
         String householdId = "550e8400-e29b-41d4-a716-446655440000";
         try {
-            progressService.getProgress(householdId, null, null, false);
+            PromotionProgressList response = progressService.getProgress(householdId, null, null, true);
+            assertNotNull(response);
         } catch (Exception e) {
             // Expected with mock setup
         }
@@ -81,7 +84,8 @@ public class ProgressServiceTest {
     public void testGetProgress_WithAccountIdOnly() throws Exception {
         String accountId = "550e8400-e29b-41d4-a716-446655440001";
         try {
-            progressService.getProgress(null, accountId, null, true);
+            PromotionProgressList response = progressService.getProgress(null, accountId, null, true);
+            assertNotNull(response);
         } catch (Exception e) {
             // Expected with mock setup
         }
@@ -91,7 +95,8 @@ public class ProgressServiceTest {
     public void testGetProgress_WithPromotionIdOnly() throws Exception {
         String promotionId = "550e8400-e29b-41d4-a716-446655440002";
         try {
-            progressService.getProgress(null, null, promotionId, false);
+            PromotionProgressList response = progressService.getProgress(null, null, promotionId, false);
+            assertNotNull(response);
         } catch (Exception e) {
             // Expected with mock setup
         }
