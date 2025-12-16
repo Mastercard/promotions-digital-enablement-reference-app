@@ -31,7 +31,7 @@ public class TransactionServiceTest {
 
     @Test
     public void testTransactionServiceNotNull() {
-        assert transactionService != null;
+        assertNotNull(transactionService);
     }
 
     @Test

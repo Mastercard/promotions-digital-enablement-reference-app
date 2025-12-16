@@ -31,7 +31,7 @@ public class ProgressServiceTest {
 
     @Test
     public void testProgressServiceNotNull() {
-        assert progressService != null;
+        assertNotNull(progressService);
     }
 
     @Test

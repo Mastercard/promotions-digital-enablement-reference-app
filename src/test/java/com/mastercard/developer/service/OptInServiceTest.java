@@ -247,7 +247,7 @@ public class OptInServiceTest {
 
     @Test
     public void testOptInService_ServiceNotNull() {
-        assert optInService != null;
+        assertNotNull(optInService);
     }
 
     @Test

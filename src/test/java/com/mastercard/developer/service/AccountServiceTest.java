@@ -178,7 +178,7 @@ public class AccountServiceTest {
 
     @Test
     public void testAccountService_ServiceNotNull() {
-        assert accountService != null;
+        assertNotNull(accountService);
     }
 
     @Test
