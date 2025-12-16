@@ -60,17 +60,16 @@ public class ProgressServiceTest {
     }
 
     @Test
-    public void testGetProgress_WithNullValues() throws Exception {
+    public void testGetProgress_VariousParameterCombinations() throws Exception {
+        // Test case 1: with null values
         try {
             PromotionProgressList response = progressService.getProgress(null, null, null, null);
             assertNotNull(response);
         } catch (Exception e) {
             // Expected with mock setup
         }
-    }
 
-    @Test
-    public void testGetProgress_WithPartialParameters() throws Exception {
+        // Test case 2: with partial parameters (household only)
         String householdId = "550e8400-e29b-41d4-a716-446655440000";
         try {
             PromotionProgressList response = progressService.getProgress(householdId, null, null, true);
@@ -78,10 +77,8 @@ public class ProgressServiceTest {
         } catch (Exception e) {
             // Expected with mock setup
         }
-    }
 
-    @Test
-    public void testGetProgress_WithAccountIdOnly() throws Exception {
+        // Test case 3: with account ID only
         String accountId = "550e8400-e29b-41d4-a716-446655440001";
         try {
             PromotionProgressList response = progressService.getProgress(null, accountId, null, true);
