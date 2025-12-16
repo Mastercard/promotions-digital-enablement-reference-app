@@ -157,7 +157,7 @@ public class ProgressServiceTest {
     public void testGetProgress_IncludeHistoryTrue() throws Exception {
         String householdId = "550e8400-e29b-41d4-a716-446655440000";
         String accountId = "550e8400-e29b-41d4-a716-446655440001";
-        String promotionId = "550e8400-e29b-41d4-a716-446655440002";
+        String promotionId = "550e8400-e29b-41d4-a716-446655440003";
         try {
             PromotionProgressList response = progressService.getProgress(householdId, accountId, promotionId, true);
             assertNotNull(response);
@@ -260,7 +260,8 @@ public class ProgressServiceTest {
     public void testGetProgress_ParameterVariations() throws Exception {
         for (int i = 0; i < 5; i++) {
             try {
-                progressService.getProgress("household" + i, "account" + i, "promotion" + i, i % 2 == 0);
+                PromotionProgressList response = progressService.getProgress("household" + i, "account" + i, "promotion" + i, i % 2 == 0);
+                assertNotNull(response);
             } catch (Exception e) {
                 // Expected with mock setup
             }
