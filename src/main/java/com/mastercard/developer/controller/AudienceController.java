@@ -109,7 +109,7 @@ public class AudienceController {
     /*---------------------------------------------------------------- DELETE Audience API -------------------------------------------------------*/
 
     @DeleteMapping(path = "/audiences/{id}")
-    public ResponseEntity deleteAudience(@PathVariable(value = "id") String referenceId) {
+    public ResponseEntity<Void> deleteAudience(@PathVariable(value = "id") String referenceId) {
         try {
             audienceService.deleteAudience(referenceId);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
