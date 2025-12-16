@@ -111,7 +111,8 @@ public class ProgressServiceTest {
         };
         for (String householdId : householdIds) {
             try {
-                progressService.getProgress(householdId, "account123", "promotion456", true);
+                PromotionProgressList response = progressService.getProgress(householdId, "account123", "promotion456", true);
+                assertNotNull(response);
             } catch (Exception e) {
                 // Expected with mock setup
             }
@@ -127,7 +128,8 @@ public class ProgressServiceTest {
         };
         for (String accountId : accountIds) {
             try {
-                progressService.getProgress("household123", accountId, "promotion456", true);
+                PromotionProgressList response = progressService.getProgress("household123", accountId, "promotion456", true);
+                assertNotNull(response);
             } catch (Exception e) {
                 // Expected with mock setup
             }
@@ -143,7 +145,8 @@ public class ProgressServiceTest {
         };
         for (String promotionId : promotionIds) {
             try {
-                progressService.getProgress("household123", "account456", promotionId, true);
+                PromotionProgressList response = progressService.getProgress("household123", "account456", promotionId, true);
+                assertNotNull(response);
             } catch (Exception e) {
                 // Expected with mock setup
             }
@@ -156,7 +159,8 @@ public class ProgressServiceTest {
         String accountId = "550e8400-e29b-41d4-a716-446655440001";
         String promotionId = "550e8400-e29b-41d4-a716-446655440002";
         try {
-            progressService.getProgress(householdId, accountId, promotionId, true);
+            PromotionProgressList response = progressService.getProgress(householdId, accountId, promotionId, true);
+            assertNotNull(response);
         } catch (Exception e) {
             // Expected with mock setup
         }
@@ -168,7 +172,8 @@ public class ProgressServiceTest {
         String accountId = "550e8400-e29b-41d4-a716-446655440001";
         String promotionId = "550e8400-e29b-41d4-a716-446655440002";
         try {
-            progressService.getProgress(householdId, accountId, promotionId, false);
+            PromotionProgressList response = progressService.getProgress(householdId, accountId, promotionId, false);
+            assertNotNull(response);
         } catch (Exception e) {
             // Expected with mock setup
         }
@@ -180,7 +185,8 @@ public class ProgressServiceTest {
         String accountId = "550e8400-e29b-41d4-a716-446655440001";
         String promotionId = "550e8400-e29b-41d4-a716-446655440002";
         try {
-            progressService.getProgress(householdId, accountId, promotionId, null);
+            PromotionProgressList response = progressService.getProgress(householdId, accountId, promotionId, null);
+            assertNotNull(response);
         } catch (Exception e) {
             // Expected with mock setup
         }
@@ -192,7 +198,8 @@ public class ProgressServiceTest {
         String accountId = "550e8400-e29b-41d4-a716-446655440001";
         String promotionId = "550e8400-e29b-41d4-a716-446655440002";
         try {
-            progressService.getProgress(householdId, accountId, promotionId, true);
+            PromotionProgressList response = progressService.getProgress(householdId, accountId, promotionId, true);
+            assertNotNull(response);
             progressService.getProgress(householdId, accountId, null, false);
             progressService.getProgress(householdId, null, promotionId, true);
             progressService.getProgress(null, accountId, promotionId, false);
@@ -204,9 +211,11 @@ public class ProgressServiceTest {
     @Test
     public void testGetProgress_SequentialCalls() throws Exception {
         try {
-            progressService.getProgress("household1", "account1", "promotion1", true);
+            PromotionProgressList response1 = progressService.getProgress("household1", "account1", "promotion1", true);
+            assertNotNull(response1);
             progressService.getProgress("household2", "account2", "promotion2", false);
             progressService.getProgress("household3", "account3", "promotion3", true);
+            assertNotNull(progressService);
         } catch (Exception e) {
             // Expected with mock setup
         }
@@ -215,9 +224,10 @@ public class ProgressServiceTest {
     @Test
     public void testGetProgress_EdgeCases() throws Exception {
         try {
-            progressService.getProgress("", "", "", true);
+            assertNotNull(progressService.getProgress("", "", "", true));
             progressService.getProgress("h1", "a1", "p1", false);
             progressService.getProgress(null, null, null, null);
+            assertNotNull(progressService);
         } catch (Exception e) {
             // Expected with mock setup
         }
@@ -226,7 +236,8 @@ public class ProgressServiceTest {
     @Test
     public void testGetProgress_MixedParameters() throws Exception {
         try {
-            progressService.getProgress("household123", "account456", null, true);
+            PromotionProgressList response = progressService.getProgress("household123", "account456", null, true);
+            assertNotNull(response);
             progressService.getProgress("household123", null, "promotion789", false);
             progressService.getProgress(null, "account456", "promotion789", true);
         } catch (Exception e) {
@@ -237,7 +248,7 @@ public class ProgressServiceTest {
     @Test
     public void testGetProgress_WithEmptyStrings() throws Exception {
         try {
-            progressService.getProgress("", "account1", "promotion1", true);
+            assertNotNull(progressService.getProgress("", "account1", "promotion1", true));
             progressService.getProgress("household1", "", "promotion1", true);
             progressService.getProgress("household1", "account1", "", true);
         } catch (Exception e) {

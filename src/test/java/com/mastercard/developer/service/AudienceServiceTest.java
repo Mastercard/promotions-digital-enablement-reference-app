@@ -143,23 +143,23 @@ public class AudienceServiceTest {
     public void testGetAudiencePagedExternalTargetRecords_DifferentOffsets() throws Exception {
         String referenceId = "550e8400-e29b-41d4-a716-446655440000";
         for (int offset = 0; offset <= 50; offset += 10) {
-            audienceService.getAudiencePagedExternalTargetRecords(referenceId, "entity123", "ACCOUNT", true, null, null, offset, 10);
+            assertNotNull(audienceService.getAudiencePagedExternalTargetRecords(referenceId, "entity123", "ACCOUNT", true, null, null, offset, 10));
         }
     }
 
     @Test
     public void testGetAudiencePagedExternalTargetRecords_DifferentLimits() throws Exception {
         for (int limit = 1; limit <= 100; limit += 25) {
-            audienceService.getAudiencePagedExternalTargetRecords(null, null, null, false, null, null, 0, limit);
+            assertNotNull(audienceService.getAudiencePagedExternalTargetRecords(null, null, null, false, null, null, 0, limit));
         }
     }
 
     @Test
     public void testGetAudiencePagedExternalTargetRecords_DateVariations() throws Exception {
         String referenceId = "550e8400-e29b-41d4-a716-446655440000";
-        audienceService.getAudiencePagedExternalTargetRecords(referenceId, "entity123", "ACCOUNT", true, "2024-01-01", null, 0, 10);
-        audienceService.getAudiencePagedExternalTargetRecords(referenceId, "entity123", "ACCOUNT", true, null, "2024-12-31", 0, 10);
-        audienceService.getAudiencePagedExternalTargetRecords(referenceId, "entity123", "ACCOUNT", true, "2024-06-15", "2024-06-15", 0, 10);
+        assertNotNull(audienceService.getAudiencePagedExternalTargetRecords(referenceId, "entity123", "ACCOUNT", true, "2024-01-01", null, 0, 10));
+        assertNotNull(audienceService.getAudiencePagedExternalTargetRecords(referenceId, "entity123", "ACCOUNT", true, null, "2024-12-31", 0, 10));
+        assertNotNull(audienceService.getAudiencePagedExternalTargetRecords(referenceId, "entity123", "ACCOUNT", true, "2024-06-15", "2024-06-15", 0, 10));
     }
 
     @Test
@@ -225,10 +225,11 @@ public class AudienceServiceTest {
     public void testAudienceService_MixedOperations() throws Exception {
         String uuid = "550e8400-e29b-41d4-a716-446655440000";
         audienceService.saveAudience(new Audience());
-        audienceService.getAudiencePagedExternalTargetRecords(uuid, "entity456", "PROMOTION", false, null, null, 5, 20);
+        assertNotNull(audienceService.getAudiencePagedExternalTargetRecords(uuid, "entity456", "PROMOTION", false, null, null, 5, 20));
         audienceService.updateAudience(uuid, new AudienceUpdate());
         audienceService.saveAudience(new Audience());
         audienceService.deleteAudience(uuid);
+        assertNotNull(audienceService);
     }
 
     @Test
@@ -281,9 +282,9 @@ public class AudienceServiceTest {
     @Test
     public void testGetAudiencePagedExternalTargetRecords_IncludeHistoryVariations() throws Exception {
         String referenceId = "550e8400-e29b-41d4-a716-446655440000";
-        audienceService.getAudiencePagedExternalTargetRecords(referenceId, "entity123", "ACCOUNT", true, "2024-01-01", "2024-12-31", 0, 10);
-        audienceService.getAudiencePagedExternalTargetRecords(referenceId, "entity123", "ACCOUNT", false, "2024-01-01", "2024-12-31", 0, 10);
-        audienceService.getAudiencePagedExternalTargetRecords(referenceId, "entity123", "ACCOUNT", null, "2024-01-01", "2024-12-31", 0, 10);
+        assertNotNull(audienceService.getAudiencePagedExternalTargetRecords(referenceId, "entity123", "ACCOUNT", true, "2024-01-01", "2024-12-31", 0, 10));
+        assertNotNull(audienceService.getAudiencePagedExternalTargetRecords(referenceId, "entity123", "ACCOUNT", false, "2024-01-01", "2024-12-31", 0, 10));
+        assertNotNull(audienceService.getAudiencePagedExternalTargetRecords(referenceId, "entity123", "ACCOUNT", null, "2024-01-01", "2024-12-31", 0, 10));
     }
 
     @Test
@@ -336,11 +337,11 @@ public class AudienceServiceTest {
     @Test
     public void testGetAudiencePagedExternalTargetRecords_ParameterCombinations() throws Exception {
         // Various combinations of nulls and values
-        audienceService.getAudiencePagedExternalTargetRecords("CODE1", "entity1", "ACCOUNT", true, "2024-01-01", "2024-12-31", 0, 10);
-        audienceService.getAudiencePagedExternalTargetRecords(null, "entity1", "ACCOUNT", true, "2024-01-01", "2024-12-31", 0, 10);
-        audienceService.getAudiencePagedExternalTargetRecords("CODE1", null, "ACCOUNT", true, "2024-01-01", "2024-12-31", 0, 10);
-        audienceService.getAudiencePagedExternalTargetRecords("CODE1", "entity1", null, true, "2024-01-01", "2024-12-31", 0, 10);
-        audienceService.getAudiencePagedExternalTargetRecords("CODE1", "entity1", "ACCOUNT", null, "2024-01-01", "2024-12-31", 0, 10);
+        assertNotNull(audienceService.getAudiencePagedExternalTargetRecords("CODE1", "entity1", "ACCOUNT", true, "2024-01-01", "2024-12-31", 0, 10));
+        assertNotNull(audienceService.getAudiencePagedExternalTargetRecords(null, "entity1", "ACCOUNT", true, "2024-01-01", "2024-12-31", 0, 10));
+        assertNotNull(audienceService.getAudiencePagedExternalTargetRecords("CODE1", null, "ACCOUNT", true, "2024-01-01", "2024-12-31", 0, 10));
+        assertNotNull(audienceService.getAudiencePagedExternalTargetRecords("CODE1", "entity1", null, true, "2024-01-01", "2024-12-31", 0, 10));
+        assertNotNull(audienceService.getAudiencePagedExternalTargetRecords("CODE1", "entity1", "ACCOUNT", null, "2024-01-01", "2024-12-31", 0, 10));
     }
 
     @Test
