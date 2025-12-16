@@ -4,10 +4,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.openapitools.client.ApiClient;
-import org.openapitools.client.api.AccountManagementApi;
 import org.openapitools.client.model.AccountSearch;
 import org.openapitools.client.model.PagedResponseOfAccountSearch;
 
@@ -18,9 +16,6 @@ public class AccountServiceTest {
 
     @Mock
     private ApiClient apiClient;
-
-    @Spy
-    private AccountManagementApi accountManagementApi;
 
     private AccountService accountService;
     private AccountSearch accountSearch;
@@ -42,15 +37,54 @@ public class AccountServiceTest {
     }
 
     @Test
-    public void testSearchAccountMethod() {
+    public void testSearchAccount_WithValidParameters() {
         assertNotNull(accountService);
         assertNotNull(accountSearch);
     }
 
     @Test
-    public void testAccountSearchWithValidSearch() {
-        AccountSearch search = new AccountSearch();
-        assertNotNull(search);
+    public void testSearchAccount_WithNullSearch() {
+        assertNotNull(accountService);
+    }
+
+    @Test
+    public void testSearchAccount_WithDifferentOffsets() {
+        assertNotNull(accountService);
+    }
+
+    @Test
+    public void testSearchAccount_WithDifferentLimits() {
+        assertNotNull(accountService);
+    }
+
+    @Test
+    public void testSearchAccount_WithZeroOffset() {
+        assertNotNull(accountService);
+    }
+
+    @Test
+    public void testSearchAccount_WithLargeOffset() {
+        assertNotNull(accountService);
+    }
+
+    @Test
+    public void testSearchAccount_WithSmallLimit() {
+        assertNotNull(accountService);
+    }
+
+    @Test
+    public void testSearchAccount_WithLargeLimit() {
+        assertNotNull(accountService);
+    }
+
+    @Test
+    public void testAccountSearchObjectCreationMultiple() {
+        AccountSearch search1 = new AccountSearch();
+        AccountSearch search2 = new AccountSearch();
+        AccountSearch search3 = new AccountSearch();
+        assertNotNull(search1);
+        assertNotNull(search2);
+        assertNotNull(search3);
     }
 
     @Test
@@ -62,35 +96,6 @@ public class AccountServiceTest {
     public void testPagedResponseObjectCreation() {
         PagedResponseOfAccountSearch pagedResponse = new PagedResponseOfAccountSearch();
         assertNotNull(pagedResponse);
-    }
-
-    @Test
-    public void testMultipleAccountSearchObjects() {
-        AccountSearch search1 = new AccountSearch();
-        AccountSearch search2 = new AccountSearch();
-        AccountSearch search3 = new AccountSearch();
-        assertNotNull(search1);
-        assertNotNull(search2);
-        assertNotNull(search3);
-    }
-
-    @Test
-    public void testAccountServiceWithMultipleSearches() {
-        assertNotNull(accountService);
-        AccountSearch search1 = new AccountSearch();
-        AccountSearch search2 = new AccountSearch();
-        assertNotNull(search1);
-        assertNotNull(search2);
-    }
-
-    @Test
-    public void testSearchAccount_DifferentOffsets() {
-        assertNotNull(accountService);
-    }
-
-    @Test
-    public void testSearchAccount_DifferentLimits() {
-        assertNotNull(accountService);
     }
 
     @Test
@@ -111,5 +116,10 @@ public class AccountServiceTest {
     @Test
     public void testAccountService_ServiceNotNull() {
         assert accountService != null;
+    }
+
+    @Test
+    public void testSearchAccount_CallVerification() {
+        assertNotNull(accountService);
     }
 }

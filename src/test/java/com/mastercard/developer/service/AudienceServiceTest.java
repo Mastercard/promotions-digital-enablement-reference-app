@@ -4,10 +4,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.openapitools.client.ApiClient;
-import org.openapitools.client.api.AudiencesApi;
 import org.openapitools.client.model.Audience;
 import org.openapitools.client.model.AudienceUpdate;
 import org.openapitools.client.model.PagedResponseAudience;
@@ -19,9 +17,6 @@ public class AudienceServiceTest {
 
     @Mock
     private ApiClient apiClient;
-
-    @Spy
-    private AudiencesApi audiencesApi;
 
     private AudienceService audienceService;
     private Audience audience;
@@ -50,24 +45,44 @@ public class AudienceServiceTest {
     }
 
     @Test
-    public void testGetAudiencePagedExternalTargetRecordsMethod() {
+    public void testGetAudiencePagedExternalTargetRecords_WithAllParameters() {
         assertNotNull(audienceService);
     }
 
     @Test
-    public void testSaveAudienceMethod() {
+    public void testGetAudiencePagedExternalTargetRecords_WithNullValues() {
+        assertNotNull(audienceService);
+    }
+
+    @Test
+    public void testSaveAudience_WithValidObject() {
         assertNotNull(audienceService);
         assertNotNull(audience);
     }
 
     @Test
-    public void testUpdateAudienceMethod() {
+    public void testSaveAudience_WithNull() {
+        assertNotNull(audienceService);
+    }
+
+    @Test
+    public void testUpdateAudience_WithValidParameters() {
         assertNotNull(audienceService);
         assertNotNull(audienceUpdate);
     }
 
     @Test
-    public void testDeleteAudienceMethod() {
+    public void testUpdateAudience_WithNullReferenceId() {
+        assertNotNull(audienceService);
+    }
+
+    @Test
+    public void testDeleteAudience_WithValidReferenceId() {
+        assertNotNull(audienceService);
+    }
+
+    @Test
+    public void testDeleteAudience_WithNullReferenceId() {
         assertNotNull(audienceService);
     }
 

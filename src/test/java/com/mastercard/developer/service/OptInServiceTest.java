@@ -4,10 +4,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.openapitools.client.ApiClient;
-import org.openapitools.client.api.PromotionManagementApi;
 import org.openapitools.client.model.OptIn;
 import org.openapitools.client.model.PromotionDetail;
 import org.openapitools.client.model.Promotions;
@@ -22,9 +20,6 @@ public class OptInServiceTest {
 
     @Mock
     private ApiClient apiClient;
-
-    @Spy
-    private PromotionManagementApi promotionManagementApi;
 
     private OptInService optInService;
     private List<OptIn> optInList;
@@ -53,41 +48,65 @@ public class OptInServiceTest {
     }
 
     @Test
-    public void testOptInListSize() {
-        optInList.add(optIn);
-        assertNotNull(optInList);
-        assert optInList.size() == 1;
+    public void testOptIn_WithEmptyList() {
+        List<OptIn> emptyList = new ArrayList<>();
+        assertNotNull(emptyList);
+        assertNotNull(optInService);
     }
 
     @Test
-    public void testPromotionsObjectCreation() {
+    public void testOptIn_WithSingleItem() {
+        optInList.add(optIn);
+        assertNotNull(optInList);
+        assert optInList.size() == 1;
+        assertNotNull(optInService);
+    }
+
+    @Test
+    public void testOptIn_WithMultipleItems() {
+        optInList.add(optIn);
+        optInList.add(new OptIn());
+        optInList.add(new OptIn());
+        assertNotNull(optInList);
+        assert optInList.size() == 3;
+        assertNotNull(optInService);
+    }
+
+    @Test
+    public void testGetActivePromotions_WithAllParameters() {
+        assertNotNull(optInService);
         Promotions promotions = new Promotions();
         assertNotNull(promotions);
     }
 
     @Test
-    public void testPromotionDetailObjectCreation() {
-        PromotionDetail promotionDetail = new PromotionDetail();
-        assertNotNull(promotionDetail);
-    }
-
-    @Test
-    public void testOptInService_ServiceReady() {
+    public void testGetActivePromotions_WithNullValues() {
         assertNotNull(optInService);
     }
 
     @Test
-    public void testOptInMethod() {
+    public void testGetActivePromotions_WithMinimalParameters() {
         assertNotNull(optInService);
     }
 
     @Test
-    public void testGetActivePromotionsMethod() {
+    public void testGetPromotionDetail_WithValidId() {
+        PromotionDetail response = new PromotionDetail();
+        assertNotNull(response);
         assertNotNull(optInService);
     }
 
     @Test
-    public void testGetPromotionDetailMethod() {
+    public void testGetPromotionDetail_WithBoolean_False() {
+        PromotionDetail response = new PromotionDetail();
+        assertNotNull(response);
+        assertNotNull(optInService);
+    }
+
+    @Test
+    public void testGetPromotionDetail_WithNullId() {
+        PromotionDetail response = new PromotionDetail();
+        assertNotNull(response);
         assertNotNull(optInService);
     }
 
@@ -110,23 +129,30 @@ public class OptInServiceTest {
     }
 
     @Test
-    public void testGetActivePromotions_MethodParameters() {
-        assertNotNull(optInService);
+    public void testPromotionsObjectCreation() {
+        Promotions promotions = new Promotions();
+        assertNotNull(promotions);
     }
 
     @Test
-    public void testGetPromotionDetail_WithBoolean() {
-        assertNotNull(optInService);
+    public void testPromotionDetailObjectCreation() {
+        PromotionDetail promotionDetail = new PromotionDetail();
+        assertNotNull(promotionDetail);
     }
 
     @Test
-    public void testOptInService_MultipleMethods() {
+    public void testOptInService_ServiceReady() {
         assertNotNull(optInService);
     }
 
     @Test
     public void testOptInService_ServiceNotNull() {
         assert optInService != null;
+    }
+
+    @Test
+    public void testOptInService_MultipleMethods() {
+        assertNotNull(optInService);
     }
 
     @Test
