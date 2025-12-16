@@ -11,8 +11,6 @@ import org.openapitools.client.model.AccountSearch;
 import org.openapitools.client.model.PagedResponseOfAccountSearch;
 
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AccountServiceTest {
@@ -27,7 +25,7 @@ public class AccountServiceTest {
     private AccountSearch accountSearch;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         accountService = new AccountService(apiClient);
         accountSearch = new AccountSearch();
     }

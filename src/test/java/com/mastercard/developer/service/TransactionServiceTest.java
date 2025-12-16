@@ -20,7 +20,7 @@ public class TransactionServiceTest {
     private TransactionService transactionService;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         transactionService = new TransactionService(apiClient);
     }
 

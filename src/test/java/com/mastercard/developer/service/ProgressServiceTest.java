@@ -20,7 +20,7 @@ public class ProgressServiceTest {
     private ProgressService progressService;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         progressService = new ProgressService(apiClient);
     }
 

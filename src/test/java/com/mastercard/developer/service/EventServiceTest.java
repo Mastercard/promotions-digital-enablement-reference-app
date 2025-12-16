@@ -21,7 +21,7 @@ public class EventServiceTest {
     private Event event;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         eventService = new EventService(apiClient);
         event = new Event();
     }
@@ -39,7 +39,7 @@ public class EventServiceTest {
     @Test
     public void testGetEvents_WithNullParameters() throws Exception {
         try {
-            PagedEvent response = eventService.getEvents(null, null, null, null, null, 0, 10);
+            eventService.getEvents(null, null, null, null, null, 0, 10);
         } catch (Exception e) {
             // Expected with mock setup
         }

@@ -26,7 +26,7 @@ public class OptInServiceTest {
     private OptIn optIn;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         optInService = new OptInService(apiClient);
         optInList = new ArrayList<>();
         optIn = new OptIn();
