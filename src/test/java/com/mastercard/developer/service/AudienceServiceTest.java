@@ -296,12 +296,6 @@ public class AudienceServiceTest {
     }
 
     @Test
-    public void testDeleteAudience_WithNullIdAdvanced() throws Exception {
-        audienceService.deleteAudience(null);
-        verify(audiencesApi).deleteAudiences(null);
-    }
-
-    @Test
     public void testAudienceService_CompleteWorkflow() throws Exception {
         String referenceId = "550e8400-e29b-41d4-a716-446655440000";
         Audience newAudience = new Audience();
