@@ -1709,20 +1709,10 @@ components:
             Specifies if a promotion is enabled for targeting.
             - true = Targeting enabled, account has to be targeted for transactions to qualify.
             - false = Targeting not enabled, all accounts are eligible into promotion by default.
-        beginDateTime:
-          type: string
-          format: date-time
-          description: Promotion start date.
-          example: "2020-05-05T15:19:31.823Z"
         description:
           type: string
           description: Description of the promotion
           example: "Promotion for digital rewards"
-        endDateTime:
-          type: string
-          format: date-time
-          description: Promotion end date.
-          example: "2020-07-05T15:19:31.827Z"
         scoringBeginDateTime:
           type: string
           format: date-time
