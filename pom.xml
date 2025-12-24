@@ -22,9 +22,9 @@
         <sonar.exclusions>src/main/java/com/mastercard/developer/config/**,src/main/java/com/mastercard/developer/constants/**,src/main/java/com/mastercard/developer/config/**,src/main/java/com/mastercard/developer/exception/**,src/main/java/com/mastercard/developer/crypto/**,src/main/java/com/mastercard/developer/config/ApiClientConfiguration.java,src/main/java/com/mastercard/developer/exception/APIExceptionHandler.java,src/main/java/com/mastercard/developer/Application.java,src/main/java/com/mastercard/developer/config/MastercardProperties.java,src/main/java/com/mastercard/developer/crypto/interceptor/OkHttpJweEncryptionInterceptor.java,src/main/java/com/mastercard/developer/exception/ServiceException.java,src/main/java/com/mastercard/developer/config/SwaggerConfiguration.java</sonar.exclusions>
         
         <java.version>17</java.version>
-        <openapi-generator.version>5.4.0</openapi-generator.version>
-        <oauth1-signer.version>1.5.1</oauth1-signer.version>
-        <client-encryption.version>1.7.1</client-encryption.version>
+        <openapi-generator.version>7.12.0</openapi-generator.version>
+        <oauth1-signer.version>1.5.3</oauth1-signer.version>
+        <client-encryption.version>1.8.6</client-encryption.version>
         <okhttp3.version>4.9.3</okhttp3.version>
         <swagger-parser.version>2.0.30</swagger-parser.version>
         <springfox.version>3.0.0</springfox.version>
