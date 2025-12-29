@@ -24,22 +24,33 @@ public class ProgressValidatorTest {
     @Test
     public void testValidateGetPromotionsByAccountIdNull() throws Exception {
         expectedEx.expect(InvalidRequest.class);
-        expectedEx.expectMessage("household_id or account_id is missing");
-        validator.validateGetProgress(null, null);
+        expectedEx.expectMessage("Either household_id or account_id or userId is required");
+        validator.validateGetProgress(null, null,null);
     }
     
     @Test
     public void testValidateGetForNotEmptyHouseholdIdAndAccountId() throws Exception {
-        validator.validateGetProgress("f35e51fe-bc77-432f-b412-3800e3c04e78", "935e51fe-bc77-432f-b412-3800e3c04e90");
+        validator.validateGetProgress("f35e51fe-bc77-432f-b412-3800e3c04e78", "935e51fe-bc77-432f-b412-3800e3c04e90",null);
     }
     
     @Test
     public void testValidateGetForNotEmptyHouseholdIdEmptyAccountId() throws Exception {
-        validator.validateGetProgress("a35e51fe-bc77-432f-b412-3800e3c08942", "");
+        validator.validateGetProgress("a35e51fe-bc77-432f-b412-3800e3c08942", "",null);
     }
     @Test
     public void testValidateGetForEmptyHouseholdIdNotEmptyAccountId() throws Exception {
-        validator.validateGetProgress("", "bc5e51fe-bc77-432f-b412-3800e3c04ec2");
+        validator.validateGetProgress("", "bc5e51fe-bc77-432f-b412-3800e3c04ec2",null);
     }
-    
+
+    @Test
+    public void testValidateGetPromotionsByHouseHoldIdAndUserId() throws Exception {
+        expectedEx.expect(InvalidRequest.class);
+        expectedEx.expectMessage("household_id and user_id cannot be used together");
+        validator.validateGetProgress("f35e51fe-bc77-432f-b412-3800e3c04e78", null,"62087a7f-4215-4bfc-b3ee-cc12f085efc5");
+    }
+
+    @Test
+    public void testValidateGetForNotEmptyUserIdAndAccountId() throws Exception {
+        validator.validateGetProgress(null, "935e51fe-bc77-432f-b412-3800e3c04e90","62087a7f-4215-4bfc-b3ee-cc12f085efc5");
+    }
 }
