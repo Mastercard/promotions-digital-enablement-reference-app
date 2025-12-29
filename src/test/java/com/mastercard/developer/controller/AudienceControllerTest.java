@@ -66,6 +66,15 @@ public class AudienceControllerTest {
     }
 
     @Test(expected = InvalidRequest.class)
+    public void testGetAudience_NullResponse() throws Exception {
+        when(audienceService.getAudiencePagedExternalTargetRecords(anyString(), anyString(), anyString(), anyBoolean(), anyString(),
+                anyString(), anyInt(), anyInt()))
+                .thenReturn(null);
+        controller.getAudiences(UUID.randomUUID().toString(), "A", "AC31", true,
+                "2025-01-01T02:00:00Z", "2025-01-09T02:00:00Z", 0, 25);
+    }
+
+    @Test(expected = InvalidRequest.class)
     public void testGetTransactions_Exception() throws Exception {
         when(audienceService.getAudiencePagedExternalTargetRecords(anyString(), anyString(), any(String.class), anyBoolean(), any(String.class),
                 anyString(), any(Integer.class), any(Integer.class)))
@@ -101,6 +110,22 @@ public class AudienceControllerTest {
     }
 
     @Test(expected = InvalidRequest.class)
+    public void testCreateAudience_NullResponse() throws Exception {
+        Audience request = getAudienceObject();
+        when(audienceService.saveAudience(any())).thenReturn(null);
+        controller.createAudience(request);
+    }
+
+    @Test(expected = InvalidRequest.class)
+    public void testCreateAudience_NullResponseId() throws Exception {
+        Audience request = getAudienceObject();
+        Audience audienceResponse = getAudienceObject();
+        audienceResponse.setId(null);
+        when(audienceService.saveAudience(any())).thenReturn(audienceResponse);
+        controller.createAudience(request);
+    }
+
+    @Test(expected = InvalidRequest.class)
     public void testCreateAudience_Exception() throws Exception {
         Audience request = getAudienceObject();
         when(audienceService.saveAudience(any())).thenThrow(new ApiException());
@@ -128,6 +153,24 @@ public class AudienceControllerTest {
         when(audienceService.updateAudience(anyString(), any())).thenReturn(audienceResponse);
         Audience response = controller.updateAudience(referenceId, request);
         assertNotNull(response);
+    }
+
+    @Test(expected = InvalidRequest.class)
+    public void testUpdateAudience_NullResponse() throws Exception {
+        String referenceId = "90eb6039-bd49-44ed-835f-62052253b00e";
+        AudienceUpdate request = getAudienceUpdateObject();
+        when(audienceService.updateAudience(anyString(), any())).thenReturn(null);
+        controller.updateAudience(referenceId, request);
+    }
+
+    @Test(expected = InvalidRequest.class)
+    public void testUpdateAudience_NullResponseId() throws Exception {
+        String referenceId = "90eb6039-bd49-44ed-835f-62052253b00e";
+        AudienceUpdate request = getAudienceUpdateObject();
+        Audience audienceResponse = getAudienceObject();
+        audienceResponse.setId(null);
+        when(audienceService.updateAudience(anyString(), any())).thenReturn(audienceResponse);
+        controller.updateAudience(referenceId, request);
     }
 
     @Test(expected = InvalidRequest.class)

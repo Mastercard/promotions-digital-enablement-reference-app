@@ -18,11 +18,13 @@
     <properties>
         <sonar.organization>mastercard</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.coverage.jacoco.xmlReportPaths>${project.build.directory}/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+        <sonar.exclusions>src/main/java/com/mastercard/developer/config/**,src/main/java/com/mastercard/developer/constants/**,src/main/java/com/mastercard/developer/config/**,src/main/java/com/mastercard/developer/exception/**,src/main/java/com/mastercard/developer/crypto/**,src/main/java/com/mastercard/developer/config/ApiClientConfiguration.java,src/main/java/com/mastercard/developer/exception/APIExceptionHandler.java,src/main/java/com/mastercard/developer/Application.java,src/main/java/com/mastercard/developer/config/MastercardProperties.java,src/main/java/com/mastercard/developer/crypto/interceptor/OkHttpJweEncryptionInterceptor.java,src/main/java/com/mastercard/developer/exception/ServiceException.java,src/main/java/com/mastercard/developer/config/SwaggerConfiguration.java</sonar.exclusions>
         
         <java.version>17</java.version>
-        <openapi-generator.version>5.4.0</openapi-generator.version>
-        <oauth1-signer.version>1.5.1</oauth1-signer.version>
-        <client-encryption.version>1.7.1</client-encryption.version>
+        <openapi-generator.version>7.12.0</openapi-generator.version>
+        <oauth1-signer.version>1.5.3</oauth1-signer.version>
+        <client-encryption.version>1.8.6</client-encryption.version>
         <okhttp3.version>4.9.3</okhttp3.version>
         <swagger-parser.version>2.0.30</swagger-parser.version>
         <springfox.version>3.0.0</springfox.version>
@@ -201,6 +203,48 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+
+            <!-- JaCoCo Maven Plugin for Code Coverage -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.10</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <excludes>
+                        <exclude>com/mastercard/developer/config/**</exclude>
+                        <exclude>com/mastercard/developer/constants/**</exclude>
+                        <exclude>com/mastercard/developer/crypto/**</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+
+            <!-- Maven Surefire Plugin for Test Execution with JaCoCo Integration -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.surefire</groupId>
+                        <artifactId>surefire-junit4</artifactId>
+                        <version>3.0.0</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>

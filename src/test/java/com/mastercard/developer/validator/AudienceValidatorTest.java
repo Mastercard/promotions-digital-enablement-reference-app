@@ -137,4 +137,76 @@ public class AudienceValidatorTest {
         });
         assertEquals(ApplicationConstants.INVALID_FIELD_ENTITY_TYPE_ERR_MSG, exception.getMessage());
     }
+
+    @Test
+    public void testValidateAudienceCreate_Success() {
+        Audience audience = createAudienceObj();
+        validator.validateAudienceCreate(audience);
+    }
+
+    @Test
+    public void testValidateAudienceGetDataRequest_Success() {
+        validator.validateAudienceGetDataRequest("2024-10-12T08:08:08Z", "2024-10-21T08:08:08Z", "A", "entityId123");
+    }
+
+    @Test
+    public void testValidateAudienceUpdateData_Success() {
+        AudienceUpdate audienceUpdate = createAudienceUpdateObj();
+        validator.validateAudienceUpdateData(audienceUpdate);
+    }
+
+    @Test
+    public void testValidateAudienceCreateForInvalidEndDateTimeFormat() {
+        Audience audience = createAudienceObj();
+        audience.setEndDateTime("2024-10-21T08:08:08");
+        Exception exception = assertThrows(Exception.class, () -> {
+            validator.validateAudienceCreate(audience);
+        });
+        assertEquals(ApplicationConstants.INVALID_END_DATE_TIME_FORMAT_ERR_MSG, exception.getMessage());
+    }
+
+    @Test
+    public void testValidateAudienceUpdateDataForInvalidEndDateTimeFormat() {
+        AudienceUpdate audienceUpdate = createAudienceUpdateObj();
+        audienceUpdate.setEndDateTime("invalid-date");
+        Exception exception = assertThrows(Exception.class, () -> {
+            validator.validateAudienceUpdateData(audienceUpdate);
+        });
+        assertEquals(ApplicationConstants.INVALID_END_DATE_TIME_FORMAT_ERR_MSG, exception.getMessage());
+    }
+
+    @Test
+    public void testValidateAudienceGetDataRequest_InvalidBeginDateFormat() {
+        Exception exception = assertThrows(Exception.class, () -> {
+            validator.validateAudienceGetDataRequest("invalid-date", "2024-10-21T08:08:08Z", "A", "entityId");
+        });
+        assertEquals(ApplicationConstants.INVALID_BEGIN_DATE_TIME_FORMAT_ERR_MSG, exception.getMessage());
+    }
+
+    @Test
+    public void testValidateAudienceGetDataRequest_WithNullDates() {
+        validator.validateAudienceGetDataRequest(null, null, "A", "entityId");
+    }
+
+    @Test
+    public void testValidateAudienceUpdateData_WithNullDates() {
+        AudienceUpdate audienceUpdate = new AudienceUpdate();
+        audienceUpdate.setBeginDateTime(null);
+        audienceUpdate.setEndDateTime(null);
+        validator.validateAudienceUpdateData(audienceUpdate);
+    }
+
+    @Test
+    public void testValidateAudienceCreateForHouseholdEntityType() {
+        Audience audience = createAudienceObj();
+        audience.setEntityType("H");
+        validator.validateAudienceCreate(audience);
+    }
+
+    @Test
+    public void testValidateAudienceCreateForAccountEntityType() {
+        Audience audience = createAudienceObj();
+        audience.setEntityType("A");
+        validator.validateAudienceCreate(audience);
+    }
 }

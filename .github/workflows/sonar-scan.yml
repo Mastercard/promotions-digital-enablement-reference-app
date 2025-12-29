@@ -1,0 +1,69 @@
+name: Sonar
+
+'on':
+  push:
+    branches:
+      - "**"
+  pull_request_target:
+    branches:
+      - "**"
+    types: [opened, synchronize, reopened, labeled]
+  schedule:
+    - cron: 0 16 * * *
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          java-package: jdk
+          distribution: temurin
+      
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Check for external PR
+        if: ${{ !(contains(github.event.pull_request.labels.*.name, 'safe') ||
+          github.event.pull_request.head.repo.full_name == github.repository ||
+          github.event_name != 'pull_request_target') }}
+        run: echo "Unsecure PR, must be labelled with the 'safe' label, then run the workflow again" && exit 1
+
+      - name: Build with Maven and Generate Coverage
+        run: >-
+          mvn clean verify 
+          -Dgpg.signature.skip=true 
+          -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+          --file pom.xml
+      
+      - name: Check JaCoCo Report Generation
+        run: |
+          if [ -f target/site/jacoco/jacoco.xml ]; then
+            echo "✓ JaCoCo report found at target/site/jacoco/jacoco.xml"
+            wc -l target/site/jacoco/jacoco.xml
+          else
+            echo "✗ JaCoCo report NOT found at target/site/jacoco/jacoco.xml"
+            echo "Contents of target/site/jacoco/:"
+            ls -la target/site/jacoco/ || echo "Directory does not exist"
+          fi
+      
+      - name: Upload coverage to SonarCloud
+        env:
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+          SONAR_TOKEN: '${{ secrets.SONAR_TOKEN }}'
+        run: >-
+          mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+          -Dsonar.projectName=promotions-digital-enablement-reference-app
+          -Dsonar.projectKey=Mastercard_promotions-digital-enablement-reference-app
+          -Dsonar.organization=mastercard 
+          -Dsonar.host.url=https://sonarcloud.io
+          -Dsonar.login=$SONAR_TOKEN 
+          -Dsonar.cpd.exclusions=**/OkHttp*.java
+          -Dsonar.exclusions=**/*.xml 
+          -Dgpg.signature.skip=true
+          -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
