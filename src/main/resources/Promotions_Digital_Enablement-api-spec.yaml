@@ -973,7 +973,7 @@ components:
       properties:
         issuerAmountSettlementCurrency:
           type: integer
-          description: Transaction amount converted to cardholders currency.
+          description: DE5 - Transaction amount converted to cardholders currency.
           format: int64
           example: 12000
         issuerCurrencyCode:
@@ -1293,7 +1293,7 @@ components:
           example: '50139059239'
         transactionAmount:
           type: integer
-          description: Indicates the amount of the transaction.
+          description: DE4 - Indicates the amount of the transaction.
           format: int64
           example: 12000
         transactionAmountFormatted:
