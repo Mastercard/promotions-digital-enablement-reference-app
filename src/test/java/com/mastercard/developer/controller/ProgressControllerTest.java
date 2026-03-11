@@ -60,9 +60,9 @@ public class ProgressControllerTest {
     @Test
     public void testGetProgressByHouseholdIdAndAccountId() throws Exception {
         PromotionProgressList promotionProgressResponseBean = getResponse();
-        Mockito.when(progressService.getProgress(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(promotionProgressResponseBean);
+        Mockito.when(progressService.getProgress(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(promotionProgressResponseBean);
 
-        PromotionProgressList response = controller.getProgress("5283da1c-2bdf-40cc-a0e1-781fe30eab13", "9583da1c-2bdf-40cc-a0e1-781fe30eab12", null, false);
+        PromotionProgressList response = controller.getProgress("5283da1c-2bdf-40cc-a0e1-781fe30eab13", "9583da1c-2bdf-40cc-a0e1-781fe30eab12", null,null, false);
         Assert.assertNotNull(response);
         Assert.assertTrue("5283da1c-2bdf-40cc-a0e1-781fe30eab13".equalsIgnoreCase(response.getPromotionProgresses().get(0).getProgresses().get(0).getEntityId()));
         Assert.assertTrue("9583da1c-2bdf-40cc-a0e1-781fe30eab12".equalsIgnoreCase(response.getPromotionProgresses().get(0).getCaps().get(0).getEntityId()));
@@ -70,20 +70,36 @@ public class ProgressControllerTest {
 
     @Test(expected = InvalidRequest.class)
     public void testGetProgressByAccountIdFailure() throws Exception {
-        doThrow(ApiException.class).when(progressService).getProgress(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
+        doThrow(ApiException.class).when(progressService).getProgress(Mockito.any(), Mockito.any(),Mockito.any(), Mockito.any(), Mockito.any());
         MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
         httpServletRequest.setRequestURI(PROGRESS);
-        controller.getProgress(null, "9583da1c-2bdf-40cc-a0e1-781fe30eab12", null, false);
+        controller.getProgress(null, "9583da1c-2bdf-40cc-a0e1-781fe30eab12", null, null,false);
+    }
+
+    @Test
+    public void testGetProgressByUserId() throws Exception {
+        PromotionProgressList promotionProgressResponseBean = getResponse();
+        Mockito.when(progressService.getProgress(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(promotionProgressResponseBean);
+
+        PromotionProgressList response = controller.getProgress(null, null, "4583da1c-2bdf-40cc-a0e1-781fe30eab12", null, false);
+        Assert.assertNotNull(response);
+        Assert.assertTrue("4583da1c-2bdf-40cc-a0e1-781fe30eab12".equalsIgnoreCase(response.getPromotionProgresses().get(1).getProgresses().get(0).getEntityId()));
+    }
+
+    @Test(expected = InvalidRequest.class)
+    public void testGetProgressByUserIdFailure() throws Exception {
+        doThrow(ApiException.class).when(progressService).getProgress(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
+        controller.getProgress(null, null, "4583da1c-2bdf-40cc-a0e1-781fe30eab12", null, false);
     }
 
     @Test
     public void testGetProgressByAccountIdAndPromotionId() throws Exception {
         PromotionProgressList promotionProgressResponseBean = getResponse();
-        Mockito.when(progressService.getProgress(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(promotionProgressResponseBean);
+        Mockito.when(progressService.getProgress(Mockito.any(), Mockito.any(), Mockito.any(),Mockito.any(), Mockito.any())).thenReturn(promotionProgressResponseBean);
         MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
         httpServletRequest.setRequestURI(PROGRESS);
 
-        PromotionProgressList response = controller.getProgress(null, "9583da1c-2bdf-40cc-a0e1-781fe30eab12", "6683aa1c-2bdf-40cc-a0e1-781fe30eab19", false);
+        PromotionProgressList response = controller.getProgress(null, "9583da1c-2bdf-40cc-a0e1-781fe30eab12", null,"6683aa1c-2bdf-40cc-a0e1-781fe30eab19", false);
         Assert.assertNotNull(response);
         Assert.assertTrue("9583da1c-2bdf-40cc-a0e1-781fe30eab12".equalsIgnoreCase(response.getPromotionProgresses().get(0).getCaps().get(0).getEntityId()));
         Assert.assertTrue("6683aa1c-2bdf-40cc-a0e1-781fe30eab19".equalsIgnoreCase(response.getPromotionProgresses().get(0).getPromotionId()));
@@ -99,7 +115,6 @@ public class ProgressControllerTest {
         progressSummaryBeanList.add(getProgress("HOUSEHOLD", "5283da1c-2bdf-40cc-a0e1-781fe30eab13", 5));
 
         ruleList.add(getRule("HOUSEHOLD", "5283da1c-2bdf-40cc-a0e1-781fe30eab13", "6cef30ef-bcfc-429f-9aa5-b7bfc0a108f5", 5L, "COUNT", 4L, "M", "202006"));
-
         capList.add(getCap("ACCOUNT", "9583da1c-2bdf-40cc-a0e1-781fe30eab12", "1afd11e2-d1b8-4787-b848-5fc1d4533986", "M", "202005", 5L, 3L));
 
         promotion.setPromotionId("6683aa1c-2bdf-40cc-a0e1-781fe30eab19");
@@ -109,6 +124,23 @@ public class ProgressControllerTest {
         promotion.setRules(ruleList);
         promotion.setCaps(capList);
         return promotion;
+    }
+
+    private PromotionProgress getPromotion1() {
+        List<ProgressSummary> progressSummaryBeanList1 = new ArrayList<>();
+        List<Rule> ruleList1 = new ArrayList<>();
+
+        PromotionProgress promotion1 = new PromotionProgress();
+
+        progressSummaryBeanList1.add(getProgress("USER", "4583da1c-2bdf-40cc-a0e1-781fe30eab12", 3));
+        ruleList1.add(getRule("USER", "4583da1c-2bdf-40cc-a0e1-781fe30eab12", "1afd11e2-d1b8-4787-b848-5fc1d4533986", 5L, "COUNT", 3L, "M", "202005"));
+
+        promotion1.setPromotionId("6683aa1c-2bdf-40cc-a0e1-781fe30eab10");
+        promotion1.setActive(true);
+        promotion1.setProgramId("56a28951-86bf-45bc-bcf1-a89aa8ffdff0");
+        promotion1.setProgresses(progressSummaryBeanList1);
+        promotion1.setRules(ruleList1);
+        return promotion1;
     }
 
     private ProgressSummary getProgress(String entityType, String entityId, Integer totalRewardsReceived) {
@@ -148,6 +180,7 @@ public class ProgressControllerTest {
         PromotionProgressList promotionProgressResponseBean = new PromotionProgressList();
         List<PromotionProgress> promotionList = new ArrayList<>();
         promotionList.add(getPromotion());
+        promotionList.add(getPromotion1());
         promotionProgressResponseBean.setPromotionProgresses(promotionList);
         return promotionProgressResponseBean;
     }
