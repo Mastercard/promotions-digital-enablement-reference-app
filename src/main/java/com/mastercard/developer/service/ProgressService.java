@@ -18,7 +18,7 @@ public class ProgressService {
         this.promotionProgressApi = new PromotionProgressApi(apiClient);
     }
 
-    public PromotionProgressList getProgress(String householdId, String accountId, String userId,String promotionId, Boolean includeHistory) throws ApiException {
+    public PromotionProgressList getProgress(String householdId, String accountId, String userId, String promotionId, Boolean includeHistory) throws ApiException {
         return promotionProgressApi.retrieveUsingGET(householdId, accountId, userId, promotionId, includeHistory);
     }
 
