@@ -43,14 +43,14 @@ public class ProgressValidatorTest {
     }
 
     @Test
-    public void testValidateGetPromotionsByHouseHoldIdAndUserId() throws Exception {
+    public void testValidateGetPromotionsByHouseHoldIdAndUserId() {
         expectedEx.expect(InvalidRequest.class);
         expectedEx.expectMessage("household_id and user_id cannot be used together");
         validator.validateGetProgress("f35e51fe-bc77-432f-b412-3800e3c04e78", null,"62087a7f-4215-4bfc-b3ee-cc12f085efc5");
     }
 
     @Test
-    public void testValidateGetForNotEmptyUserIdAndAccountId() throws Exception {
+    public void testValidateGetForNotEmptyUserIdAndAccountId() {
         validator.validateGetProgress(null, "935e51fe-bc77-432f-b412-3800e3c04e90","62087a7f-4215-4bfc-b3ee-cc12f085efc5");
     }
 }
