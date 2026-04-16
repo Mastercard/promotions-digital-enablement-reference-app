@@ -19,7 +19,7 @@ tags:
   - name: Promotion Management
     description: The API will return the list of promotions based on the request parameters provided.
   - name: Promotion Progress
-    description: The API returns information that represents key data points necessary to track the progression towards promotion goals for earnings rewards.
+    description: The API returns information that represents key data points necessary to track the progression towards promotion or audience goals for earnings rewards.
   - name: Transactions
     description: Provides clients with the ability to get transaction data related to a specific promotion so that the client can show the cardholders transactions that made up the rewards they have earned. The identifiers for a given promotion would be account identifiers.
   - name: Audiences
@@ -110,8 +110,8 @@ paths:
     get:
       tags:
         - Promotion Progress
-      summary: Provides clients the ability to retrieve promotion progress data.
-      description: This endpoint provides clients with the ability to retrieve reward progress data using household id or user id, account_id and/or promotion id.
+      summary: Provides clients the ability to retrieve promotion or audience progress data.
+      description: This endpoint provides clients with the ability to retrieve reward progress data using household id or user id, account_id and/or promotion id or audience id.
       operationId: retrieveUsingGET
       parameters:
         - $ref: '#/components/parameters/HouseholdIdParam'
@@ -371,7 +371,7 @@ components:
     PromotionIdParam:
       name: promotion_id
       in: query
-      description: The unique identifier of the Promotion created and assigned by Mastercard during promotion creation process
+      description: The unique identifier of the Promotion or Audience created and assigned by Mastercard during promotion or audience creation process.
       schema:
         type: string
         example: "2aee0729-3a1a-451a-affa-84f3a6bc5acc"
@@ -1477,7 +1477,7 @@ components:
       properties:
         promotionProgresses:
           type: array
-          description: List of PromotionProgress
+          description: List of PromotionProgress or AudienceProgress.
           items:
             $ref: '#/components/schemas/PromotionProgress'
     PromotionProgress:
@@ -1487,16 +1487,16 @@ components:
           type: string
           example: '2aee0729-3a1a-451a-affa-84f3a6bc5acc'
           maxLength: 50
-          description: Unique Identifier for the promotion for which reward progress is retrieved.
+          description: Unique Identifier for the promotion or audience for which reward progress is retrieved.
         programId:
           type: string
           example: 'f06b850a-1943-420a-bb15-c8de8f101d5e'
           maxLength: 50
-          description:  Unique Program Id for the business partner program to which this promotion belongs to.
+          description:  Unique Program Id for the business partner program to which this promotion or audience belongs to.
         active:
           type: boolean
           example: TRUE
-          description: Indicates whether this promotion is currently active (true) or inactive (false). Promotion end date should be after current date.
+          description: Indicates whether this promotion or audience is currently active (true) or inactive (false). Promotion or Audience end date should be after current date.
         progresses:
           type: array
           description: List of ProgressSummary
@@ -1558,7 +1558,7 @@ components:
           type: string
           example: 'HOUSEHOLD'
           maxLength: 15
-          description: Indicates level at which the promotion rule is applied. “ACCOUNT” or “HOUSEHOLD”.
+          description: Indicates level at which the promotion or audience rule is applied. “ACCOUNT” or “HOUSEHOLD”.
         entityId:
           type: string
           example: 'ad1e21a7-4c1c-4812-ae47-d2c4fae7c5a8'
@@ -1568,7 +1568,7 @@ components:
           type: string
           example: 'da06a951-0237-4f32-affb-16502ae7dc9a'
           maxLength: 50
-          description: Rule Id is a unique identifier for the promotion rule.
+          description: Rule Id is a unique identifier for the promotion or audience rule.
         ruleThreshold:
           type: integer
           example: 5
@@ -1594,7 +1594,7 @@ components:
           type: string
           example: 'M'
           maxLength: 10
-          description: Period for which promotion rule is applied – “MONTH”, “YEAR”, “LIFETIME”.
+          description: Period for which promotion or audience rule is applied – “MONTH”, “YEAR”, “LIFETIME”.
         rulePeriodValue:
           type: string
           example: '202108'
