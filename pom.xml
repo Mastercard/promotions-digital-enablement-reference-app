@@ -51,6 +51,19 @@
             <version>${oauth2-client-java.version}</version>
         </dependency>
 
+        <!-- Jackson 3.x required by oauth2-client-java -->
+        <dependency>
+            <groupId>tools.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>3.0.3</version>
+        </dependency>
+        <!-- jackson-databind 3.x requires jackson-annotations 2.19+ (for POJO Shape enum) -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>2.19.4</version>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/com.mastercard.developer/client-encryption -->
         <dependency>
             <groupId>com.mastercard.developer</groupId>
