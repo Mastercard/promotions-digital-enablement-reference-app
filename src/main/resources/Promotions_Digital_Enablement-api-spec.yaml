@@ -1981,7 +1981,7 @@ components:
             - COUNT - Transaction count
             - SPEND - Transaction spend amount
             - RATE -  Accumulated tiering value
-          example: "AMOUNT"
+          example: "SPEND"
         fieldType:
           type: string
           description: |
