@@ -220,6 +220,7 @@
                             <configOptions>
                                 <sourceFolder>src/gen/main/java</sourceFolder>
                                 <dateLibrary>java8</dateLibrary>
+                                <disallowAdditionalPropertiesIfNotPresent>false</disallowAdditionalPropertiesIfNotPresent>
                             </configOptions>
                         </configuration>
                     </execution>
