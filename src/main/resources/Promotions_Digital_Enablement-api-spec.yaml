@@ -1781,6 +1781,24 @@ components:
           format: date-time
           description: The time when the status was updated.
           example: "2020-06-05T15:19:31.827Z"
+        beginDateTime:
+          type: string
+          format: date-time
+          description: Promotion begin date and time.
+          example: "2023-02-01T15:15:31.827Z"
+        endDateTime:
+          type: string
+          format: date-time
+          description: Promotion end date and time.
+          example: "2023-12-31T23:59:59.000Z"
+        scoringType:
+          type: string
+          description: The scoring type of the promotion.
+          example: "TRANSACTION"
+        ranked:
+          type: boolean
+          description: Indicates if the promotion is ranked.
+          example: false
     OptIn:
       type: object
       properties:
@@ -1981,7 +1999,7 @@ components:
             - COUNT - Transaction count
             - SPEND - Transaction spend amount
             - RATE -  Accumulated tiering value
-          example: "AMOUNT"
+          example: "SPEND"
         fieldType:
           type: string
           description: |
