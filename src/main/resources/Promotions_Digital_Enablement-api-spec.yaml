@@ -20,7 +20,7 @@ tags:
     description: The API will return the list of promotions based on the request parameters provided.
   - name: Promotion Progress
     description: The API returns information that represents key data points necessary to track the progression towards promotion or audience goals for earnings rewards.
-  - name: Transactions
+  - name: Transactions API
     description: Provides clients with the ability to get transaction data related to a specific promotion so that the client can show the cardholders transactions that made up the rewards they have earned. The identifiers for a given promotion would be account identifiers.
   - name: Audiences
     description: Provides clients with the ability to get the promotion details of a specific cardholder or enroll to a specific promotions for a specific time periods.
