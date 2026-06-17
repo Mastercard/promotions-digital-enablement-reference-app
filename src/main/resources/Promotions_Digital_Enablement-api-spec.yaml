@@ -909,6 +909,36 @@ components:
           example: 5
           maxLength: 15
           description: Total rewards (points, miles, rebate amount) awarded for this promotion.
+    BudgetProgressDto:
+      type: object
+      description: "Contains Budget Progress for the promotion"
+      properties:
+        capId:
+          type: string
+          format: uuid
+          example: '1e64fa34-097e-4f85-989f-bd702de83fd6'
+          maxLength: 50
+          description: Unique identifier for the promotion cap.
+        capPeriod:
+          type: string
+          example: 'M'
+          maxLength: 1
+          description: Cap Period for the promotion as MONTHLY, YEARLY or LIFETIME.
+        capPeriodValue:
+          type: String
+          example: '202606'
+          maxLength: 15
+          description: Cap Period value for the promotion budget cap.
+        capThreshold:
+          type: BigDecimal
+          example: 1000.00
+          maxLength: 15
+          description: Cap threshold for the promotion budget cap.
+        capConsumed:
+          type: BigDecimal
+          example: 700.00
+          maxLength: 15
+          description: Cap consumed for the promotion budget cap.
     ErrorItem:
       type: object
       properties:
@@ -1522,6 +1552,11 @@ components:
           description: List
           items:
             $ref: '#/components/schemas/RankedTier'
+        budgets:
+          type: array
+          description: List of budget progress
+          items:
+            $ref: '#/components/schemas/BudgetProgressDto'
     ProgressSummary:
       type: object
       properties:
