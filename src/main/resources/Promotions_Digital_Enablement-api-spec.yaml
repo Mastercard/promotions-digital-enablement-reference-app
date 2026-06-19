@@ -1121,19 +1121,19 @@ components:
         userDefined1:
           type: string
           description: User defined field1, where issuer can send any data related to that customer.
-          example: 'customerUDF1'
+          example: 'CUST1-012026'
         userDefined2:
           type: string
           description: User defined field2, where issuer can send any data related to that customer.
-          example: 'customerUDF2'
+          example: 'CUST2-022026'
         userDefined3:
           type: string
           description: User defined field3, where issuer can send any data related to that customer.
-          example: 'customerUDF3'
+          example: 'CUST3-032026'
         userDefined4:
           type: string
           description: User defined field4, where issuer can send any data related to that customer.
-          example: 'customerUDF4'
+          example: 'CUST4-042026'
     TransactionScore:
       type: object
       properties:
@@ -1174,7 +1174,7 @@ components:
         isPromotionDarkMode:
           type: string
           description: Indicates if the promotion is dark mode.
-          example: "Y"
+          example: "N"
     GetTransaction:
       type: object
       properties:
@@ -1383,7 +1383,7 @@ components:
         pds0001Sf2EncVAccNum:
           type: string
           description: Represents PDS 0001 subfield 2 contains a virtual/token or real account number or a primary account number.
-          example: 'PDSAccNum01B'
+          example: 'PDS0001'
         frequentFlyerNumber:
           type: string
           description: Represents An identifier for a cardholder related to a particular airline to track flying activity of cardholders.
