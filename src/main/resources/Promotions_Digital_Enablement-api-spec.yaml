@@ -925,17 +925,17 @@ components:
           maxLength: 1
           description: Cap Period for the promotion as MONTHLY, YEARLY or LIFETIME.
         capPeriodValue:
-          type: String
+          type: string
           example: '202606'
           maxLength: 15
           description: Cap Period value for the promotion budget cap.
         capThreshold:
-          type: BigDecimal
+          type: number
           example: 1000.00
           maxLength: 15
           description: Cap threshold for the promotion budget cap.
         capConsumed:
-          type: BigDecimal
+          type: number
           example: 700.00
           maxLength: 15
           description: Cap consumed for the promotion budget cap.
