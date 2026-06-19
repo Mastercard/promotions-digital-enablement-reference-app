@@ -7,6 +7,11 @@ is changed or removed.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [26.2.5 - 1.0.0] 2026-06-10 - 2026-06-23
+### Added
+### Updated
+1. [Wyvern][G1302-23985]: Updated Promotion Progress to add Budget Progress details
+
 ## [25.4.2 - 1.0.0] 2025-10-29 - 2025-11-11
 ### Added
 ### Updated
