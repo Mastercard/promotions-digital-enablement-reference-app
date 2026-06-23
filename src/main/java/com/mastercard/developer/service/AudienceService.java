@@ -5,6 +5,7 @@ import org.openapitools.client.ApiClient;
 import org.openapitools.client.ApiException;
 import org.openapitools.client.api.AudiencesApi;
 import org.openapitools.client.model.Audience;
+import org.openapitools.client.model.AudienceCreate;
 import org.openapitools.client.model.AudienceUpdate;
 import org.openapitools.client.model.PagedResponseAudience;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,7 @@ public class AudienceService {
         return audiencesApi.getAudiences(entityId, entityType, audienceCode, includeHistory, fromDateTime, toDateTime, offset, limit);
     }
 
-    public Audience saveAudience(Audience audience) throws ApiException {
+    public Audience saveAudience(AudienceCreate audience) throws ApiException {
         return audiencesApi.createAudiences(audience);
     }
 

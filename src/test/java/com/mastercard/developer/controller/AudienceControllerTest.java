@@ -12,6 +12,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.openapitools.client.ApiException;
 import org.openapitools.client.api.AudiencesApi;
 import org.openapitools.client.model.Audience;
+import org.openapitools.client.model.AudienceCreate;
 import org.openapitools.client.model.AudienceUpdate;
 import org.openapitools.client.model.PagedResponseAudience;
 import org.springframework.http.HttpStatus;
@@ -102,7 +103,7 @@ public class AudienceControllerTest {
 
     @Test
     public void testSuccessCreateAudience() throws Exception {
-        Audience request = getAudienceObject();
+        AudienceCreate request = getAudienceToCreate();
         Audience audienceResponse = getAudienceObject();
         when(audienceService.saveAudience(any())).thenReturn(audienceResponse);
         Audience response = controller.createAudience(request);
@@ -111,14 +112,14 @@ public class AudienceControllerTest {
 
     @Test(expected = InvalidRequest.class)
     public void testCreateAudience_NullResponse() throws Exception {
-        Audience request = getAudienceObject();
+        AudienceCreate request = getAudienceToCreate();
         when(audienceService.saveAudience(any())).thenReturn(null);
         controller.createAudience(request);
     }
 
     @Test(expected = InvalidRequest.class)
     public void testCreateAudience_NullResponseId() throws Exception {
-        Audience request = getAudienceObject();
+        AudienceCreate request = getAudienceToCreate();
         Audience audienceResponse = getAudienceObject();
         audienceResponse.setId(null);
         when(audienceService.saveAudience(any())).thenReturn(audienceResponse);
@@ -127,14 +128,14 @@ public class AudienceControllerTest {
 
     @Test(expected = InvalidRequest.class)
     public void testCreateAudience_Exception() throws Exception {
-        Audience request = getAudienceObject();
+        AudienceCreate request = getAudienceToCreate();
         when(audienceService.saveAudience(any())).thenThrow(new ApiException());
         controller.createAudience(request);
     }
 
     @Test
     public void testCreateAudience_ExceptionForNullEntityType() {
-        Audience request = getAudienceObject();
+        AudienceCreate request = getAudienceToCreate();
         request.setEntityType(null);
         doThrow(new InvalidRequest(INVALID_FIELD_ENTITY_TYPE, INVALID_FIELD_ENTITY_TYPE_ERR_MSG))
                 .when(audienceValidator).validateAudienceCreate(request);
@@ -222,6 +223,15 @@ public class AudienceControllerTest {
         audience.setEntityId(ENTITY_REFERENCE_ID);
         audience.setEntityType("A");
         audience.setId(REFERENCE_ID);
+        audience.setBeginDateTime(LocalDateTime.now().toString());
+        audience.setEndDateTime(LocalDateTime.now().plusDays(10).toString());
+        return audience;
+    }
+    private AudienceCreate getAudienceToCreate() {
+        AudienceCreate audience = new AudienceCreate();
+        audience.setCode(EXTERNAL_TARGET_CODE);
+        audience.setEntityId(ENTITY_REFERENCE_ID);
+        audience.setEntityType("A");
         audience.setBeginDateTime(LocalDateTime.now().toString());
         audience.setEndDateTime(LocalDateTime.now().plusDays(10).toString());
         return audience;
