@@ -204,7 +204,7 @@ paths:
       operationId: createAudiences
       summary: Provides clients the ability to create an audience entity
       requestBody:
-        $ref: '#/components/requestBodies/Audience'
+        $ref: '#/components/requestBodies/AudienceCreate'
       responses:
         '201':
           $ref: '#/components/responses/ResponseAudienceCreated'
@@ -305,6 +305,12 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Audience'
+    AudienceCreate:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AudienceCreate'
     AudienceUpdate:
       required: true
       content:
@@ -2309,6 +2315,29 @@ components:
           type: string
           example: 1127d5a6-ed44-4148-aa08-da168016cd56
           description: It is the unique reference id for audience records
+        code:
+          type: string
+          example: CODE_NY
+          description: It is the audience code
+        beginDateTime:
+          type: string
+          example: 2025-01-11T02:00:00Z
+          description: Fetch audiences eligible on or after this date
+        endDateTime:
+          type: string
+          example: 2025-01-18T02:00:00Z
+          description: Fetch audiences eligible on or before this date
+        entityType:
+          type: string
+          example: A
+          description: Indicates at which level the audience record is associated - either 'A' for Account or 'H' for Household
+        entityId:
+          type: string
+          example: 12f5930a-ab8b-4a25-9774-6ba49a9bfd8c
+          description: Entity ID is the unique id for the entity type account or household
+    AudienceCreate:
+      type: object
+      properties:
         code:
           type: string
           example: CODE_NY
