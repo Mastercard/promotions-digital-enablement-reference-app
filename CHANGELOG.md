@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [26.2.6 - 1.0.0] 2026-06-24 - 2026-07-07
 ### Added
-1. [Mystics][G1302-22687]: Update transaction api to support UDF,PDS,DarkMode fields
+1. [Mystics][G1302-22687]: Update transaction api to support UDF,PDS fields
 ### Updated
 
 ## [25.4.2 - 1.0.0] 2025-10-29 - 2025-11-11

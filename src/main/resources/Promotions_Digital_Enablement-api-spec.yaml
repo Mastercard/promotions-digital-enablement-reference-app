@@ -1171,10 +1171,6 @@ components:
           description: Posting Account ReferenceId
           format: uuid
           example: '751678c0-079b-11eb-adc1-0242ac12aaaa'
-        isPromotionDarkMode:
-          type: string
-          description: Indicates if the promotion is dark mode.
-          example: "N"
     GetTransaction:
       type: object
       properties:
@@ -1376,10 +1372,6 @@ components:
           description: This field represents what installment number the transaction is example 1 of 5.
           format: int32
           example: 1
-        de14ExpDate:
-          type: string
-          description: This is the expiration date in YYMM format.
-          example: '3005'
         pds0001Sf2EncVAccNum:
           type: string
           description: Represents PDS 0001 subfield 2 contains a virtual/token or real account number or a primary account number.
