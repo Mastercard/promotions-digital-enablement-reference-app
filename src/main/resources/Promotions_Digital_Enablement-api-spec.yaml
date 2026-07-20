@@ -909,7 +909,7 @@ components:
           example: 5
           maxLength: 15
           description: Total rewards (points, miles, rebate amount) awarded for this promotion.
-    BudgetProgressDto:
+    BudgetProgress:
       type: object
       description: Contains Budget Progress for the promotion
       properties:
@@ -1556,7 +1556,7 @@ components:
           type: array
           description: List of budget progress
           items:
-            $ref: '#/components/schemas/BudgetProgressDto'
+            $ref: '#/components/schemas/BudgetProgress'
     ProgressSummary:
       type: object
       properties:
