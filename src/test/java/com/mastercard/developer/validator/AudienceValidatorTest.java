@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.openapitools.client.model.Audience;
+import org.openapitools.client.model.AudienceCreate;
 import org.openapitools.client.model.AudienceUpdate;
 
 import java.time.LocalDateTime;
@@ -38,7 +38,7 @@ public class AudienceValidatorTest {
 
     @Test
     public void testValidatePostCreateRequestForInvalidFormatOfBeginDate() {
-        Audience audience = createAudienceObj();
+        AudienceCreate audience = createAudienceObj();
         audience.setBeginDateTime("2024-10-21T08:08:08Z");
         audience.setEndDateTime("2024-10-12T08:08:08Z");
         Exception exception = assertThrows(Exception.class, () -> {
@@ -49,7 +49,7 @@ public class AudienceValidatorTest {
 
     @Test
     public void testValidateAudienceCreateForInvalidCode() {
-        Audience audience = createAudienceObj();
+        AudienceCreate audience = createAudienceObj();
         audience.setCode(null);
         Exception exception = assertThrows(Exception.class, () -> {
             validator.validateAudienceCreate(audience);
@@ -59,7 +59,7 @@ public class AudienceValidatorTest {
 
     @Test
     public void testValidateAudienceCreateForInvalidBeginDate() {
-        Audience audience = createAudienceObj();
+        AudienceCreate audience = createAudienceObj();
         audience.setBeginDateTime(null);
         Exception exception = assertThrows(Exception.class, () -> {
             validator.validateAudienceCreate(audience);
@@ -69,7 +69,7 @@ public class AudienceValidatorTest {
 
     @Test
     public void testValidateAudienceCreateForNullEntityType() {
-        Audience audience = createAudienceObj();
+        AudienceCreate audience = createAudienceObj();
         audience.setEntityType(null);
         Exception exception = assertThrows(Exception.class, () -> {
             validator.validateAudienceCreate(audience);
@@ -79,7 +79,7 @@ public class AudienceValidatorTest {
 
     @Test
     public void testValidateAudienceCreateForInvalidEntityType() {
-        Audience audience = createAudienceObj();
+        AudienceCreate audience = createAudienceObj();
         audience.setEntityType("S");
         Exception exception = assertThrows(Exception.class, () -> {
             validator.validateAudienceCreate(audience);
@@ -89,7 +89,7 @@ public class AudienceValidatorTest {
 
     @Test
     public void testValidateAudienceCreateForNullEntityId() {
-        Audience audience = createAudienceObj();
+        AudienceCreate audience = createAudienceObj();
         audience.setEntityId(null);
         Exception exception = assertThrows(Exception.class, () -> {
             validator.validateAudienceCreate(audience);
@@ -97,8 +97,8 @@ public class AudienceValidatorTest {
         assertEquals(ApplicationConstants.INVALID_FIELD_ENTITY_REFERENCE_ID_ERR_MSG, exception.getMessage());
     }
 
-    private Audience createAudienceObj() {
-        Audience audience = new Audience();
+    private AudienceCreate createAudienceObj() {
+        AudienceCreate audience = new AudienceCreate();
         audience.setBeginDateTime("2024-10-12T08:08:08Z");
         audience.setCode("ABCODE");
         audience.setEntityId("EntityId");
@@ -140,7 +140,7 @@ public class AudienceValidatorTest {
 
     @Test
     public void testValidateAudienceCreate_Success() {
-        Audience audience = createAudienceObj();
+        AudienceCreate audience = createAudienceObj();
         validator.validateAudienceCreate(audience);
     }
 
@@ -157,7 +157,7 @@ public class AudienceValidatorTest {
 
     @Test
     public void testValidateAudienceCreateForInvalidEndDateTimeFormat() {
-        Audience audience = createAudienceObj();
+        AudienceCreate audience = createAudienceObj();
         audience.setEndDateTime("2024-10-21T08:08:08");
         Exception exception = assertThrows(Exception.class, () -> {
             validator.validateAudienceCreate(audience);
@@ -198,14 +198,14 @@ public class AudienceValidatorTest {
 
     @Test
     public void testValidateAudienceCreateForHouseholdEntityType() {
-        Audience audience = createAudienceObj();
+        AudienceCreate audience = createAudienceObj();
         audience.setEntityType("H");
         validator.validateAudienceCreate(audience);
     }
 
     @Test
     public void testValidateAudienceCreateForAccountEntityType() {
-        Audience audience = createAudienceObj();
+        AudienceCreate audience = createAudienceObj();
         audience.setEntityType("A");
         validator.validateAudienceCreate(audience);
     }

@@ -3,7 +3,7 @@ package com.mastercard.developer.validator;
 import com.mastercard.developer.constants.ApplicationConstants;
 import com.mastercard.developer.exception.InvalidRequest;
 import org.apache.commons.lang3.StringUtils;
-import org.openapitools.client.model.Audience;
+import org.openapitools.client.model.AudienceCreate;
 import org.openapitools.client.model.AudienceUpdate;
 import org.springframework.stereotype.Component;
 
@@ -26,7 +26,7 @@ public class AudienceValidator {
     private static final String HOUSEHOLD = "H";
     private static final String UTC = "UTC";
 
-    private static void validateRequestFields(Audience audience, Map<String, String> errorMap) {
+    private static void validateRequestFields(AudienceCreate audience, Map<String, String> errorMap) {
         if (isBlank(audience.getCode())) {
             errorMap.put(
                     ApplicationConstants.INVALID_FIELD_AUDIENCE_CODE,
@@ -88,7 +88,7 @@ public class AudienceValidator {
         return StringUtils.isNotBlank(date) ? LocalDateTime.parse(date, dtf).atZone(ZoneId.of(UTC)).toLocalDateTime() : null;
     }
 
-    public void validateAudienceCreate(Audience audience) {
+    public void validateAudienceCreate(AudienceCreate audience) {
         Map<String, String> errorMap = new HashMap<>();
         validateRequestFields(audience, errorMap);
         validateDateFields(audience.getBeginDateTime(), audience.getEndDateTime(), errorMap);

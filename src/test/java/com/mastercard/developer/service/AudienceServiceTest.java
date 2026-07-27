@@ -8,6 +8,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.openapitools.client.ApiClient;
 import org.openapitools.client.api.AudiencesApi;
 import org.openapitools.client.model.Audience;
+import org.openapitools.client.model.AudienceCreate;
 import org.openapitools.client.model.AudienceUpdate;
 import org.openapitools.client.model.PagedResponseAudience;
 
@@ -76,7 +77,7 @@ public class AudienceServiceTest {
 
     @Test
     public void testSaveAudience_WithValidObject() throws Exception {
-        Audience newAudience = new Audience();
+        AudienceCreate newAudience = new AudienceCreate();
         assertNotNull(audienceService.saveAudience(newAudience));
         verify(audiencesApi).createAudiences(newAudience);
     }
@@ -173,9 +174,9 @@ public class AudienceServiceTest {
     @Test
     public void testSaveAudience_MultipleAudiences() throws Exception {
         for (int i = 0; i < 5; i++) {
-            assertNotNull(audienceService.saveAudience(new Audience()));
+            assertNotNull(audienceService.saveAudience(new AudienceCreate()));
         }
-        verify(audiencesApi, times(5)).createAudiences(any(Audience.class));
+        verify(audiencesApi, times(5)).createAudiences(any(AudienceCreate.class));
     }
 
     @Test
@@ -204,11 +205,11 @@ public class AudienceServiceTest {
     public void testAudienceService_ComplexScenario() throws Exception {
         String referenceId = "550e8400-e29b-41d4-a716-446655440000";
         assertNotNull(audienceService.getAudiencePagedExternalTargetRecords(referenceId, "entity123", "ACCOUNT", true, "2024-01-01", "2024-12-31", 0, 100));
-        assertNotNull(audienceService.saveAudience(new Audience()));
+        assertNotNull(audienceService.saveAudience(new AudienceCreate()));
         assertNotNull(audienceService.updateAudience(referenceId, new AudienceUpdate()));
         audienceService.deleteAudience(referenceId);
         verify(audiencesApi).getAudiences(anyString(), anyString(), anyString(), any(Boolean.class), anyString(), anyString(), anyInt(), anyInt());
-        verify(audiencesApi).createAudiences(any(Audience.class));
+        verify(audiencesApi).createAudiences(any(AudienceCreate.class));
         verify(audiencesApi).updateAudiences(anyString(), any(AudienceUpdate.class));
         verify(audiencesApi).deleteAudiences(anyString());
     }
@@ -224,10 +225,10 @@ public class AudienceServiceTest {
     @Test
     public void testAudienceService_MixedOperations() throws Exception {
         String uuid = "550e8400-e29b-41d4-a716-446655440000";
-        audienceService.saveAudience(new Audience());
+        audienceService.saveAudience(new AudienceCreate());
         assertNotNull(audienceService.getAudiencePagedExternalTargetRecords(uuid, "entity456", "PROMOTION", false, null, null, 5, 20));
         audienceService.updateAudience(uuid, new AudienceUpdate());
-        audienceService.saveAudience(new Audience());
+        audienceService.saveAudience(new AudienceCreate());
         audienceService.deleteAudience(uuid);
         assertNotNull(audienceService);
     }
@@ -299,7 +300,7 @@ public class AudienceServiceTest {
     @Test
     public void testAudienceService_CompleteWorkflow() throws Exception {
         String referenceId = "550e8400-e29b-41d4-a716-446655440000";
-        Audience newAudience = new Audience();
+        AudienceCreate newAudience = new AudienceCreate();
         AudienceUpdate update = new AudienceUpdate();
         // Create
         assertNotNull(audienceService.saveAudience(newAudience));
@@ -309,7 +310,7 @@ public class AudienceServiceTest {
         assertNotNull(audienceService.updateAudience(referenceId, update));
         // Delete
         audienceService.deleteAudience(referenceId);
-        verify(audiencesApi).createAudiences(any(Audience.class));
+        verify(audiencesApi).createAudiences(any(AudienceCreate.class));
         verify(audiencesApi).getAudiences(anyString(), anyString(), anyString(), any(Boolean.class), anyString(), anyString(), anyInt(), anyInt());
         verify(audiencesApi).updateAudiences(anyString(), any(AudienceUpdate.class));
         verify(audiencesApi).deleteAudiences(anyString());
