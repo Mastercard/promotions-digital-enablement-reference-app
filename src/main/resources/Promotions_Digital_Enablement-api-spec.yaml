@@ -1120,20 +1120,20 @@ components:
       properties:
         userDefined1:
           type: string
-          description: User defined field1, where issuer can send any data related to that customer.
-          example: 'CUST1-012026'
+          description: User defined field1 is used by banks or issuers to send customer-specific and unique information related to the cardholder.
+          example: 'NEW_SEGMENT'
         userDefined2:
           type: string
-          description: User defined field2, where issuer can send any data related to that customer.
-          example: 'CUST2-022026'
+          description: User defined field2 is used by banks or issuers to send customer-specific and unique information related to the cardholder.
+          example: 'CREDIT_PLUS'
         userDefined3:
           type: string
-          description: User defined field3, where issuer can send any data related to that customer.
-          example: 'CUST3-032026'
+          description: User defined field3 is used by banks or issuers to send customer-specific and unique information related to the cardholder.
+          example: 'DEBIT_26'
         userDefined4:
           type: string
-          description: User defined field4, where issuer can send any data related to that customer.
-          example: 'CUST4-042026'
+          description: User defined field4 is used by banks or issuers to send customer-specific and unique information related to the cardholder.
+          example: 'PREMIUM_TIER'
     TransactionScore:
       type: object
       properties:
@@ -1375,11 +1375,11 @@ components:
         pds0001Sf2EncVAccNum:
           type: string
           description: Represents PDS 0001 subfield 2 contains a virtual/token or real account number or a primary account number.
-          example: 'PDS0001'
+          example: '62343656789'
         frequentFlyerNumber:
           type: string
           description: Represents An identifier for a cardholder related to a particular airline to track flying activity of cardholders.
-          example: 'FFN12345'
+          example: 'LF578923'
     EventItem:
       type: object
       properties:
