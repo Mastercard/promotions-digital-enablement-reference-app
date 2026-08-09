@@ -1372,7 +1372,7 @@ components:
           description: This field represents what installment number the transaction is example 1 of 5.
           format: int32
           example: 1
-        pds0001Sf2EncVAccNum:
+        encryptedVirtualAccountNumber:
           type: string
           description: Represents PDS 0001 subfield 2 contains a virtual/token or real account number or a primary account number.
           example: '62343656789'
