@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 1. [Mystics][G1302-22687]: Update transaction api to support UDF,PDS fields
 ### Updated
+1. [Wyvern][G1302-23985]: Updated Promotion Progress to add Budget Progress details
 
 ## [25.4.2 - 1.0.0] 2025-10-29 - 2025-11-11
 ### Added

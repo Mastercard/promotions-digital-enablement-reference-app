@@ -6,6 +6,7 @@ import com.mastercard.developer.validator.AudienceValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.openapitools.client.ApiException;
 import org.openapitools.client.model.Audience;
+import org.openapitools.client.model.AudienceCreate;
 import org.openapitools.client.model.AudienceUpdate;
 import org.openapitools.client.model.PagedResponseAudience;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +70,7 @@ public class AudienceController {
     @PostMapping(
             consumes = {"application/json"},
             path = "/audiences")
-    public Audience createAudience(@RequestBody Audience audience) {
+    public Audience createAudience(@RequestBody AudienceCreate audience) {
         audienceValidator.validateAudienceCreate(audience);
         try {
             Audience response = audienceService.saveAudience(audience);
