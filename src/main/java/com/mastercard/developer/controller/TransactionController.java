@@ -32,25 +32,32 @@ public class TransactionController {
      * @param fromDate
      * @param toDate
      * @param promotionId
+     * @param status
+     * @param expand
      * @param offset
      * @param limit
      * @return
      */
     @GetMapping(value = "/transactions")
     public PagedResponseGetTransactionDto getTransactions(@RequestParam(name = "account_id", required = false) String accountId,
-                                                          @RequestParam(name = "from_date", required = false) String fromDate,
-                                                          @RequestParam(name = "to_date", required = false) String toDate,
-                                                          @RequestParam(name = "promotion_id", required = false) String promotionId,
-                                                          @RequestParam(value = "offset", required = false, defaultValue = "0") int offset,
-                                                          @RequestParam(value = "limit", required = false, defaultValue = "25") int limit) {
+                                            @RequestParam(name = "from_date", required = false) String fromDate,
+                                            @RequestParam(name = "to_date", required = false) String toDate,
+                                            @RequestParam(name = "promotion_id", required = false) String promotionId,
+                                            @RequestParam(name = "status", required = false, defaultValue = "cleared") String status,
+                                            @RequestParam(name = "expand", required = false) String expand,
+                                            @RequestParam(value = "offset", required = false, defaultValue = "0") int offset,
+                                            @RequestParam(value = "limit", required = false, defaultValue = "25") int limit) {
         transactionValidator.validateTransactionRequest(accountId);
         transactionValidator.validateTransactionDates(fromDate, toDate, 13);
         transactionValidator.validatePaginationParams(offset, limit);
+        transactionValidator.validateStatus(status);
+        transactionValidator.validateExpand(expand);
         try {
-            log.info("Method : getTransactions, Message : Getting transactions");
-            PagedResponseGetTransactionDto response = transactionService.getTransactions(accountId, fromDate, toDate, promotionId, offset, limit);
+            log.info("Method : getTransactions, Message : Getting transactions with status={}, expand={}", status, expand);
+            PagedResponseGetTransactionDto response = transactionService.getTransactions(
+                    accountId, fromDate, toDate, promotionId, status, expand, offset, limit);
             if (response != null) {
-                log.debug("Method : getTransactions, Message :Successfully got the transactions" + response);
+                log.debug("Method : getTransactions, Message : Successfully got the transactions {}", response);
                 return response;
             }
         } catch (ApiException ex) {

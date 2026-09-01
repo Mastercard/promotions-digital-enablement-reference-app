@@ -10,20 +10,71 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class TransactionValidator {
 
+    private static final Set<String> VALID_STATUS_VALUES = new HashSet<>(Arrays.asList("cleared", "auth"));
+    private static final String VALID_EXPAND_VALUE = "AUTH_TRANSACTIONS";
+    private static final int MAX_STATUS_TOKENS = 2;
+
     static Map<String, SimpleDateFormat> sdfMap = new HashMap();
 
-    public void validateTransactionRequest(String accountId) {
+    public void validateTransactionRequest(final String accountId) {
         if (!StringUtils.hasText(accountId)) {
             throw new InvalidRequest(ErrorCodes.INVALID_INPUT.code, "account_id is missing");
         }
+    }
 
+    public void validateStatus(final String status) {
+        if (!StringUtils.hasText(status)) {
+            return;
+        }
+
+        // Split and normalize
+        final List<String> tokens = Arrays.stream(status.split(","))
+                .map(String::trim)
+                .map(String::toLowerCase)
+                .collect(Collectors.toList());
+
+        if (tokens.size() > MAX_STATUS_TOKENS) {
+            throw new InvalidRequest(HttpStatus.BAD_REQUEST.toString(),
+                    "Invalid status. Maximum of 2 status values allowed");
+        }
+
+        // Validate each token
+        tokens.stream()
+                .filter(token -> !VALID_STATUS_VALUES.contains(token))
+                .findFirst()
+                .ifPresent(invalid -> {
+                    throw new InvalidRequest(HttpStatus.BAD_REQUEST.toString(),
+                            "Invalid status value: " + invalid + ". Allowed values are: cleared, auth");
+                });
+
+        // Check for duplicates
+        if (new HashSet<>(tokens).size() != tokens.size()) {
+            throw new InvalidRequest(HttpStatus.BAD_REQUEST.toString(),
+                    "Duplicate status values are not allowed");
+        }
+    }
+
+    public void validateExpand(final String expand) {
+        if (!StringUtils.hasText(expand)) {
+            return;
+        }
+
+        if (!VALID_EXPAND_VALUE.equalsIgnoreCase(expand)) {
+            throw new InvalidRequest(HttpStatus.BAD_REQUEST.toString(),
+                    "Invalid expand value: " + expand + ". Allowed value is: AUTH_TRANSACTIONS");
+        }
     }
 
     public void validateTransactionDates(String fromDateAsString, String toDateAsString, int maxDuration) {

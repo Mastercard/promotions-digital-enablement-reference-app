@@ -134,14 +134,21 @@ paths:
     get:
       tags:
         - Transactions
-      summary: Provides clients the ability to retrieve transaction data.
-      description: This endpoint provides clients with the ability to retrieve transaction data related to a specific promotion.
+      summary: Provides clients the ability to retrieve transaction data, including NRT authorization-scored transactions.
+      description: |
+        This endpoint provides clients with the ability to retrieve transaction data related to a specific promotion.
+
+        **NRT (Near Real-Time) Support:** The endpoint now supports authorization-scored transactions captured before clearing occurs.
+        Use the `status` parameter to filter by transaction processing state, and the `expand` parameter to include linked
+        authorization transactions alongside cleared records.
       operationId: getTransactionsUsingGET
       parameters:
         - $ref: '#/components/parameters/AccountIdParam'
         - $ref: '#/components/parameters/FromDateParam'
         - $ref: '#/components/parameters/ToDateParam'
         - $ref: '#/components/parameters/PromotionIdParam'
+        - $ref: '#/components/parameters/TransactionStatusParam'
+        - $ref: '#/components/parameters/ExpandParam'
         - $ref: '#/components/parameters/OffsetParam'
         - $ref: '#/components/parameters/LimitParam'
       responses:
@@ -344,6 +351,42 @@ components:
         format: int32
         example: 25
         default: 25
+    TransactionStatusParam:
+      name: status
+      in: query
+      required: false
+      description: |
+        Filters transactions by their processing state.
+
+        | Value     | Meaning                                                  |
+        |-----------|----------------------------------------------------------|
+        | `cleared` | Fully settled clearing-file transactions (default)       |
+        | `auth`    | Authorization-scored transactions captured in near real-time before clearing |
+
+        Multiple comma-separated values are allowed (e.g. `status=auth,cleared`).
+        When omitted the API defaults to `cleared`.
+      schema:
+        type: string
+        default: 'cleared'
+        pattern: '^(auth|cleared|auth,cleared|cleared,auth)$'
+        example: 'cleared'
+    ExpandParam:
+      name: expand
+      in: query
+      required: false
+      description: |
+        Expands linked sub-resources inline.
+
+        | Value                | Effect                                              |
+        |----------------------|-----------------------------------------------------|
+        | `AUTH_TRANSACTIONS`  | Embeds authorization-scored transaction details in each cleared transaction's `authTransactions` array and populates the `authIds` field |
+
+        Only applicable when the response contains cleared transactions.
+      schema:
+        type: string
+        enum:
+          - AUTH_TRANSACTIONS
+        example: 'AUTH_TRANSACTIONS'
     HouseholdIdParam:
       name: household_id
       in: query
@@ -1410,6 +1453,63 @@ components:
           type: string
           description: Represents An identifier for a cardholder related to a particular airline to track flying activity of cardholders.
           example: 'LF578923'
+        transactionStatus:
+          type: string
+          description: |
+            Processing state of the transaction.
+            `cleared` — fully settled clearing-file transaction.
+            `auth` — authorization-scored transaction captured before clearing.
+          enum:
+            - cleared
+            - auth
+          example: 'cleared'
+        authIds:
+          type: array
+          description: List of authorization transaction IDs linked to this cleared transaction. Present only when `expand=AUTH_TRANSACTIONS` is requested.
+          items:
+            type: string
+            format: uuid
+          example:
+            - 'a1b2c3d4-e5f6-7890-abcd-ef1234567890'
+        authTransactions:
+          type: array
+          description: Expanded authorization-scored transaction details linked to this cleared transaction. Present only when `expand=AUTH_TRANSACTIONS` is requested.
+          items:
+            $ref: '#/components/schemas/AuthTransaction'
+    AuthTransaction:
+      type: object
+      description: An authorization-scored transaction captured in near real-time before clearing occurs.
+      properties:
+        authTransactionId:
+          type: string
+          format: uuid
+          description: Unique identifier of the authorization transaction.
+          example: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890'
+        transactionAmount:
+          type: integer
+          format: int64
+          description: Authorization transaction amount in minor units.
+          example: 12000
+        transactionAmountFormatted:
+          type: string
+          description: Formatted authorization transaction amount.
+          example: '$120.00'
+        transactionDateTime:
+          type: string
+          format: date-time
+          description: Date and time the authorization was captured.
+          example: '2024-06-15T14:30:00+0000'
+        authCode:
+          type: string
+          description: Authorization approval code.
+          example: '050913'
+        merchant:
+          $ref: '#/components/schemas/Merchant'
+        transactionScores:
+          type: array
+          description: Scores assigned to the authorization transaction.
+          items:
+            $ref: '#/components/schemas/TransactionScore'
     EventItem:
       type: object
       properties:

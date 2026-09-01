@@ -16,8 +16,12 @@ public class TransactionService {
         this.transactionApi = new TransactionsApi(apiClient);
     }
 
-    public PagedResponseGetTransactionDto getTransactions(String accountId, String fromDate, String toDate, String promotionId, Integer offset, Integer limit) throws ApiException {
-        return transactionApi.getTransactionsUsingGET(accountId, fromDate, toDate, promotionId, offset, limit);
+    public PagedResponseGetTransactionDto getTransactions(String accountId, String fromDate,
+                                              String toDate, String promotionId,
+                                              String status, String expand,
+                                              Integer offset, Integer limit) throws ApiException {
+        return transactionApi.getTransactionsUsingGET(accountId, fromDate, toDate, promotionId,
+                status, expand, offset, limit);
     }
 
 }

@@ -55,20 +55,49 @@ public class TransactionControllerTest {
     @Test
     public void testGetTransactions_Success() throws Exception {
         when(transactionService.getTransactions(anyString(), any(String.class), any(String.class),
-                anyString(), any(Integer.class), any(Integer.class)))
+                anyString(), anyString(), any(), any(Integer.class), any(Integer.class)))
                 .thenReturn(new PagedResponseGetTransactionDto());
-        PagedResponseGetTransactionDto response = controller.getTransactions(UUID.randomUUID().toString(), "2020-03-10",
-                "2020-05-20", UUID.randomUUID().toString(), 0, 1);
+        PagedResponseGetTransactionDto response = controller.getTransactions(UUID.randomUUID().toString(),
+                "2020-03-10", "2020-05-20", UUID.randomUUID().toString(), "cleared", null, 0, 1);
+        assertNotNull(response);
+    }
+
+    @Test
+    public void testGetTransactions_WithStatusAuth() throws Exception {
+        when(transactionService.getTransactions(anyString(), any(String.class), any(String.class),
+                anyString(), anyString(), any(), any(Integer.class), any(Integer.class)))
+                .thenReturn(new PagedResponseGetTransactionDto());
+        PagedResponseGetTransactionDto response = controller.getTransactions(UUID.randomUUID().toString(),
+                "2020-03-10", "2020-05-20", UUID.randomUUID().toString(), "auth", null, 0, 1);
+        assertNotNull(response);
+    }
+
+    @Test
+    public void testGetTransactions_WithExpandAuthTransactions() throws Exception {
+        when(transactionService.getTransactions(anyString(), any(String.class), any(String.class),
+                anyString(), anyString(), anyString(), any(Integer.class), any(Integer.class)))
+                .thenReturn(new PagedResponseGetTransactionDto());
+        PagedResponseGetTransactionDto response = controller.getTransactions(UUID.randomUUID().toString(),
+                "2020-03-10", "2020-05-20", UUID.randomUUID().toString(), "cleared", "AUTH_TRANSACTIONS", 0, 1);
+        assertNotNull(response);
+    }
+
+    @Test
+    public void testGetTransactions_WithCombinedStatus() throws Exception {
+        when(transactionService.getTransactions(anyString(), any(String.class), any(String.class),
+                anyString(), anyString(), anyString(), any(Integer.class), any(Integer.class)))
+                .thenReturn(new PagedResponseGetTransactionDto());
+        PagedResponseGetTransactionDto response = controller.getTransactions(UUID.randomUUID().toString(),
+                "2020-03-10", "2020-05-20", UUID.randomUUID().toString(), "auth,cleared", "AUTH_TRANSACTIONS", 0, 1);
         assertNotNull(response);
     }
 
     @Test(expected = InvalidRequest.class)
     public void testGetTransactions_Exception() throws Exception {
         when(transactionService.getTransactions(anyString(), any(String.class), any(String.class),
-                anyString(), any(Integer.class), any(Integer.class)))
+                anyString(), anyString(), any(), any(Integer.class), any(Integer.class)))
                 .thenThrow(new ApiException());
         controller.getTransactions(UUID.randomUUID().toString(), "2020-03-10",
-                "2020-05-20", UUID.randomUUID().toString(), 0, 1);
-
+                "2020-05-20", UUID.randomUUID().toString(), "cleared", null, 0, 1);
     }
 }
