@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class TransactionValidator {
 
     private static final Set<String> VALID_STATUS_VALUES = new HashSet<>(Arrays.asList("cleared", "auth"));
-    private static final String VALID_EXPAND_VALUE = "AUTH_TRANSACTIONS";
+    private static final String VALID_EXPAND_VALUE = "authTransactions";
     private static final int MAX_STATUS_TOKENS = 2;
 
     static Map<String, SimpleDateFormat> sdfMap = new HashMap();
@@ -73,7 +73,7 @@ public class TransactionValidator {
 
         if (!VALID_EXPAND_VALUE.equalsIgnoreCase(expand)) {
             throw new InvalidRequest(HttpStatus.BAD_REQUEST.toString(),
-                    "Invalid expand value: " + expand + ". Allowed value is: AUTH_TRANSACTIONS");
+                    "Invalid expand value: " + expand + ". Allowed value is: authTransactions");
         }
     }
 

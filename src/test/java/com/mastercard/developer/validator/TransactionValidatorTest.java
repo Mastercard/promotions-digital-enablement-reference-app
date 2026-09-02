@@ -79,7 +79,7 @@ public class TransactionValidatorTest {
 
     @Test
     public void testValidateExpandAuthTransactions() {
-        validator.validateExpand("AUTH_TRANSACTIONS");
+        validator.validateExpand("authTransactions");
     }
 
     @Test

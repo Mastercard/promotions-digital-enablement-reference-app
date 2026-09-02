@@ -114,7 +114,7 @@ public class TransactionServiceTest {
         String accountId = "550e8400-e29b-41d4-a716-446655440000";
         try {
             PagedResponseGetTransactionDto response = transactionService.getTransactions(
-                    accountId, "2024-01-01", "2024-12-31", null, "cleared", "AUTH_TRANSACTIONS", 0, 10);
+                    accountId, "2024-01-01", "2024-12-31", null, "cleared", "authTransactions", 0, 10);
             assertNotNull(response);
         } catch (Exception e) {
             // Expected with mock setup
@@ -126,7 +126,7 @@ public class TransactionServiceTest {
         String accountId = "550e8400-e29b-41d4-a716-446655440000";
         try {
             PagedResponseGetTransactionDto response = transactionService.getTransactions(
-                    accountId, "2024-01-01", "2024-12-31", null, "auth,cleared", "AUTH_TRANSACTIONS", 0, 10);
+                    accountId, "2024-01-01", "2024-12-31", null, "auth,cleared", "authTransactions", 0, 10);
             assertNotNull(response);
         } catch (Exception e) {
             // Expected with mock setup
@@ -253,10 +253,10 @@ public class TransactionServiceTest {
                     accountId, fromDate, null, null, "auth", null, 0, 10);
             assertNotNull(response2);
             PagedResponseGetTransactionDto response3 = transactionService.getTransactions(
-                    accountId, null, toDate, promotionId, "auth,cleared", "AUTH_TRANSACTIONS", 0, 10);
+                    accountId, null, toDate, promotionId, "auth,cleared", "authTransactions", 0, 10);
             assertNotNull(response3);
             PagedResponseGetTransactionDto response4 = transactionService.getTransactions(
-                    null, fromDate, toDate, promotionId, "cleared", "AUTH_TRANSACTIONS", 0, 10);
+                    null, fromDate, toDate, promotionId, "cleared", "authTransactions", 0, 10);
             assertNotNull(response4);
         } catch (Exception e) {
             // Expected with mock setup
@@ -273,7 +273,7 @@ public class TransactionServiceTest {
                     "account1", "2024-02-01", "2024-02-29", "promo1", "auth", null, 10, 10);
             assertNotNull(response2);
             PagedResponseGetTransactionDto response3 = transactionService.getTransactions(
-                    "account1", "2024-03-01", "2024-03-31", "promo1", "auth,cleared", "AUTH_TRANSACTIONS", 20, 10);
+                    "account1", "2024-03-01", "2024-03-31", "promo1", "auth,cleared", "authTransactions", 20, 10);
             assertNotNull(response3);
         } catch (Exception e) {
             // Expected with mock setup
@@ -325,7 +325,7 @@ public class TransactionServiceTest {
                     "account123", null, "2024-12-31", "promotion456", "auth", null, 0, 10);
             assertNotNull(response2);
             PagedResponseGetTransactionDto response3 = transactionService.getTransactions(
-                    null, "2024-01-01", "2024-12-31", "promotion456", "auth,cleared", "AUTH_TRANSACTIONS", 0, 10);
+                    null, "2024-01-01", "2024-12-31", "promotion456", "auth,cleared", "authTransactions", 0, 10);
             assertNotNull(response3);
         } catch (Exception e) {
             // Expected with mock setup

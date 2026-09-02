@@ -78,7 +78,7 @@ public class TransactionControllerTest {
                 anyString(), anyString(), anyString(), any(Integer.class), any(Integer.class)))
                 .thenReturn(new PagedResponseGetTransactionDto());
         PagedResponseGetTransactionDto response = controller.getTransactions(UUID.randomUUID().toString(),
-                "2020-03-10", "2020-05-20", UUID.randomUUID().toString(), "cleared", "AUTH_TRANSACTIONS", 0, 1);
+                "2020-03-10", "2020-05-20", UUID.randomUUID().toString(), "cleared", "authTransactions", 0, 1);
         assertNotNull(response);
     }
 
@@ -88,7 +88,7 @@ public class TransactionControllerTest {
                 anyString(), anyString(), anyString(), any(Integer.class), any(Integer.class)))
                 .thenReturn(new PagedResponseGetTransactionDto());
         PagedResponseGetTransactionDto response = controller.getTransactions(UUID.randomUUID().toString(),
-                "2020-03-10", "2020-05-20", UUID.randomUUID().toString(), "auth,cleared", "AUTH_TRANSACTIONS", 0, 1);
+                "2020-03-10", "2020-05-20", UUID.randomUUID().toString(), "auth,cleared", "authTransactions", 0, 1);
         assertNotNull(response);
     }
 

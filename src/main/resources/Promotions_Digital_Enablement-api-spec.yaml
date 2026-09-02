@@ -379,14 +379,14 @@ components:
 
         | Value                | Effect                                              |
         |----------------------|-----------------------------------------------------|
-        | `AUTH_TRANSACTIONS`  | Embeds authorization-scored transaction details in each cleared transaction's `authTransactions` array and populates the `authIds` field |
+        | `authTransactions`  | Embeds authorization-scored transaction details in each cleared transaction's `authTransactions` array and populates the `authIds` field |
 
         Only applicable when the response contains cleared transactions.
       schema:
         type: string
         enum:
-          - AUTH_TRANSACTIONS
-        example: 'AUTH_TRANSACTIONS'
+          - authTransactions
+        example: 'authTransactions'
     HouseholdIdParam:
       name: household_id
       in: query
@@ -1465,7 +1465,7 @@ components:
           example: 'cleared'
         authIds:
           type: array
-          description: List of authorization transaction IDs linked to this cleared transaction. Present only when `expand=AUTH_TRANSACTIONS` is requested.
+          description: List of authorization transaction IDs linked to this cleared transaction. Present only when `expand=authTransactions` is requested.
           items:
             type: string
             format: uuid
@@ -1473,7 +1473,7 @@ components:
             - 'a1b2c3d4-e5f6-7890-abcd-ef1234567890'
         authTransactions:
           type: array
-          description: Expanded authorization-scored transaction details linked to this cleared transaction. Present only when `expand=AUTH_TRANSACTIONS` is requested.
+          description: Expanded authorization-scored transaction details linked to this cleared transaction. Present only when `expand=authTransactions` is requested.
           items:
             $ref: '#/components/schemas/AuthTransaction'
     AuthTransaction:
