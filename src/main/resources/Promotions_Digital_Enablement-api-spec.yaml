@@ -354,22 +354,42 @@ components:
     TransactionStatusParam:
       name: status
       in: query
-      required: false
       description: |
-        Filters transactions by their processing state.
+        Filters transactions by their processing state. Accepts a single value or a comma-separated combination of values (case-insensitive).
 
-        | Value     | Meaning                                                  |
-        |-----------|----------------------------------------------------------|
-        | `cleared` | Fully settled clearing-file transactions (default)       |
-        | `auth`    | Authorization-scored transactions captured in near real-time before clearing |
+        **Single values:**
+        - `auth` – Returns only authorization-scored (NRT) transactions that have not yet been cleared. Provisional point values are included in each transaction's `transactionScores` array.
+        - `cleared` – Returns only cleared transactions where final reward points have been granted. This is the default behavior when the parameter is omitted.
 
-        Multiple comma-separated values are allowed (e.g. `status=auth,cleared`).
-        When omitted the API defaults to `cleared`.
+        **Combined values:**
+        - `auth,cleared` or `cleared,auth` – Returns both authorization-scored and cleared transactions in a single response, sorted by reward posting date and transaction date. Each item's `transactionStatus` field indicates whether it is `auth` or `cleared`.
+
+        When requesting both types, the `expand=AUTH_TRANSACTIONS` parameter can be added to embed linked authorization records within cleared transactions.
+      required: false
+      style: form
+      explode: false
       schema:
-        type: string
-        default: 'cleared'
-        pattern: '^(auth|cleared|auth,cleared|cleared,auth)$'
-        example: 'cleared'
+        type: array
+        items:
+          type: string
+          enum:
+            - auth
+            - cleared
+        minItems: 1
+        maxItems: 2
+        uniqueItems: true
+        default:
+          - cleared
+      examples:
+        authOnly:
+          summary: Auth transactions only
+          value: [auth]
+        clearedOnly:
+          summary: Cleared transactions only (default)
+          value: [cleared]
+        combined:
+          summary: Both auth and cleared transactions
+          value: [auth, cleared]
     ExpandParam:
       name: expand
       in: query
