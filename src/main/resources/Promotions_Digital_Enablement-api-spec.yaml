@@ -1221,7 +1221,7 @@ components:
           example: '2aee0729-3a1a-451a-affa-84f3a6bc5acc'
         promotionName:
           type: string
-          description: Name of the promotion.
+          description: Name of the promotion. Supports full Unicode (UTF-8) character input for all European languages and scripts.
           example: 'Rewards Promo'
         rawScore:
           type: string
@@ -1241,7 +1241,7 @@ components:
           example: '100'
         postingAccountReferenceId:
           type: string
-          description: Posting Account ReferenceId
+          description: Posting Account ReferenceId 
           format: uuid
           example: '751678c0-079b-11eb-adc1-0242ac12aaaa'
     GetTransaction:
@@ -1560,7 +1560,7 @@ components:
           example: 47e39dd0-9c8a-4e4f-8e4d-de374a8277dd
         promotionName:
           type: string
-          description: Name of the promotion
+          description: Name of the promotion. Supports full Unicode (UTF-8) character input for all European languages and scripts.
           example: Rewards Promo
         rawScore:
           type: number
@@ -1884,7 +1884,7 @@ components:
             - false = Targeting not enabled, all accounts are eligible into promotion by default.
         description:
           type: string
-          description: Description of the promotion
+          description: Description of the promotion. Supports full Unicode (UTF-8) character input for all European languages and scripts.
           example: "Promotion for digital rewards"
         scoringBeginDateTime:
           type: string
@@ -1922,7 +1922,7 @@ components:
           example: "RECURRING"
         name:
           type: string
-          description: Name of the promotion.
+          description: Name of the promotion. Supports full Unicode (UTF-8) character input for all European languages and scripts.
           example: "Digital Rewards"
         programId:
           type: string
